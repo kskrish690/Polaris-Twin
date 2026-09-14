@@ -1,0 +1,1245 @@
+<div class="overview-page">
+
+  <!-- ========================================================= -->
+  <!-- PAGE HEADER                                                -->
+  <!-- ========================================================= -->
+
+  <section class="page-header">
+
+    <div class="page-title-block">
+
+      <div class="eyebrow">
+        POLAR OPERATIONS / DIGITAL TWIN
+      </div>
+
+      <h1>
+        Antarctic Research Stations
+      </h1>
+
+      <p>
+        Real-time operational overview and digital twin status
+      </p>
+
+    </div>
+
+
+    <div class="header-status">
+
+      <div class="sync-status">
+
+        <span class="sync-dot"></span>
+
+        <div>
+          <strong>
+            WEATHER STREAM ACTIVE
+          </strong>
+
+          <small>
+            Live Antarctic meteorological data
+          </small>
+        </div>
+
+      </div>
+
+
+      <div class="last-update">
+
+        <span>
+          LAST UPDATE
+        </span>
+
+        <strong>
+          {{ formattedTime }} UTC
+        </strong>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================= -->
+  <!-- LIVE KPI CARDS                                             -->
+  <!-- ========================================================= -->
+
+  <section class="kpi-grid">
+
+
+    <!-- STATIONS -->
+
+    <article class="kpi-card">
+
+      <div class="kpi-top">
+
+        <span class="kpi-label">
+          STATION STATUS
+        </span>
+
+        <span class="kpi-icon">
+          ◉
+        </span>
+
+      </div>
+
+      <div class="kpi-value">
+
+        {{ operationalStations }}
+
+        <span class="kpi-unit">
+          / 02
+        </span>
+
+      </div>
+
+      <div class="kpi-description">
+        Stations reporting live weather
+      </div>
+
+      <div class="kpi-progress">
+
+        <div
+          class="kpi-progress-fill"
+          [style.width.%]="
+            (operationalStations / 2) * 100
+          ">
+        </div>
+
+      </div>
+
+      <div class="kpi-footer">
+
+        <span>
+          {{ operationalStations === 2 ? 'ALL STATIONS LIVE' : 'PARTIAL DATA' }}
+        </span>
+
+        <span>
+          {{ (operationalStations / 2) * 100 | number:'1.0-0' }}%
+        </span>
+
+      </div>
+
+    </article>
+
+
+    <!-- MAITRI -->
+
+    <article class="kpi-card station-kpi">
+
+      <div class="kpi-top">
+
+        <span class="kpi-label">
+          MAITRI
+        </span>
+
+        <span
+          class="live-badge"
+          [class.offline]="maitri.status !== 'LIVE'">
+
+          {{ maitri.status }}
+
+        </span>
+
+      </div>
+
+      <div class="kpi-value">
+
+        {{ formatNumber(maitri.temperature) }}
+
+        <span class="kpi-unit">
+          °C
+        </span>
+
+      </div>
+
+      <div class="kpi-description">
+
+        {{ getWeatherDescription(maitri.weatherCode) }}
+
+      </div>
+
+      <div class="kpi-mini-grid">
+
+        <div>
+          <span>WIND</span>
+          <strong>
+            {{ formatNumber(maitri.windSpeed, 0) }}
+            km/h
+          </strong>
+        </div>
+
+        <div>
+          <span>HUMIDITY</span>
+          <strong>
+            {{ formatNumber(maitri.humidity, 0) }}%
+          </strong>
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- BHARATI -->
+
+    <article class="kpi-card station-kpi">
+
+      <div class="kpi-top">
+
+        <span class="kpi-label">
+          BHARATI
+        </span>
+
+        <span
+          class="live-badge"
+          [class.offline]="bharati.status !== 'LIVE'">
+
+          {{ bharati.status }}
+
+        </span>
+
+      </div>
+
+      <div class="kpi-value">
+
+        {{ formatNumber(bharati.temperature) }}
+
+        <span class="kpi-unit">
+          °C
+        </span>
+
+      </div>
+
+      <div class="kpi-description">
+
+        {{ getWeatherDescription(bharati.weatherCode) }}
+
+      </div>
+
+      <div class="kpi-mini-grid">
+
+        <div>
+          <span>WIND</span>
+          <strong>
+            {{ formatNumber(bharati.windSpeed, 0) }}
+            km/h
+          </strong>
+        </div>
+
+        <div>
+          <span>HUMIDITY</span>
+          <strong>
+            {{ formatNumber(bharati.humidity, 0) }}%
+          </strong>
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- AVERAGE ENVIRONMENT -->
+
+    <article class="kpi-card">
+
+      <div class="kpi-top">
+
+        <span class="kpi-label">
+          REGIONAL CONDITIONS
+        </span>
+
+        <span class="kpi-icon">
+          ◌
+        </span>
+
+      </div>
+
+      <div class="kpi-value">
+
+        {{ formatNumber(averageTemperature) }}
+
+        <span class="kpi-unit">
+          °C
+        </span>
+
+      </div>
+
+      <div class="kpi-description">
+        Average temperature across stations
+      </div>
+
+      <div class="temperature-line">
+
+        <span>
+          MAI
+          {{ formatNumber(maitri.temperature) }}°C
+        </span>
+
+        <span>
+          BHA
+          {{ formatNumber(bharati.temperature) }}°C
+        </span>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- ========================================================= -->
+  <!-- MAIN DASHBOARD                                             -->
+  <!-- ========================================================= -->
+
+  <section class="main-grid">
+
+
+    <!-- ======================================================= -->
+    <!-- DIGITAL TWIN MAP                                        -->
+    <!-- ======================================================= -->
+
+    <article class="panel twin-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-eyebrow">
+            DIGITAL TWIN
+          </span>
+
+          <h2>
+            Antarctic Station Network
+          </h2>
+
+        </div>
+
+
+        <div class="panel-actions">
+
+          <button class="map-action active">
+            NETWORK
+          </button>
+
+          <button class="map-action">
+            SATELLITE
+          </button>
+
+          <button class="map-action">
+            ⛶
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="twin-map">
+
+
+        <!-- GRID -->
+
+        <div class="map-grid"></div>
+
+
+        <!-- COORDINATES -->
+
+        <div class="map-coordinate top-left">
+          70°S
+        </div>
+
+        <div class="map-coordinate top-right">
+          80°E
+        </div>
+
+        <div class="map-coordinate bottom-left">
+          75°S
+        </div>
+
+        <div class="map-coordinate bottom-right">
+          20°E
+        </div>
+
+
+        <!-- ANTARCTICA -->
+
+        <div class="antarctica-shape">
+
+          <div class="ice-ridge ridge-1"></div>
+          <div class="ice-ridge ridge-2"></div>
+          <div class="ice-ridge ridge-3"></div>
+
+        </div>
+
+
+        <!-- CONNECTION LINE -->
+
+        <div class="station-route"></div>
+
+
+        <!-- MAITRI MARKER -->
+
+        <div class="station-marker maitri-marker">
+
+          <div class="marker-pulse"></div>
+
+          <div class="marker-core"></div>
+
+          <div class="station-tooltip">
+
+            <strong>
+              MAITRI
+            </strong>
+
+            <span>
+              {{ formatNumber(maitri.temperature) }}°C
+            </span>
+
+            <small>
+              {{ getWeatherDescription(maitri.weatherCode) }}
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <!-- BHARATI MARKER -->
+
+        <div class="station-marker bharati-marker">
+
+          <div class="marker-pulse"></div>
+
+          <div class="marker-core"></div>
+
+          <div class="station-tooltip">
+
+            <strong>
+              BHARATI
+            </strong>
+
+            <span>
+              {{ formatNumber(bharati.temperature) }}°C
+            </span>
+
+            <small>
+              {{ getWeatherDescription(bharati.weatherCode) }}
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <!-- MAP LABELS -->
+
+        <div class="map-label label-maitri">
+          MAITRI
+        </div>
+
+        <div class="map-label label-bharati">
+          BHARATI
+        </div>
+
+
+        <!-- LIVE TELEMETRY -->
+
+        <div class="map-live">
+
+          <span class="live-dot"></span>
+
+          LIVE WEATHER TELEMETRY
+
+        </div>
+
+
+        <!-- SCALE -->
+
+        <div class="map-scale">
+
+          <span></span>
+
+          <small>
+            500 KM
+          </small>
+
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- ======================================================= -->
+    <!-- STATION STATUS                                          -->
+    <!-- ======================================================= -->
+
+    <article class="panel station-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-eyebrow">
+            LIVE MONITORING
+          </span>
+
+          <h2>
+            Station Status
+          </h2>
+
+        </div>
+
+        <span class="live-badge">
+          LIVE
+        </span>
+
+      </div>
+
+
+      <div class="station-list">
+
+
+        <!-- STATION -->
+
+        <div
+          class="station-row"
+          *ngFor="let station of stations"
+        >
+
+
+          <div class="station-identity">
+
+            <div
+              class="station-dot"
+              [class.live]="station.status === 'LIVE'"
+              [class.offline]="station.status !== 'LIVE'">
+            </div>
+
+
+            <div>
+
+              <strong>
+                {{ station.name }}
+              </strong>
+
+              <span>
+                {{ station.status }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="station-weather">
+
+            <div class="weather-temperature">
+
+              {{ formatNumber(station.temperature) }}°C
+
+            </div>
+
+            <div class="weather-condition">
+
+              {{
+                getWeatherDescription(
+                  station.weatherCode
+                )
+              }}
+
+            </div>
+
+          </div>
+
+
+          <div class="station-metrics">
+
+
+            <div>
+
+              <span>
+                WIND
+              </span>
+
+              <strong>
+
+                {{ formatNumber(station.windSpeed, 0) }}
+
+                <small>
+                  km/h
+                </small>
+
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                HUMIDITY
+              </span>
+
+              <strong>
+
+                {{ formatNumber(station.humidity, 0) }}
+
+                <small>
+                  %
+                </small>
+
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                PRESSURE
+              </span>
+
+              <strong>
+
+                {{ formatNumber(station.pressure, 0) }}
+
+                <small>
+                  hPa
+                </small>
+
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- STATION READINESS -->
+
+      <div class="readiness-section">
+
+        <div class="readiness-header">
+
+          <span>
+            WEATHER DATA AVAILABILITY
+          </span>
+
+          <strong>
+            {{ (operationalStations / 2) * 100 | number:'1.0-0' }}%
+          </strong>
+
+        </div>
+
+        <div class="readiness-bar">
+
+          <div
+            class="readiness-fill"
+            [style.width.%]="
+              (operationalStations / 2) * 100
+            ">
+          </div>
+
+        </div>
+
+        <small>
+          Data connection status for Maitri and Bharati
+        </small>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- ========================================================= -->
+  <!-- ENVIRONMENT / ENERGY / ALERTS                              -->
+  <!-- ========================================================= -->
+
+  <section class="lower-grid">
+
+
+    <!-- ======================================================= -->
+    <!-- ENVIRONMENT                                             -->
+    <!-- ======================================================= -->
+
+    <article class="panel environment-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-eyebrow">
+            LIVE TELEMETRY
+          </span>
+
+          <h2>
+            Environment
+          </h2>
+
+        </div>
+
+        <span class="live-badge">
+          LIVE
+        </span>
+
+      </div>
+
+
+      <div class="environment-grid">
+
+
+        <div class="environment-stat">
+
+          <span>
+            TEMPERATURE
+          </span>
+
+          <strong>
+            {{ formatNumber(averageTemperature) }}°C
+          </strong>
+
+          <small>
+            Station average
+          </small>
+
+        </div>
+
+
+        <div class="environment-stat">
+
+          <span>
+            WIND SPEED
+          </span>
+
+          <strong>
+            {{ formatNumber(averageWindSpeed, 0) }}
+            km/h
+          </strong>
+
+          <small>
+            Current average
+          </small>
+
+        </div>
+
+
+        <div class="environment-stat">
+
+          <span>
+            PRESSURE
+          </span>
+
+          <strong>
+            {{ formatNumber(averagePressure, 0) }}
+            hPa
+          </strong>
+
+          <small>
+            Atmospheric pressure
+          </small>
+
+        </div>
+
+
+        <div class="environment-stat">
+
+          <span>
+            MAITRI
+          </span>
+
+          <strong>
+            {{ formatNumber(maitri.temperature) }}°C
+          </strong>
+
+          <small>
+            {{ getWeatherDescription(maitri.weatherCode) }}
+          </small>
+
+        </div>
+
+
+        <div class="environment-stat">
+
+          <span>
+            BHARATI
+          </span>
+
+          <strong>
+            {{ formatNumber(bharati.temperature) }}°C
+          </strong>
+
+          <small>
+            {{ getWeatherDescription(bharati.weatherCode) }}
+          </small>
+
+        </div>
+
+
+        <div class="environment-stat">
+
+          <span>
+            PRECIPITATION
+          </span>
+
+          <strong>
+            {{ formatNumber(maitri.precipitation, 2) }}
+            mm
+          </strong>
+
+          <small>
+            Maitri current
+          </small>
+
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- ======================================================= -->
+    <!-- WEATHER COMPARISON                                      -->
+    <!-- ======================================================= -->
+
+    <article class="panel weather-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-eyebrow">
+            STATION COMPARISON
+          </span>
+
+          <h2>
+            Current Conditions
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="weather-comparison">
+
+
+        <!-- MAITRI -->
+
+        <div class="comparison-station">
+
+          <div class="comparison-header">
+
+            <strong>
+              MAITRI
+            </strong>
+
+            <span
+              class="status-dot"
+              [class.active]="maitri.status === 'LIVE'">
+            </span>
+
+          </div>
+
+
+          <div class="comparison-temperature">
+
+            {{ formatNumber(maitri.temperature) }}°
+
+          </div>
+
+
+          <div class="comparison-condition">
+
+            {{
+              getWeatherDescription(
+                maitri.weatherCode
+              )
+            }}
+
+          </div>
+
+
+          <div class="comparison-details">
+
+            <div>
+
+              <span>
+                FEELS LIKE
+              </span>
+
+              <strong>
+                {{ formatNumber(maitri.feelsLike) }}°C
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                WIND
+              </span>
+
+              <strong>
+                {{ formatNumber(maitri.windSpeed, 0) }}
+                km/h
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                CLOUD
+              </span>
+
+              <strong>
+                {{ formatNumber(maitri.cloudCover, 0) }}%
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- BHARATI -->
+
+        <div class="comparison-station">
+
+          <div class="comparison-header">
+
+            <strong>
+              BHARATI
+            </strong>
+
+            <span
+              class="status-dot"
+              [class.active]="bharati.status === 'LIVE'">
+            </span>
+
+          </div>
+
+
+          <div class="comparison-temperature">
+
+            {{ formatNumber(bharati.temperature) }}°
+
+          </div>
+
+
+          <div class="comparison-condition">
+
+            {{
+              getWeatherDescription(
+                bharati.weatherCode
+              )
+            }}
+
+          </div>
+
+
+          <div class="comparison-details">
+
+            <div>
+
+              <span>
+                FEELS LIKE
+              </span>
+
+              <strong>
+                {{ formatNumber(bharati.feelsLike) }}°C
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                WIND
+              </span>
+
+              <strong>
+                {{ formatNumber(bharati.windSpeed, 0) }}
+                km/h
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                CLOUD
+              </span>
+
+              <strong>
+                {{ formatNumber(bharati.cloudCover, 0) }}%
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- ======================================================= -->
+    <!-- WEATHER ALERTS                                          -->
+    <!-- ======================================================= -->
+
+    <article class="panel alert-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-eyebrow">
+            WEATHER MONITORING
+          </span>
+
+          <h2>
+            Weather Conditions
+          </h2>
+
+        </div>
+
+        <span class="live-badge">
+          LIVE
+        </span>
+
+      </div>
+
+
+      <div class="weather-alert-list">
+
+
+        <!-- MAITRI -->
+
+        <div class="weather-alert">
+
+          <div class="alert-indicator"></div>
+
+          <div class="alert-content">
+
+            <strong>
+              MAITRI
+            </strong>
+
+            <span>
+
+              {{
+                getWeatherDescription(
+                  maitri.weatherCode
+                )
+              }}
+
+              ·
+
+              {{ formatNumber(maitri.windSpeed, 0) }}
+              km/h wind
+
+            </span>
+
+          </div>
+
+          <div class="alert-value">
+
+            {{ formatNumber(maitri.temperature) }}°C
+
+          </div>
+
+        </div>
+
+
+        <!-- BHARATI -->
+
+        <div class="weather-alert">
+
+          <div class="alert-indicator"></div>
+
+          <div class="alert-content">
+
+            <strong>
+              BHARATI
+            </strong>
+
+            <span>
+
+              {{
+                getWeatherDescription(
+                  bharati.weatherCode
+                )
+              }}
+
+              ·
+
+              {{ formatNumber(bharati.windSpeed, 0) }}
+              km/h wind
+
+            </span>
+
+          </div>
+
+          <div class="alert-value">
+
+            {{ formatNumber(bharati.temperature) }}°C
+
+          </div>
+
+        </div>
+
+
+        <!-- PRECIPITATION -->
+
+        <div class="weather-alert">
+
+          <div class="alert-indicator"></div>
+
+          <div class="alert-content">
+
+            <strong>
+              PRECIPITATION
+            </strong>
+
+            <span>
+              Current precipitation at Maitri
+            </span>
+
+          </div>
+
+          <div class="alert-value">
+
+            {{ formatNumber(maitri.precipitation, 2) }}
+            mm
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- ========================================================= -->
+  <!-- SYSTEM FOOTER                                             -->
+  <!-- ========================================================= -->
+
+  <footer class="dashboard-footer">
+
+
+    <div class="footer-system">
+
+      <span class="footer-live-dot"></span>
+
+      <div>
+
+        <strong>
+          DIGITAL TWIN ENGINE
+        </strong>
+
+        <small>
+          ONLINE
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div class="footer-metric">
+
+      <span>
+        WEATHER API
+      </span>
+
+      <strong>
+        {{ loading ? 'SYNCING' : 'CONNECTED' }}
+      </strong>
+
+    </div>
+
+
+    <div class="footer-metric">
+
+      <span>
+        STATIONS
+      </span>
+
+      <strong>
+        {{ operationalStations }}/02
+      </strong>
+
+    </div>
+
+
+    <div class="footer-metric">
+
+      <span>
+        DATA SOURCE
+      </span>
+
+      <strong>
+        LIVE
+      </strong>
+
+    </div>
+
+
+    <div class="footer-time">
+
+      <span>
+        UTC
+      </span>
+
+      <strong>
+        {{ formattedDate }}
+        {{ formattedTime }}
+      </strong>
+
+    </div>
+
+  </footer>
+
+
+  <!-- ========================================================= -->
+  <!-- ERROR MESSAGE                                             -->
+  <!-- ========================================================= -->
+
+  <div
+    class="weather-error"
+    *ngIf="error">
+
+    <span>
+      ⚠
+    </span>
+
+    <strong>
+      {{ error }}
+    </strong>
+
+    <button
+      type="button"
+      (click)="loadWeather()">
+
+      RETRY
+
+    </button>
+
+  </div>
+
+
+</div>

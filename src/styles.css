@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+html,
+body {
+  margin: 0;
+  padding: 0;
+
+  width: 100%;
+  min-height: 100%;
+
+  background: #020b14;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.app-content {
+  min-height: calc(100vh - 132px);
+  background: #020b14;
+}

@@ -1,0 +1,693 @@
+<div class="alerts-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+  <section class="page-header">
+
+    <div class="header-left">
+
+      <div class="eyebrow">
+        POLARIS-TWIN
+        <span class="eyebrow-line"></span>
+        INCIDENT MANAGEMENT
+      </div>
+
+      <h1>ALERTS</h1>
+
+      <p>
+        Monitor, acknowledge and resolve operational events
+        across India's Antarctic research station network.
+      </p>
+
+    </div>
+
+    <div class="header-right">
+
+      <div class="system-clock">
+
+        <span class="clock-label">INDIA STANDARD TIME</span>
+
+        <span class="clock-value">
+          {{ formattedTime }}
+        </span>
+
+        <span class="clock-date">
+          {{ formattedDate }}
+        </span>
+
+      </div>
+
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        SIMULATION ACTIVE
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       SUMMARY CARDS
+  ====================================================== -->
+  <section class="summary-grid">
+
+    <!-- ACTIVE -->
+    <div class="summary-card active-card">
+
+      <div class="summary-icon">
+        !
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          ACTIVE ALERTS
+        </span>
+
+        <strong class="summary-value">
+          {{ activeCount }}
+        </strong>
+
+        <span class="summary-description">
+          Require attention
+        </span>
+
+      </div>
+
+      <div class="summary-corner"></div>
+
+    </div>
+
+
+    <!-- CRITICAL -->
+    <div class="summary-card critical-card">
+
+      <div class="summary-icon">
+        !
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          CRITICAL
+        </span>
+
+        <strong class="summary-value">
+          {{ criticalCount }}
+        </strong>
+
+        <span class="summary-description">
+          High priority events
+        </span>
+
+      </div>
+
+      <div class="summary-corner"></div>
+
+    </div>
+
+
+    <!-- WARNING -->
+    <div class="summary-card warning-card">
+
+      <div class="summary-icon">
+        △
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          WARNINGS
+        </span>
+
+        <strong class="summary-value">
+          {{ warningCount }}
+        </strong>
+
+        <span class="summary-description">
+          Monitoring required
+        </span>
+
+      </div>
+
+      <div class="summary-corner"></div>
+
+    </div>
+
+
+    <!-- ACKNOWLEDGED -->
+    <div class="summary-card acknowledged-card">
+
+      <div class="summary-icon">
+        ✓
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          ACKNOWLEDGED
+        </span>
+
+        <strong class="summary-value">
+          {{ acknowledgedCount }}
+        </strong>
+
+        <span class="summary-description">
+          Being investigated
+        </span>
+
+      </div>
+
+      <div class="summary-corner"></div>
+
+    </div>
+
+
+    <!-- RESOLVED -->
+    <div class="summary-card resolved-card">
+
+      <div class="summary-icon">
+        ✓
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          RESOLVED
+        </span>
+
+        <strong class="summary-value">
+          {{ resolvedCount }}
+        </strong>
+
+        <span class="summary-description">
+          Closed incidents
+        </span>
+
+      </div>
+
+      <div class="summary-corner"></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FILTER BAR
+  ====================================================== -->
+  <section class="filter-panel">
+
+    <div class="filter-title">
+
+      <span class="filter-title-icon">
+        ◈
+      </span>
+
+      <div>
+        <strong>EVENT FILTERS</strong>
+        <small>
+          {{ filteredAlerts.length }} of {{ totalCount }} events
+        </small>
+      </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+    <div class="search-box">
+
+      <span class="search-icon">
+        ⌕
+      </span>
+
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        placeholder="Search alerts, station, category..."
+      />
+
+      <button
+        *ngIf="searchText"
+        type="button"
+        class="clear-search"
+        (click)="searchText = ''"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- SEVERITY -->
+    <div class="select-box">
+
+      <label>SEVERITY</label>
+
+      <select [(ngModel)]="selectedSeverity">
+
+        <option value="ALL">ALL SEVERITIES</option>
+        <option value="CRITICAL">CRITICAL</option>
+        <option value="WARNING">WARNING</option>
+        <option value="INFO">INFO</option>
+
+      </select>
+
+    </div>
+
+
+    <!-- STATION -->
+    <div class="select-box">
+
+      <label>STATION</label>
+
+      <select [(ngModel)]="selectedStation">
+
+        <option value="ALL">ALL STATIONS</option>
+        <option value="MAITRI">MAITRI</option>
+        <option value="BHARATI">BHARATI</option>
+        <option value="NETWORK">NETWORK</option>
+
+      </select>
+
+    </div>
+
+
+    <!-- STATUS -->
+    <div class="select-box">
+
+      <label>STATUS</label>
+
+      <select [(ngModel)]="selectedStatus">
+
+        <option value="ALL">ALL STATUS</option>
+        <option value="ACTIVE">ACTIVE</option>
+        <option value="ACKNOWLEDGED">ACKNOWLEDGED</option>
+        <option value="RESOLVED">RESOLVED</option>
+
+      </select>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="reset-button"
+      (click)="clearFilters()"
+    >
+      RESET
+    </button>
+
+  </section>
+
+
+  <!-- =====================================================
+       ALERT STREAM HEADER
+  ====================================================== -->
+  <section class="stream-header">
+
+    <div class="stream-heading">
+
+      <span class="stream-live-dot"></span>
+
+      <div>
+        <h2>INCIDENT STREAM</h2>
+        <span>REAL-TIME EVENT MONITOR</span>
+      </div>
+
+    </div>
+
+    <div class="stream-meta">
+
+      <span>
+        {{ totalCount }} TOTAL EVENTS
+      </span>
+
+      <span class="divider"></span>
+
+      <span>
+        AUTO REFRESH 15s
+      </span>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       ALERT LIST
+  ====================================================== -->
+  <section class="alert-list">
+
+    <article
+      class="alert-row"
+      *ngFor="
+        let alert of filteredAlerts;
+        trackBy: trackByAlertId
+      "
+      [ngClass]="getAlertClass(alert)"
+    >
+
+      <!-- SEVERITY STRIPE -->
+      <div class="severity-stripe"></div>
+
+
+      <!-- ALERT INDICATOR -->
+      <div class="alert-indicator">
+
+        <div class="alert-pulse"
+             *ngIf="alert.status === 'ACTIVE'">
+        </div>
+
+        <span>
+          {{ alert.severity === 'CRITICAL' ? '!' :
+             alert.severity === 'WARNING' ? '△' : 'i' }}
+        </span>
+
+      </div>
+
+
+      <!-- MAIN CONTENT -->
+      <div class="alert-main">
+
+        <div class="alert-topline">
+
+          <span class="alert-code">
+            {{ alert.code }}
+          </span>
+
+          <span
+            class="severity-badge"
+            [ngClass]="getAlertClass(alert)"
+          >
+            {{ getSeverityLabel(alert.severity) }}
+          </span>
+
+          <span
+            class="status-badge"
+            [ngClass]="getStatusClass(alert)"
+          >
+            {{ getStatusLabel(alert.status) }}
+          </span>
+
+        </div>
+
+
+        <h3>
+          {{ alert.title }}
+        </h3>
+
+
+        <p class="alert-description">
+          {{ alert.description }}
+        </p>
+
+
+        <div class="alert-tags">
+
+          <span class="station-tag">
+            <span class="tag-icon">⌂</span>
+            {{ alert.station }}
+          </span>
+
+          <span class="category-tag">
+            <span class="tag-icon">
+              {{ getCategoryIcon(alert.category) }}
+            </span>
+            {{ alert.category }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- METRIC -->
+      <div class="alert-metric">
+
+        <span class="metric-label">
+          OBSERVED
+        </span>
+
+        <strong>
+          {{ alert.value }}
+        </strong>
+
+        <span class="threshold">
+          LIMIT {{ alert.threshold }}
+        </span>
+
+      </div>
+
+
+      <!-- TIME -->
+      <div class="alert-time">
+
+        <span class="time-label">
+          DETECTED
+        </span>
+
+        <strong>
+          {{ alert.timestamp | date:'HH:mm:ss' }}
+        </strong>
+
+        <span>
+          {{ getTimeAgo(alert.timestamp) }}
+        </span>
+
+      </div>
+
+
+      <!-- ACTIONS -->
+      <div class="alert-actions">
+
+        <!-- ACKNOWLEDGE -->
+        <button
+          *ngIf="alert.status === 'ACTIVE'"
+          type="button"
+          class="action-button acknowledge-button"
+          (click)="acknowledgeAlert(alert)"
+        >
+          <span>✓</span>
+          ACK
+        </button>
+
+
+        <!-- RESOLVE -->
+        <button
+          *ngIf="
+            alert.status === 'ACTIVE' ||
+            alert.status === 'ACKNOWLEDGED'
+          "
+          type="button"
+          class="action-button resolve-button"
+          (click)="resolveAlert(alert)"
+        >
+          <span>✓</span>
+          RESOLVE
+        </button>
+
+
+        <!-- REOPEN -->
+        <button
+          *ngIf="alert.status === 'RESOLVED'"
+          type="button"
+          class="action-button reopen-button"
+          (click)="reopenAlert(alert)"
+        >
+          <span>↻</span>
+          REOPEN
+        </button>
+
+      </div>
+
+    </article>
+
+
+    <!-- EMPTY STATE -->
+    <div
+      class="empty-state"
+      *ngIf="filteredAlerts.length === 0"
+    >
+
+      <div class="empty-icon">
+        ✓
+      </div>
+
+      <h3>NO EVENTS FOUND</h3>
+
+      <p>
+        No alerts match the selected filters.
+      </p>
+
+      <button
+        type="button"
+        (click)="clearFilters()"
+      >
+        CLEAR FILTERS
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       EVENT TIMELINE
+  ====================================================== -->
+  <section class="timeline-panel">
+
+    <div class="section-title">
+
+      <span class="section-icon">
+        ◷
+      </span>
+
+      <div>
+
+        <h2>EVENT MONITORING</h2>
+
+        <span>
+          POLARIS-TWIN ALERT PIPELINE
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="timeline">
+
+      <div class="timeline-step complete">
+
+        <div class="timeline-node">
+          ✓
+        </div>
+
+        <div class="timeline-content">
+
+          <strong>DETECTION</strong>
+
+          <span>
+            Station telemetry evaluated
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="timeline-line"></div>
+
+
+      <div class="timeline-step complete">
+
+        <div class="timeline-node">
+          ✓
+        </div>
+
+        <div class="timeline-content">
+
+          <strong>ANALYSIS</strong>
+
+          <span>
+            Threshold conditions evaluated
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="timeline-line"></div>
+
+
+      <div class="timeline-step active">
+
+        <div class="timeline-node">
+          !
+        </div>
+
+        <div class="timeline-content">
+
+          <strong>ALERT</strong>
+
+          <span>
+            Incident routed to operator
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="timeline-line"></div>
+
+
+      <div class="timeline-step">
+
+        <div class="timeline-node">
+          4
+        </div>
+
+        <div class="timeline-content">
+
+          <strong>RESPONSE</strong>
+
+          <span>
+            Acknowledge / resolve
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+  <footer class="alerts-footer">
+
+    <div class="footer-left">
+
+      <span class="footer-brand">
+        POLARIS-TWIN
+      </span>
+
+      <span class="footer-separator"></span>
+
+      <span>
+        ANTARCTIC RESEARCH STATION DIGITAL TWIN
+      </span>
+
+    </div>
+
+
+    <div class="footer-right">
+
+      <span class="simulation-label">
+        <span class="simulation-dot"></span>
+        SIMULATED TELEMETRY
+      </span>
+
+      <span class="footer-separator"></span>
+
+      <span>
+        {{ formattedDate }}
+      </span>
+
+      <span>
+        {{ formattedTime }} IST
+      </span>
+
+    </div>
+
+  </footer>
+
+</div>

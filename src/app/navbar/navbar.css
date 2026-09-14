@@ -1,0 +1,1819 @@
+/* =========================================================
+   POLARIS-TWIN
+   DIGITAL TWIN FOR INDIA'S ANTARCTIC RESEARCH STATIONS
+
+   COMPLETE NAVBAR CSS
+   LARGE TYPOGRAPHY + LIVE EFFECTS
+   NO GOVERNMENT EMBLEM IMAGE
+   ========================================================= */
+
+
+/* =========================================================
+   ROOT / THEME
+   ========================================================= */
+
+:host {
+  display: block;
+
+  --bg-0: #020b14;
+  --bg-1: #061522;
+  --bg-2: #091d2d;
+  --bg-3: #0b2437;
+
+  --blue: #39aef5;
+  --blue-bright: #74d0ff;
+  --blue-soft: #4aa9dc;
+
+  --text: #e8f6ff;
+  --text-bright: #ffffff;
+
+  --muted: #7894a9;
+  --muted-light: #91aabd;
+  --muted-dark: #567185;
+
+  --line: rgba(79, 164, 216, 0.18);
+  --line-bright: rgba(82, 183, 239, 0.45);
+
+  --green: #20e477;
+  --orange: #ffbf32;
+
+  --shadow:
+    0 10px 40px rgba(0, 0, 0, 0.35);
+
+  font-family:
+    Inter,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   MAIN HEADER
+   ========================================================= */
+
+.polaris-header {
+  position: sticky;
+
+  top: 0;
+
+  z-index: 1000;
+
+  width: 100%;
+
+  color: var(--text);
+
+  background:
+    radial-gradient(
+      circle at 35% -100%,
+      rgba(39, 143, 207, 0.20),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(30, 130, 190, 0.07),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      #061827 0%,
+      #03111d 100%
+    );
+
+  border-bottom:
+    1px solid
+    var(--line);
+
+  box-shadow:
+    var(--shadow);
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   TOP HEADER
+   ========================================================= */
+
+.header-top {
+  position: relative;
+
+  height: 82px;
+
+  display: flex;
+
+  align-items: center;
+
+  padding:
+    0 18px;
+
+  gap: 18px;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER SCANNING EFFECT
+   ========================================================= */
+
+.header-top::after {
+  content: "";
+
+  position: absolute;
+
+  left: -25%;
+
+  bottom: 0;
+
+  width: 25%;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--blue-bright),
+      transparent
+    );
+
+  animation:
+    headerScan 7s linear infinite;
+
+  opacity: 0.8;
+
+  pointer-events: none;
+}
+
+
+@keyframes headerScan {
+
+  0% {
+    left: -25%;
+  }
+
+  100% {
+    left: 110%;
+  }
+}
+
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.brand {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  min-width: 430px;
+
+  text-decoration: none;
+
+  color: inherit;
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   BRAND MARK
+   ========================================================= */
+
+.brand-mark {
+  width: 65px;
+
+  height: 55px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #70c9ff;
+
+  filter:
+    drop-shadow(
+      0 0 8px
+      rgba(63, 175, 245, 0.45)
+    );
+
+  transition:
+    transform 0.35s ease,
+    filter 0.35s ease;
+}
+
+
+.brand:hover .brand-mark {
+
+  transform:
+    translateY(-2px)
+    scale(1.07);
+
+  filter:
+    drop-shadow(
+      0 0 17px
+      rgba(63, 175, 245, 0.8)
+    );
+}
+
+
+.brand-mark svg {
+
+  width: 65px;
+
+  height: 51px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 2.5;
+
+  stroke-linecap: round;
+
+  stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   BRAND COPY
+   ========================================================= */
+
+.brand-copy {
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+
+/* =========================================================
+   MAIN BRAND TITLE
+   ========================================================= */
+
+.brand-title {
+
+  font-size: 25px;
+
+  line-height: 27px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.1px;
+
+  color: #75caff;
+
+  text-shadow:
+    0 0 18px
+    rgba(72, 183, 255, 0.22);
+
+  transition:
+    text-shadow 0.3s ease,
+    letter-spacing 0.3s ease;
+}
+
+
+.brand:hover .brand-title {
+
+  letter-spacing: 1.5px;
+
+  text-shadow:
+    0 0 22px
+    rgba(72, 183, 255, 0.5);
+}
+
+
+/* =========================================================
+   BRAND SUBTITLE
+   ========================================================= */
+
+.brand-subtitle {
+
+  margin-top: 4px;
+
+  font-size: 12px;
+
+  line-height: 15px;
+
+  color: #89a6b9;
+
+  letter-spacing: 0.15px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   SYSTEM TAGLINE
+   ========================================================= */
+
+.system-strip {
+
+  flex: 1;
+
+  min-width: 150px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 10px;
+
+  font-size: 12px;
+
+  line-height: 15px;
+
+  white-space: nowrap;
+
+  color: #7692a7;
+
+  text-align: center;
+}
+
+
+.system-strip span {
+
+  cursor: default;
+
+  transition:
+    color 0.25s ease,
+    text-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.system-strip span:hover {
+
+  color: var(--blue-bright);
+
+  text-shadow:
+    0 0 12px
+    rgba(116, 208, 255, 0.6);
+
+  transform:
+    translateY(-1px);
+}
+
+
+.system-strip i {
+
+  width: 4px;
+
+  height: 4px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #31536c;
+
+  box-shadow:
+    0 0 6px
+    rgba(80, 160, 210, 0.4);
+}
+
+
+.system-strip strong {
+
+  color: #a9c5d7;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   GOVERNMENT / NCPOR LOCKUP
+   NO EMBLEM
+   ========================================================= */
+
+.government-lockup {
+
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 225px;
+
+  height: 58px;
+
+  padding:
+    5px 16px;
+
+  flex-shrink: 0;
+
+  border-left:
+    1px solid
+    rgba(79, 164, 216, 0.20);
+
+  border-right:
+    1px solid
+    rgba(79, 164, 216, 0.20);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,0.01),
+      rgba(255,255,255,0.04),
+      rgba(255,255,255,0.01)
+    );
+
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+
+.government-lockup:hover {
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(50,150,210,0.02),
+      rgba(50,150,210,0.08),
+      rgba(50,150,210,0.02)
+    );
+
+  border-color:
+    rgba(82,183,239,0.35);
+
+  box-shadow:
+    0 0 20px
+    rgba(42, 145, 199, 0.08);
+}
+
+
+/* =========================================================
+   GOVERNMENT GLASS EFFECT
+   ========================================================= */
+
+.government-lockup::before {
+
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.05),
+      transparent 55%
+    );
+}
+
+
+/* =========================================================
+   GOVERNMENT SCANNING LINE
+   ========================================================= */
+
+.government-lockup::after {
+
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+
+  bottom: 0;
+
+  width: 100%;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(115,203,255,0.7),
+      transparent
+    );
+
+  animation:
+    governmentScan 4s ease-in-out infinite;
+}
+
+
+@keyframes governmentScan {
+
+  0%,
+  100% {
+
+    opacity: 0.2;
+
+    transform:
+      scaleX(0.65);
+  }
+
+  50% {
+
+    opacity: 0.9;
+
+    transform:
+      scaleX(1);
+  }
+}
+
+
+/* =========================================================
+   GOVERNMENT TEXT
+   ========================================================= */
+
+.government-text {
+
+  position: relative;
+
+  z-index: 2;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  gap: 3px;
+
+  color: #91a8b7;
+
+  font-size: 10px;
+
+  line-height: 13px;
+
+  white-space: nowrap;
+
+  text-align: left;
+}
+
+
+/* =========================================================
+   NCPOR
+   ========================================================= */
+
+.government-text .gov-short {
+
+  color: #e2f3fb;
+
+  font-size: 14px;
+
+  line-height: 16px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.1px;
+
+  text-shadow:
+    0 0 10px
+    rgba(130,210,250,0.2);
+}
+
+
+/* Ministry */
+
+.government-text div:nth-child(2) {
+
+  color: #91a8b7;
+
+  font-size: 10px;
+}
+
+
+/* Government of India */
+
+.government-text div:last-child {
+
+  color: #c2d5df;
+
+  font-size: 10px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   DATE / TIME
+   ========================================================= */
+
+.system-time {
+
+  min-width: 105px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+
+  flex-shrink: 0;
+}
+
+
+.system-date {
+
+  font-size: 11px;
+
+  line-height: 13px;
+
+  color: #7893a6;
+
+  letter-spacing: 0.2px;
+}
+
+
+.system-time strong {
+
+  font-size: 16px;
+
+  line-height: 19px;
+
+  color: #edf8ff;
+
+  letter-spacing: 0.5px;
+
+  white-space: nowrap;
+
+  text-shadow:
+    0 0 9px
+    rgba(120,200,240,0.15);
+}
+
+
+.system-time small {
+
+  font-size: 9px;
+
+  line-height: 11px;
+
+  color: #7893a6;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   DEMO / LIVE MODE SWITCH
+   ========================================================= */
+
+.mode-switch {
+
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  min-width: 125px;
+
+  padding:
+    8px 10px;
+
+  border:
+    1px solid
+    transparent;
+
+  border-radius: 6px;
+
+  background: transparent;
+
+  color: white;
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
+}
+
+
+.mode-switch:hover {
+
+  background:
+    rgba(37,143,205,0.10);
+
+  border-color:
+    rgba(65,165,218,0.22);
+
+  box-shadow:
+    0 0 18px
+    rgba(50,150,210,0.10);
+
+  transform:
+    translateY(-1px);
+}
+
+
+.mode-switch:active {
+
+  transform:
+    scale(0.97);
+}
+
+
+/* =========================================================
+   STATUS LIGHT
+   ========================================================= */
+
+.mode-light {
+
+  width: 11px;
+
+  height: 11px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: var(--green);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(32,228,119,0.08),
+
+    0 0 14px
+    rgba(32,228,119,0.8);
+
+  animation:
+    pulseGreen 2s infinite;
+}
+
+
+.mode-switch.live .mode-light {
+
+  background: var(--orange);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(255,191,50,0.08),
+
+    0 0 14px
+    rgba(255,191,50,0.7);
+}
+
+
+@keyframes pulseGreen {
+
+  0%,
+  100% {
+
+    opacity: 1;
+
+    transform:
+      scale(1);
+  }
+
+  50% {
+
+    opacity: 0.55;
+
+    transform:
+      scale(0.82);
+  }
+}
+
+
+/* =========================================================
+   MODE TEXT
+   ========================================================= */
+
+.mode-copy {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  line-height: 13px;
+}
+
+
+.mode-copy strong {
+
+  font-size: 10px;
+
+  line-height: 13px;
+
+  color: #d9edf8;
+
+  letter-spacing: 0.25px;
+}
+
+
+.mode-copy small {
+
+  font-size: 9px;
+
+  line-height: 12px;
+
+  color: #718ca0;
+}
+
+
+/* =========================================================
+   PROFILE BUTTON
+   ========================================================= */
+
+.profile-button {
+
+  width: 38px;
+
+  height: 38px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border:
+    1px solid
+    transparent;
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: #69bdf0;
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+
+  transition:
+    all 0.25s ease;
+}
+
+
+.profile-button:hover {
+
+  color: #a9e0ff;
+
+  background:
+    rgba(55,163,221,0.12);
+
+  border-color:
+    rgba(69,176,231,0.3);
+
+  box-shadow:
+    0 0 20px
+    rgba(49,163,222,0.15);
+
+  transform:
+    translateY(-1px);
+}
+
+
+.profile-button:active {
+
+  transform:
+    scale(0.92);
+}
+
+
+.profile-button svg {
+
+  width: 23px;
+
+  height: 23px;
+
+  stroke: currentColor;
+
+  stroke-width: 1.6;
+
+  transition:
+    transform 0.25s ease;
+}
+
+
+.profile-button:hover svg {
+
+  transform:
+    scale(1.1);
+}
+
+
+/* =========================================================
+   SECOND NAVIGATION BAR
+   ========================================================= */
+
+.navigation-bar {
+
+  height: 50px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding:
+    0 12px 0 10px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(9,35,56,0.98),
+      rgba(5,24,39,0.98)
+    );
+
+  border-top:
+    1px solid
+    rgba(69,149,194,0.10);
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(100,190,240,0.03);
+}
+
+
+/* =========================================================
+   NAVIGATION SCROLL
+   ========================================================= */
+
+.navigation-scroll {
+
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 3px;
+
+  overflow-x: auto;
+
+  scrollbar-width: none;
+
+  flex: 1;
+
+  min-width: 0;
+}
+
+
+.navigation-scroll::-webkit-scrollbar {
+
+  display: none;
+}
+
+
+/* =========================================================
+   NAVIGATION ITEMS
+   ========================================================= */
+
+.navigation-item {
+
+  position: relative;
+
+  height: 38px;
+
+  min-width: 88px;
+
+  padding:
+    0 15px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #7897aa;
+
+  text-decoration: none;
+
+  border-radius: 5px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  line-height: 15px;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  transition:
+    color 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+
+/* =========================================================
+   NAV HOVER
+   ========================================================= */
+
+.navigation-item:hover {
+
+  color: #d9f1ff;
+
+  background:
+    rgba(51,158,216,0.10);
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 5px 16px
+    rgba(0,0,0,0.14);
+}
+
+
+.navigation-item:active {
+
+  transform:
+    translateY(0)
+    scale(0.97);
+}
+
+
+/* =========================================================
+   NAV UNDERLINE
+   ========================================================= */
+
+.navigation-item::after {
+
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+
+  bottom: 0;
+
+  width: 0;
+
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--blue-bright),
+      transparent
+    );
+
+  transform:
+    translateX(-50%);
+
+  transition:
+    width 0.3s ease;
+}
+
+
+.navigation-item:hover::after {
+
+  width: 60%;
+}
+
+
+/* =========================================================
+   NAV LABEL
+   ========================================================= */
+
+.nav-label {
+
+  position: relative;
+
+  z-index: 2;
+
+  transition:
+    color 0.25s ease,
+    text-shadow 0.25s ease;
+}
+
+
+/* =========================================================
+   NAV GLOW
+   ========================================================= */
+
+.nav-glow {
+
+  position: absolute;
+
+  left: 50%;
+
+  bottom: -10px;
+
+  width: 25px;
+
+  height: 25px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(65,184,245,0.20);
+
+  filter:
+    blur(11px);
+
+  opacity: 0;
+
+  transform:
+    translateX(-50%);
+
+  transition:
+    opacity 0.3s ease;
+}
+
+
+.navigation-item:hover .nav-glow {
+
+  opacity: 1;
+}
+
+
+/* =========================================================
+   ACTIVE NAVIGATION
+   ========================================================= */
+
+.navigation-item.active {
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(55,161,222,0.29),
+      rgba(31,110,161,0.17)
+    );
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(126,215,255,0.13),
+
+    0 0 20px
+    rgba(28,130,189,0.10);
+}
+
+
+.navigation-item.active::after {
+
+  width: 72%;
+
+  box-shadow:
+    0 0 9px
+    rgba(82,195,255,0.85);
+}
+
+
+.navigation-item.active .nav-label {
+
+  text-shadow:
+    0 0 10px
+    rgba(93,201,255,0.55);
+}
+
+
+.navigation-item.active .nav-glow {
+
+  opacity: 1;
+}
+
+
+/* =========================================================
+   SEARCH BOX
+   ========================================================= */
+
+.search-wrapper {
+
+  width: 260px;
+
+  height: 31px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding:
+    0 10px;
+
+  border:
+    1px solid
+    rgba(80,147,183,0.30);
+
+  border-radius: 5px;
+
+  background:
+    rgba(1,14,25,0.68);
+
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.search-wrapper:hover {
+
+  border-color:
+    rgba(80,170,215,0.45);
+}
+
+
+.search-wrapper:focus-within {
+
+  border-color:
+    rgba(70,183,239,0.75);
+
+  background:
+    rgba(3,22,37,0.96);
+
+  box-shadow:
+    0 0 0 2px
+    rgba(45,159,214,0.08),
+
+    0 0 20px
+    rgba(42,145,199,0.12);
+
+  transform:
+    translateY(-1px);
+}
+
+
+.search-wrapper svg {
+
+  width: 16px;
+
+  height: 16px;
+
+  flex-shrink: 0;
+
+  stroke: #6d8ca1;
+
+  stroke-width: 1.7;
+
+  stroke-linecap: round;
+
+  transition:
+    stroke 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.search-wrapper:focus-within svg {
+
+  stroke: #72caff;
+
+  transform:
+    scale(1.08);
+}
+
+
+/* =========================================================
+   SEARCH INPUT
+   ========================================================= */
+
+.search-wrapper input {
+
+  width: 100%;
+
+  height: 100%;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #d8efff;
+
+  font-size: 11px;
+
+  line-height: 15px;
+
+  font-family: inherit;
+}
+
+
+.search-wrapper input::placeholder {
+
+  color: #567185;
+
+  font-size: 11px;
+
+  transition:
+    color 0.2s ease;
+}
+
+
+.search-wrapper:focus-within input::placeholder {
+
+  color: #69899d;
+}
+
+
+/* =========================================================
+   FOCUS ACCESSIBILITY
+   ========================================================= */
+
+.brand:focus-visible,
+.navigation-item:focus-visible,
+.mode-switch:focus-visible,
+.profile-button:focus-visible {
+
+  outline:
+    1px solid
+    #69caff;
+
+  outline-offset: 2px;
+
+  box-shadow:
+    0 0 12px
+    rgba(70,185,240,0.25);
+}
+
+
+/* =========================================================
+   RESPONSIVE — 1450px
+   ========================================================= */
+
+@media (max-width: 1450px) {
+
+  .header-top {
+
+    gap: 13px;
+  }
+
+  .brand {
+
+    min-width: 370px;
+  }
+
+  .system-strip {
+
+    gap: 7px;
+
+    font-size: 11px;
+  }
+
+  .system-strip strong {
+
+    display: none;
+  }
+
+  .navigation-item {
+
+    min-width: 80px;
+
+    padding:
+      0 12px;
+
+    font-size: 11px;
+  }
+
+  .search-wrapper {
+
+    width: 230px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 1250px
+   ========================================================= */
+
+@media (max-width: 1250px) {
+
+  .header-top {
+
+    padding:
+      0 12px;
+
+    gap: 10px;
+  }
+
+  .brand {
+
+    min-width: 320px;
+  }
+
+  .brand-title {
+
+    font-size: 22px;
+
+    line-height: 24px;
+  }
+
+  .brand-subtitle {
+
+    font-size: 11px;
+  }
+
+  .system-strip {
+
+    display: none;
+  }
+
+  .government-lockup {
+
+    min-width: 205px;
+  }
+
+  .government-text {
+
+    font-size: 9px;
+  }
+
+  .government-text .gov-short {
+
+    font-size: 13px;
+  }
+
+  .search-wrapper {
+
+    width: 210px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 1100px
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+  .header-top {
+
+    height: 76px;
+  }
+
+  .brand {
+
+    min-width: 285px;
+  }
+
+  .brand-mark {
+
+    width: 52px;
+
+    height: 48px;
+  }
+
+  .brand-mark svg {
+
+    width: 52px;
+
+    height: 45px;
+  }
+
+  .brand-title {
+
+    font-size: 21px;
+
+    line-height: 23px;
+  }
+
+  .brand-subtitle {
+
+    display: none;
+  }
+
+  .government-lockup {
+
+    min-width: 180px;
+
+    height: 53px;
+
+    padding:
+      4px 10px;
+  }
+
+  .government-text {
+
+    font-size: 8px;
+
+    line-height: 11px;
+  }
+
+  .government-text .gov-short {
+
+    font-size: 11px;
+
+    line-height: 14px;
+  }
+
+  .government-text div:nth-child(2),
+  .government-text div:last-child {
+
+    font-size: 8px;
+  }
+
+  .system-time {
+
+    min-width: 85px;
+  }
+
+  .system-date {
+
+    font-size: 10px;
+  }
+
+  .system-time strong {
+
+    font-size: 14px;
+  }
+
+  .mode-switch {
+
+    min-width: 110px;
+  }
+
+  .search-wrapper {
+
+    width: 180px;
+  }
+
+  .navigation-item {
+
+    min-width: 75px;
+
+    font-size: 10px;
+
+    padding:
+      0 9px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 850px
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+  .header-top {
+
+    height: 68px;
+
+    gap: 8px;
+
+    padding:
+      0 9px;
+  }
+
+  .brand {
+
+    min-width: auto;
+
+    flex: 1;
+  }
+
+  .brand-mark {
+
+    width: 44px;
+
+    height: 44px;
+  }
+
+  .brand-mark svg {
+
+    width: 44px;
+
+    height: 41px;
+  }
+
+  .brand-title {
+
+    font-size: 19px;
+
+    line-height: 21px;
+  }
+
+  .government-lockup {
+
+    min-width: auto;
+
+    height: 49px;
+
+    padding:
+      2px 8px;
+
+    border-left: none;
+  }
+
+  .government-text {
+
+    display: none;
+  }
+
+  .system-time {
+
+    display: none;
+  }
+
+  .mode-switch {
+
+    min-width: auto;
+
+    padding:
+      7px;
+  }
+
+  .mode-copy {
+
+    display: none;
+  }
+
+  .profile-button {
+
+    width: 34px;
+
+    height: 34px;
+  }
+
+  .navigation-bar {
+
+    height: 48px;
+
+    padding:
+      0 6px;
+  }
+
+  .navigation-item {
+
+    min-width: 78px;
+
+    height: 36px;
+
+    font-size: 10px;
+  }
+
+  .search-wrapper {
+
+    width: 150px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 600px
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  .header-top {
+
+    height: 60px;
+
+    padding:
+      0 7px;
+  }
+
+  .brand {
+
+    gap: 8px;
+  }
+
+  .brand-mark {
+
+    width: 38px;
+
+    height: 38px;
+  }
+
+  .brand-mark svg {
+
+    width: 38px;
+
+    height: 36px;
+  }
+
+  .brand-title {
+
+    font-size: 17px;
+
+    line-height: 19px;
+
+    letter-spacing: 0.7px;
+  }
+
+  .government-lockup {
+
+    display: none;
+  }
+
+  .search-wrapper {
+
+    display: none;
+  }
+
+  .navigation-bar {
+
+    height: 46px;
+  }
+
+  .navigation-item {
+
+    min-width: 75px;
+
+    height: 35px;
+
+    padding:
+      0 9px;
+
+    font-size: 10px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 400px
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+  .brand-title {
+
+    font-size: 16px;
+
+    line-height: 18px;
+  }
+
+  .brand-mark {
+
+    width: 34px;
+
+    height: 34px;
+  }
+
+  .brand-mark svg {
+
+    width: 34px;
+
+    height: 32px;
+  }
+
+  .mode-switch {
+
+    display: none;
+  }
+
+  .navigation-item {
+
+    min-width: 70px;
+
+    font-size: 9px;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .header-top::after,
+  .government-lockup::after,
+  .mode-light {
+
+    animation: none;
+  }
+
+  .brand-mark,
+  .brand-title,
+  .navigation-item,
+  .search-wrapper,
+  .profile-button,
+  .mode-switch {
+
+    transition: none;
+  }
+}

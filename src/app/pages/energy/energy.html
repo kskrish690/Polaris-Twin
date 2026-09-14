@@ -1,0 +1,798 @@
+<div class="energy-page">
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <header class="page-header">
+
+    <div class="header-left">
+
+      <div class="page-chip">
+        <span class="chip-dot"></span>
+        DIGITAL TWIN / ENERGY
+      </div>
+
+      <h1>ENERGY</h1>
+
+      <p>
+        Antarctic Station Energy Intelligence & Power Management
+      </p>
+
+    </div>
+
+
+    <div class="header-right">
+
+      <div class="network-status">
+
+        <span class="network-dot"></span>
+
+        ENERGY NETWORK ONLINE
+
+      </div>
+
+
+      <div class="time-block">
+
+        <span>
+          INDIA STANDARD TIME
+        </span>
+
+        <strong>
+          {{ formattedTime }} IST
+        </strong>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       ENERGY OVERVIEW
+       ===================================================== -->
+
+  <section class="energy-overview">
+
+
+    <!-- Main energy -->
+
+    <div class="energy-main-card">
+
+      <div class="energy-card-label">
+        CURRENT POWER GENERATION
+      </div>
+
+      <div class="generation-value">
+
+        <strong>
+          {{ totalGeneration }}
+        </strong>
+
+        <span>
+          kW
+        </span>
+
+      </div>
+
+      <div class="generation-subtitle">
+        LIVE SYSTEM GENERATION
+      </div>
+
+
+      <div class="generation-bar">
+
+        <div
+          class="generation-bar-fill"
+          [style.width.%]="
+            totalCapacity > 0
+              ? (totalGeneration / totalCapacity) * 100
+              : 0
+          "
+        ></div>
+
+      </div>
+
+
+      <div class="generation-footer">
+
+        <span>
+          CAPACITY
+        </span>
+
+        <strong>
+          {{ totalCapacity }} kW
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- Demand -->
+
+    <div class="overview-stat">
+
+      <span>
+        CURRENT DEMAND
+      </span>
+
+      <strong>
+        {{ currentDemand }}
+        <small>kW</small>
+      </strong>
+
+      <p>
+        STATION LOAD
+      </p>
+
+    </div>
+
+
+    <!-- Available -->
+
+    <div class="overview-stat">
+
+      <span>
+        AVAILABLE CAPACITY
+      </span>
+
+      <strong>
+        {{ availableCapacity }}
+        <small>kW</small>
+      </strong>
+
+      <p>
+        RESERVE POWER
+      </p>
+
+    </div>
+
+
+    <!-- Efficiency -->
+
+    <div class="overview-stat">
+
+      <span>
+        SYSTEM EFFICIENCY
+      </span>
+
+      <strong>
+        {{ systemEfficiency }}
+        <small>%</small>
+      </strong>
+
+      <p>
+        GENERATION EFFICIENCY
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       STATUS
+       ===================================================== -->
+
+  <section class="status-summary">
+
+    <div class="summary-card online">
+
+      <div class="summary-icon">
+        ⚡
+      </div>
+
+      <div>
+
+        <span>
+          ONLINE
+        </span>
+
+        <strong>
+          {{ onlineCount }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card standby">
+
+      <div class="summary-icon">
+        ◌
+      </div>
+
+      <div>
+
+        <span>
+          STANDBY
+        </span>
+
+        <strong>
+          {{ standbyCount }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card maintenance">
+
+      <div class="summary-icon">
+        ⚙
+      </div>
+
+      <div>
+
+        <span>
+          MAINTENANCE
+        </span>
+
+        <strong>
+          {{ maintenanceCount }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card offline">
+
+      <div class="summary-icon">
+        !
+      </div>
+
+      <div>
+
+        <span>
+          OFFLINE
+        </span>
+
+        <strong>
+          {{ offlineCount }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       ENERGY SOURCES
+       ===================================================== -->
+
+  <section class="sources-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span>
+          ENERGY / 01
+        </span>
+
+        <h2>
+          POWER GENERATION NETWORK
+        </h2>
+
+      </div>
+
+
+      <div class="live-indicator">
+
+        <span></span>
+
+        SIMULATED TELEMETRY
+
+      </div>
+
+    </div>
+
+
+    <div class="source-grid">
+
+      <article
+        class="source-card"
+        *ngFor="let source of energySources"
+      >
+
+        <div class="source-top">
+
+          <div class="source-type">
+            {{ source.type }}
+          </div>
+
+          <div
+            class="source-status"
+            [ngClass]="getStatusClass(source.status)"
+          >
+
+            <span></span>
+
+            {{ source.status }}
+
+          </div>
+
+        </div>
+
+
+        <div class="source-main">
+
+          <div class="source-icon">
+
+            <span>
+              ⚡
+            </span>
+
+          </div>
+
+
+          <div class="source-name">
+
+            <h3>
+              {{ source.name }}
+            </h3>
+
+            <span>
+              {{ source.code }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <p class="source-description">
+          {{ source.description }}
+        </p>
+
+
+        <!-- Output -->
+
+        <div class="source-metric">
+
+          <div class="metric-label-row">
+
+            <span>
+              OUTPUT
+            </span>
+
+            <strong>
+              {{ source.output }} /
+              {{ source.capacity }} kW
+            </strong>
+
+          </div>
+
+
+          <div class="source-bar">
+
+            <div
+              class="source-bar-fill"
+              [style.width.%]="
+                getOutputWidth(
+                  source.output,
+                  source.capacity
+                )
+              "
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Efficiency -->
+
+        <div class="source-metric">
+
+          <div class="metric-label-row">
+
+            <span>
+              EFFICIENCY
+            </span>
+
+            <strong>
+              {{ source.efficiency }}%
+            </strong>
+
+          </div>
+
+
+          <div class="source-bar">
+
+            <div
+              class="source-bar-fill efficiency"
+              [ngClass]="
+                getEfficiencyClass(
+                  source.efficiency
+                )
+              "
+              [style.width.%]="source.efficiency"
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="source-footer">
+
+          <span>
+            NOMINAL CAPACITY
+          </span>
+
+          <strong>
+            {{ source.capacity }} kW
+          </strong>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       SYSTEM METRICS
+       ===================================================== -->
+
+  <section class="metrics-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span>
+          TELEMETRY / 02
+        </span>
+
+        <h2>
+          ENERGY SYSTEM METRICS
+        </h2>
+
+      </div>
+
+      <div class="metric-refresh">
+
+        <span class="refresh-dot"></span>
+
+        5 SEC REFRESH
+
+      </div>
+
+    </div>
+
+
+    <div class="metrics-grid">
+
+      <article
+        class="metric-card"
+        *ngFor="let metric of energyMetrics"
+      >
+
+        <div class="metric-header">
+
+          <span>
+            {{ metric.label }}
+          </span>
+
+          <strong
+            [ngClass]="
+              getMetricClass(
+                metric.status
+              )
+            "
+          >
+            {{ metric.status }}
+          </strong>
+
+        </div>
+
+
+        <div class="metric-value">
+
+          <strong>
+            {{ metric.value }}
+          </strong>
+
+          <span>
+            {{ metric.unit }}
+          </span>
+
+        </div>
+
+
+        <div class="metric-line">
+
+          <div
+            class="metric-line-fill"
+            [style.width.%]="
+              metric.unit === '%'
+                ? metric.value
+                : 70
+            "
+          ></div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       ENERGY FLOW
+       ===================================================== -->
+
+  <section class="flow-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span>
+          ENERGY FLOW / 03
+        </span>
+
+        <h2>
+          STATION POWER DISTRIBUTION
+        </h2>
+
+      </div>
+
+    </div>
+
+
+    <div class="flow-panel">
+
+      <div class="flow-visual">
+
+        <div class="flow-grid"></div>
+
+
+        <div class="flow-core">
+
+          <div class="flow-core-ring"></div>
+
+          <span>
+            LIVE
+          </span>
+
+          <strong>
+            {{ totalGeneration }}
+          </strong>
+
+          <small>
+            kW GENERATED
+          </small>
+
+        </div>
+
+
+        <div class="flow-line line-a"></div>
+        <div class="flow-line line-b"></div>
+        <div class="flow-line line-c"></div>
+
+
+        <div class="flow-node node-a">
+          <span>R</span>
+        </div>
+
+        <div class="flow-node node-b">
+          <span>H</span>
+        </div>
+
+        <div class="flow-node node-c">
+          <span>L</span>
+        </div>
+
+      </div>
+
+
+      <div class="flow-data">
+
+        <div
+          class="flow-row"
+          *ngFor="let flow of energyFlow"
+        >
+
+          <div class="flow-row-header">
+
+            <span>
+              {{ flow.label }}
+            </span>
+
+            <strong>
+              {{ flow.value }} kW
+            </strong>
+
+          </div>
+
+
+          <div class="flow-bar">
+
+            <div
+              class="flow-bar-fill"
+              [style.width.%]="flow.percentage"
+            ></div>
+
+          </div>
+
+
+          <div class="flow-row-footer">
+
+            <span>
+              DISTRIBUTION
+            </span>
+
+            <span>
+              {{ flow.percentage }}%
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       ENERGY DIGITAL TWIN
+       ===================================================== -->
+
+  <section class="digital-twin">
+
+    <div class="twin-visual">
+
+      <div class="twin-grid"></div>
+
+      <div class="energy-orbit orbit-one"></div>
+      <div class="energy-orbit orbit-two"></div>
+      <div class="energy-orbit orbit-three"></div>
+
+
+      <div class="twin-core">
+
+        <div class="core-pulse"></div>
+
+        <strong>
+          ENERGY
+        </strong>
+
+        <span>
+          DIGITAL TWIN
+        </span>
+
+      </div>
+
+
+      <div class="twin-particle particle-one"></div>
+      <div class="twin-particle particle-two"></div>
+      <div class="twin-particle particle-three"></div>
+
+    </div>
+
+
+    <div class="twin-information">
+
+      <span class="section-code">
+        DIGITAL TWIN / 04
+      </span>
+
+      <h2>
+        ENERGY NETWORK SYNCHRONIZATION
+      </h2>
+
+      <p>
+        The energy module provides a digital representation
+        of station generation, demand, reserve capacity
+        and power distribution. The model supports
+        operational awareness and future predictive
+        energy simulations.
+      </p>
+
+
+      <div class="sync-grid">
+
+        <div>
+
+          <span>
+            MODEL STATUS
+          </span>
+
+          <strong>
+            SYNCHRONIZED
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            POWER CHANNEL
+          </span>
+
+          <strong>
+            ACTIVE
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            LAST CYCLE
+          </span>
+
+          <strong>
+            {{ formattedTime }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+
+  <footer class="page-footer">
+
+    <div>
+
+      <strong>
+        POLARIS-TWIN
+      </strong>
+
+      <span>
+        ENERGY INTELLIGENCE MODULE
+      </span>
+
+    </div>
+
+
+    <div class="footer-live">
+
+      <span></span>
+
+      SIMULATED ENERGY TELEMETRY ACTIVE
+
+    </div>
+
+
+    <div>
+
+      {{ formattedDate }}
+      ·
+      {{ formattedTime }}
+      IST
+
+    </div>
+
+  </footer>
+
+</div>

@@ -1,0 +1,681 @@
+<div class="infrastructure-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+       ===================================================== -->
+
+  <header class="page-header">
+
+    <div class="header-left">
+
+      <div class="page-chip">
+        <span class="chip-dot"></span>
+        DIGITAL TWIN / INFRASTRUCTURE
+      </div>
+
+      <h1>INFRASTRUCTURE</h1>
+
+      <p>
+        Antarctic Station Infrastructure Intelligence
+      </p>
+
+    </div>
+
+    <div class="header-right">
+
+      <div class="network-status">
+        <span class="network-dot"></span>
+        <span>INFRASTRUCTURE NETWORK</span>
+      </div>
+
+      <div class="time-block">
+        <span>INDIA STANDARD TIME</span>
+        <strong>{{ formattedTime }} IST</strong>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       STATION OVERVIEW
+       ===================================================== -->
+
+  <section class="station-overview">
+
+    <!-- Station identity -->
+
+    <div class="station-identity">
+
+      <div class="station-symbol">
+        <div class="symbol-ring"></div>
+
+        <div class="symbol-core">
+          B
+        </div>
+      </div>
+
+      <div class="station-info">
+
+        <div class="station-title">
+
+          <h2>BHARATI</h2>
+
+          <span>BHA-01</span>
+
+        </div>
+
+        <p class="station-location">
+          LARSEMANN HILLS · EAST ANTARCTICA
+        </p>
+
+        <p class="station-description">
+          Integrated infrastructure monitoring
+          and digital-twin status overview
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- Infrastructure health -->
+
+    <div class="overview-stat health-stat">
+
+      <span>INFRASTRUCTURE HEALTH</span>
+
+      <strong>
+        {{ infrastructureHealth }}
+        <small>%</small>
+      </strong>
+
+      <div
+        class="health-ring"
+        [style.--health]="infrastructureHealth + '%'"
+      >
+        <div class="health-ring-progress"></div>
+      </div>
+
+    </div>
+
+
+    <!-- Active systems -->
+
+    <div class="overview-stat">
+
+      <span>ACTIVE SYSTEMS</span>
+
+      <strong>
+        {{ operationalCount }}
+        <small>/ {{ infrastructureItems.length }}</small>
+      </strong>
+
+      <p>
+        SYSTEMS OPERATIONAL
+      </p>
+
+    </div>
+
+
+    <!-- Average utilization -->
+
+    <div class="overview-stat">
+
+      <span>AVG UTILIZATION</span>
+
+      <strong>
+        {{ utilizationAverage }}
+        <small>%</small>
+      </strong>
+
+      <p>
+        CURRENT LOAD
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FILTER
+       ===================================================== -->
+
+  <section class="filter-section">
+
+    <div class="filter-title">
+
+      <span class="section-code">
+        INFRA / 01
+      </span>
+
+      <h2>
+        INFRASTRUCTURE ASSET NETWORK
+      </h2>
+
+    </div>
+
+
+    <div class="category-filter">
+
+      <button
+        *ngFor="let category of categories"
+        type="button"
+        [class.active]="selectedCategory === category"
+        (click)="selectCategory(category)"
+      >
+        {{ category }}
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       STATUS SUMMARY
+       ===================================================== -->
+
+  <section class="status-summary">
+
+    <!-- Operational -->
+
+    <div class="summary-card operational">
+
+      <div class="summary-icon">
+        ✓
+      </div>
+
+      <div>
+
+        <span>
+          OPERATIONAL
+        </span>
+
+        <strong>
+          {{ operationalCount }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- Monitoring -->
+
+    <div class="summary-card monitoring">
+
+      <div class="summary-icon">
+        ◌
+      </div>
+
+      <div>
+
+        <span>
+          MONITORING
+        </span>
+
+        <strong>
+          {{ monitoringCount }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- Maintenance -->
+
+    <div class="summary-card maintenance">
+
+      <div class="summary-icon">
+        ⚙
+      </div>
+
+      <div>
+
+        <span>
+          MAINTENANCE
+        </span>
+
+        <strong>
+          {{ maintenanceCount }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- Offline -->
+
+    <div class="summary-card offline">
+
+      <div class="summary-icon">
+        !
+      </div>
+
+      <div>
+
+        <span>
+          OFFLINE
+        </span>
+
+        <strong>
+          {{ offlineCount }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       ASSET REGISTRY
+       ===================================================== -->
+
+  <section class="assets-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span>
+          ASSET REGISTRY
+        </span>
+
+        <h2>
+          STATION INFRASTRUCTURE
+        </h2>
+
+      </div>
+
+      <div class="asset-count">
+
+        {{ filteredInfrastructure.length }}
+        ASSETS
+
+      </div>
+
+    </div>
+
+
+    <div class="asset-grid">
+
+      <article
+        class="asset-card"
+        *ngFor="let item of filteredInfrastructure"
+      >
+
+        <!-- Card header -->
+
+        <div class="asset-card-top">
+
+          <div class="asset-category">
+            {{ item.category }}
+          </div>
+
+          <div
+            class="asset-status"
+            [ngClass]="getStatusClass(item.status)"
+          >
+
+            <span></span>
+
+            {{ item.status }}
+
+          </div>
+
+        </div>
+
+
+        <!-- Asset identity -->
+
+        <div class="asset-main">
+
+          <div class="asset-icon">
+            <span>+</span>
+          </div>
+
+          <div class="asset-name">
+
+            <h3>
+              {{ item.name }}
+            </h3>
+
+            <span>
+              {{ item.code }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Description -->
+
+        <p class="asset-description">
+          {{ item.description }}
+        </p>
+
+
+        <!-- Metrics -->
+
+        <div class="asset-metrics">
+
+          <!-- Health -->
+
+          <div class="asset-metric">
+
+            <div class="metric-label-row">
+
+              <span>
+                HEALTH
+              </span>
+
+              <strong>
+                {{ item.health }}%
+              </strong>
+
+            </div>
+
+            <div class="asset-bar">
+
+              <div
+                class="asset-bar-fill"
+                [ngClass]="getHealthClass(item.health)"
+                [style.width.%]="getHealthWidth(item.health)"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <!-- Utilization -->
+
+          <div class="asset-metric">
+
+            <div class="metric-label-row">
+
+              <span>
+                UTILIZATION
+              </span>
+
+              <strong>
+                {{ item.utilization }}%
+              </strong>
+
+            </div>
+
+            <div class="asset-bar">
+
+              <div
+                class="asset-bar-fill utilization"
+                [style.width.%]="getUtilizationWidth(item.utilization)"
+              ></div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Footer -->
+
+        <div class="asset-footer">
+
+          <span>
+            TELEMETRY
+          </span>
+
+          <strong>
+            ACTIVE
+          </strong>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       SYSTEM CAPACITY
+       ===================================================== -->
+
+  <section class="metrics-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span>
+          TELEMETRY / 02
+        </span>
+
+        <h2>
+          SYSTEM CAPACITY
+        </h2>
+
+      </div>
+
+      <div class="live-indicator">
+
+        <span></span>
+
+        LIVE MONITORING
+
+      </div>
+
+    </div>
+
+
+    <div class="system-metrics-grid">
+
+      <article
+        class="system-metric"
+        *ngFor="let metric of systemMetrics"
+      >
+
+        <div class="system-metric-header">
+
+          <span>
+            {{ metric.label }}
+          </span>
+
+          <strong
+            [ngClass]="getMetricClass(metric.status)"
+          >
+            {{ metric.status }}
+          </strong>
+
+        </div>
+
+
+        <div class="system-value">
+
+          <strong>
+            {{ metric.value }}
+          </strong>
+
+          <span>
+            {{ metric.unit }}
+          </span>
+
+        </div>
+
+
+        <div class="system-progress">
+
+          <div
+            class="system-progress-fill"
+            [style.width.%]="metric.percentage"
+          ></div>
+
+        </div>
+
+
+        <div class="system-footer">
+
+          <span>
+            CAPACITY
+          </span>
+
+          <span>
+            {{ metric.percentage }}%
+          </span>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       DIGITAL TWIN
+       ===================================================== -->
+
+  <section class="digital-twin-panel">
+
+    <div class="twin-visual">
+
+      <div class="twin-grid"></div>
+
+      <div class="twin-node node-1"></div>
+      <div class="twin-node node-2"></div>
+      <div class="twin-node node-3"></div>
+      <div class="twin-node node-4"></div>
+
+      <div class="twin-core">
+
+        <div class="core-ring"></div>
+
+        <strong>
+          BHA
+        </strong>
+
+        <span>
+          DIGITAL TWIN
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="twin-information">
+
+      <span class="section-code">
+        DIGITAL TWIN / 03
+      </span>
+
+      <h2>
+        INFRASTRUCTURE SYNCHRONIZATION
+      </h2>
+
+      <p>
+        Bharati station infrastructure is represented
+        through a continuously monitored digital model.
+        System health, capacity and operational states
+        are visualized for situational awareness.
+      </p>
+
+
+      <div class="sync-grid">
+
+        <div>
+
+          <span>
+            MODEL STATUS
+          </span>
+
+          <strong>
+            SYNCHRONIZED
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            DATA CHANNEL
+          </span>
+
+          <strong>
+            ACTIVE
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            LAST CYCLE
+          </span>
+
+          <strong>
+            {{ formattedTime }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+
+  <footer class="page-footer">
+
+    <div>
+
+      <strong>
+        POLARIS-TWIN
+      </strong>
+
+      <span>
+        BHARATI INFRASTRUCTURE MODULE
+      </span>
+
+    </div>
+
+
+    <div class="footer-live">
+
+      <span></span>
+
+      SIMULATED TELEMETRY ACTIVE
+
+    </div>
+
+
+    <div>
+
+      {{ formattedDate }}
+      ·
+      {{ formattedTime }}
+      IST
+
+    </div>
+
+  </footer>
+
+</div>

@@ -1,0 +1,726 @@
+<div class="simulation-page">
+
+  <!-- HEADER -->
+  <section class="page-header">
+
+    <div>
+
+      <div class="eyebrow">
+        DIGITAL TWIN / PREDICTIVE ENGINE
+      </div>
+
+      <h1>
+        SIMULATION
+      </h1>
+
+      <p>
+        Model Antarctic station conditions,
+        identify operational risks and evaluate
+        response scenarios.
+      </p>
+
+    </div>
+
+    <div class="simulation-status">
+
+      <span
+        class="status-dot"
+        [class.running]="isRunning"
+      ></span>
+
+      <div>
+
+        <strong>
+          {{ isRunning ? 'SIMULATION RUNNING' : 'SIMULATION READY' }}
+        </strong>
+
+        <small>
+          DIGITAL TWIN ENGINE
+        </small>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- SIMULATION CONTROL -->
+  <section class="control-panel">
+
+    <div class="control-title">
+
+      <span class="control-kicker">
+        SCENARIO CONFIGURATION
+      </span>
+
+      <h2>
+        Antarctic Operational Scenario
+      </h2>
+
+    </div>
+
+
+    <div class="scenario-selector">
+
+      <button
+        *ngFor="let scenario of scenarios"
+        type="button"
+        class="scenario-button"
+        [class.selected]="
+          selectedScenario === scenario.id
+        "
+        (click)="selectScenario(scenario.id)"
+      >
+
+        <span class="scenario-indicator"></span>
+
+        <span class="scenario-content">
+
+          <strong>
+            {{ scenario.name }}
+          </strong>
+
+          <small>
+            {{ scenario.description }}
+          </small>
+
+        </span>
+
+        <span
+          class="severity"
+          [class.high]="
+            scenario.severity === 'HIGH'
+          "
+          [class.critical]="
+            scenario.severity === 'CRITICAL'
+          "
+        >
+          {{ scenario.severity }}
+        </span>
+
+      </button>
+
+    </div>
+
+
+    <div class="controls-row">
+
+      <div class="control-buttons">
+
+        <button
+          type="button"
+          class="run-button"
+          *ngIf="!isRunning"
+          (click)="startSimulation()"
+        >
+          ▶ RUN SIMULATION
+        </button>
+
+        <button
+          type="button"
+          class="pause-button"
+          *ngIf="isRunning"
+          (click)="pauseSimulation()"
+        >
+          ❚❚ PAUSE
+        </button>
+
+        <button
+          type="button"
+          class="reset-button"
+          (click)="resetSimulation()"
+        >
+          ↻ RESET
+        </button>
+
+      </div>
+
+
+      <div class="speed-control">
+
+        <span>
+          SPEED
+        </span>
+
+        <button
+          type="button"
+          [class.active]="simulationSpeed === 1"
+          (click)="setSpeed(1)"
+        >
+          1×
+        </button>
+
+        <button
+          type="button"
+          [class.active]="simulationSpeed === 2"
+          (click)="setSpeed(2)"
+        >
+          2×
+        </button>
+
+        <button
+          type="button"
+          [class.active]="simulationSpeed === 4"
+          (click)="setSpeed(4)"
+        >
+          4×
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="simulation-timeline">
+
+      <div class="timeline-header">
+
+        <span>
+          SIMULATION TIMELINE
+        </span>
+
+        <strong>
+          {{ formattedSimulationTime }}
+          / 02:00
+        </strong>
+
+      </div>
+
+      <div class="timeline-track">
+
+        <div
+          class="timeline-progress"
+          [style.width.%]="simulationProgress"
+        ></div>
+
+        <div
+          class="timeline-marker"
+          [style.left.%]="simulationProgress"
+        ></div>
+
+      </div>
+
+      <div class="timeline-labels">
+
+        <span>
+          T+00:00
+        </span>
+
+        <span>
+          T+01:00
+        </span>
+
+        <span>
+          T+02:00
+        </span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- DIGITAL TWIN -->
+  <section class="simulation-grid">
+
+    <article class="panel twin-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-kicker">
+            DIGITAL TWIN
+          </span>
+
+          <h2>
+            MAITRI STATION MODEL
+          </h2>
+
+        </div>
+
+        <span class="model-state">
+          {{ isRunning ? 'ACTIVE' : 'STANDBY' }}
+        </span>
+
+      </div>
+
+
+      <div class="twin-visual">
+
+        <div class="grid-lines"></div>
+
+        <div class="scan-line"></div>
+
+        <div class="station-core">
+
+          <div class="core-ring"></div>
+
+          <div class="core-ring ring-two"></div>
+
+          <div class="core-center">
+
+            <span>
+              MAI
+            </span>
+
+            <strong>
+              TWIN
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="node node-one">
+          POWER
+        </div>
+
+        <div class="node node-two">
+          WEATHER
+        </div>
+
+        <div class="node node-three">
+          LOGISTICS
+        </div>
+
+        <div class="node node-four">
+          SAFETY
+        </div>
+
+
+        <div class="connection connection-one"></div>
+        <div class="connection connection-two"></div>
+        <div class="connection connection-three"></div>
+        <div class="connection connection-four"></div>
+
+      </div>
+
+
+      <div class="model-footer">
+
+        <span>
+          LAT -70.7644
+        </span>
+
+        <span>
+          LON 11.7342
+        </span>
+
+        <span>
+          MODEL STATUS: SYNCHRONIZED
+        </span>
+
+      </div>
+
+    </article>
+
+
+    <!-- ENVIRONMENT -->
+    <article class="panel conditions-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-kicker">
+            SIMULATED ENVIRONMENT
+          </span>
+
+          <h2>
+            Atmospheric Conditions
+          </h2>
+
+        </div>
+
+        <span class="simulation-tag">
+          MODEL
+        </span>
+
+      </div>
+
+
+      <div class="condition-grid">
+
+        <div class="condition-card">
+
+          <span>
+            TEMPERATURE
+          </span>
+
+          <strong>
+            {{ temperature.toFixed(1) }}
+            <small>°C</small>
+          </strong>
+
+          <div class="condition-bar">
+
+            <div
+              [style.width.%]="
+                getProgress(
+                  ((temperature + 50) / 55) * 100
+                )
+              "
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="condition-card">
+
+          <span>
+            WIND SPEED
+          </span>
+
+          <strong>
+            {{ windSpeed.toFixed(1) }}
+            <small>km/h</small>
+          </strong>
+
+          <div class="condition-bar yellow">
+
+            <div
+              [style.width.%]="
+                getProgress(
+                  (windSpeed / 100) * 100
+                )
+              "
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="condition-card">
+
+          <span>
+            VISIBILITY
+          </span>
+
+          <strong>
+            {{ visibility.toFixed(0) }}
+            <small>%</small>
+          </strong>
+
+          <div class="condition-bar green">
+
+            <div
+              [style.width.%]="visibility"
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="condition-card">
+
+          <span>
+            WIND DIRECTION
+          </span>
+
+          <strong>
+            {{ windDirection }}
+          </strong>
+
+          <small class="direction-note">
+            MODELLED VECTOR
+          </small>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- PREDICTED IMPACTS -->
+  <section class="impact-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span>
+          PREDICTIVE OUTPUT
+        </span>
+
+        <h2>
+          Operational Impact Analysis
+        </h2>
+
+      </div>
+
+      <div class="scenario-name">
+        {{ selectedScenarioData.name }}
+      </div>
+
+    </div>
+
+
+    <div class="metrics-grid">
+
+      <article
+        class="impact-card"
+        *ngFor="let metric of metrics"
+      >
+
+        <div class="impact-top">
+
+          <span>
+            {{ metric.label }}
+          </span>
+
+          <span
+            class="metric-status"
+            [class.warning]="
+              metric.status === 'WARNING' ||
+              metric.status === 'HIGH'
+            "
+            [class.critical]="
+              metric.status === 'CRITICAL' ||
+              metric.status === 'RISK'
+            "
+          >
+            {{ metric.status }}
+          </span>
+
+        </div>
+
+
+        <div class="impact-value">
+
+          <strong>
+            {{ metric.value }}
+          </strong>
+
+          <span>
+            {{ metric.unit }}
+          </span>
+
+        </div>
+
+
+        <div class="impact-bar">
+
+          <div
+            [style.width.%]="
+              getProgress(metric.value)
+            "
+          ></div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- RISK ANALYSIS -->
+  <section class="bottom-grid">
+
+    <article class="panel risk-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-kicker">
+            RISK PREDICTION
+          </span>
+
+          <h2>
+            Environmental Risk Index
+          </h2>
+
+        </div>
+
+        <span class="risk-label">
+          {{ riskLabel }}
+        </span>
+
+      </div>
+
+
+      <div class="risk-main">
+
+        <div class="risk-circle">
+
+          <div>
+
+            <strong>
+              {{ environmentalRisk }}
+            </strong>
+
+            <span>
+              /100
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="risk-description">
+
+          <p>
+            Current simulation indicates a
+            <strong>
+              {{ riskLabel.toLowerCase() }}
+            </strong>
+            environmental risk level for
+            station operations.
+          </p>
+
+          <div class="risk-factors">
+
+            <span>
+              TEMPERATURE
+            </span>
+
+            <span>
+              WIND
+            </span>
+
+            <span>
+              VISIBILITY
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- RECOMMENDATION -->
+    <article class="panel recommendation-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="panel-kicker">
+            DECISION SUPPORT
+          </span>
+
+          <h2>
+            Recommended Response
+          </h2>
+
+        </div>
+
+        <span class="ai-badge">
+          TWIN AI
+        </span>
+
+      </div>
+
+
+      <div class="recommendation">
+
+        <div class="recommendation-icon">
+          !
+        </div>
+
+        <div>
+
+          <strong
+            *ngIf="environmentalRisk >= 70"
+          >
+            INITIATE EMERGENCY PROTOCOL
+          </strong>
+
+          <strong
+            *ngIf="
+              environmentalRisk >= 40 &&
+              environmentalRisk < 70
+            "
+          >
+            PREPARE ENHANCED OPERATIONS
+          </strong>
+
+          <strong
+            *ngIf="environmentalRisk < 40"
+          >
+            MAINTAIN NORMAL OPERATIONS
+          </strong>
+
+          <p
+            *ngIf="environmentalRisk >= 70"
+          >
+            Restrict external movement,
+            secure logistics assets and
+            activate contingency power planning.
+          </p>
+
+          <p
+            *ngIf="
+              environmentalRisk >= 40 &&
+              environmentalRisk < 70
+            "
+          >
+            Increase environmental monitoring
+            and prepare station personnel for
+            changing conditions.
+          </p>
+
+          <p
+            *ngIf="environmentalRisk < 40"
+          >
+            Environmental conditions remain
+            within acceptable operational
+            parameters.
+          </p>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer class="simulation-footer">
+
+    <div>
+
+      <span class="footer-dot"></span>
+
+      POLARIS-TWIN SIMULATION ENGINE
+
+    </div>
+
+    <div>
+      MODEL:
+      ANTARCTIC STATION DIGITAL TWIN
+    </div>
+
+    <div>
+      {{ formattedDate }}
+      ·
+      {{ formattedTime }}
+      IST
+    </div>
+
+    <div class="simulated">
+      SIMULATED DATA
+    </div>
+
+  </footer>
+
+</div>

@@ -1,0 +1,617 @@
+<div class="environment-page">
+
+  <!-- PAGE HEADER -->
+  <section class="page-header">
+
+    <div>
+      <div class="eyebrow">
+        POLAR ENVIRONMENTAL MONITORING
+      </div>
+
+      <h1>
+        ENVIRONMENT
+      </h1>
+
+      <p>
+        Atmospheric, cryosphere and environmental
+        conditions across the Antarctic research zone.
+      </p>
+    </div>
+
+    <div class="header-status">
+
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        ENVIRONMENT MONITOR
+      </div>
+
+      <div class="coordinates">
+        {{ latitude.toFixed(4) }}°S /
+        {{ longitude.toFixed(4) }}°E
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- WEATHER STATUS -->
+  <section class="weather-banner">
+
+    <div class="station-info">
+
+      <div class="station-symbol">
+        ❄
+      </div>
+
+      <div>
+        <span class="label">
+          ACTIVE STATION
+        </span>
+
+        <strong>
+          {{ stationName }}
+        </strong>
+
+        <small>
+          {{ stationCode }} · SCHIRMACHER OASIS
+        </small>
+      </div>
+
+    </div>
+
+
+    <div class="weather-main">
+
+      <div class="weather-temperature">
+        {{ temperatureDisplay }}
+      </div>
+
+      <div class="weather-description">
+        {{ getWeatherDescription(environment.weatherCode) }}
+      </div>
+
+    </div>
+
+
+    <div class="weather-update">
+
+      <span class="update-dot"></span>
+
+      <div>
+        <span>
+          WEATHER DATA
+        </span>
+
+        <strong>
+          {{ loading ? 'UPDATING' : 'LIVE' }}
+        </strong>
+
+        <small>
+          {{ formattedLastUpdate }}
+        </small>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- PRIMARY ENVIRONMENT METRICS -->
+  <section class="metrics-grid">
+
+    <!-- TEMPERATURE -->
+    <article class="metric-card">
+
+      <div class="metric-top">
+        <span class="metric-icon">TEMP</span>
+        <span class="metric-live">LIVE</span>
+      </div>
+
+      <div class="metric-value">
+        {{ temperatureDisplay }}
+      </div>
+
+      <div class="metric-label">
+        AIR TEMPERATURE
+      </div>
+
+      <div class="metric-secondary">
+        Feels like
+        <strong>
+          {{ feelsLikeDisplay }}
+        </strong>
+      </div>
+
+      <div class="metric-bar">
+        <div
+          class="metric-fill cyan"
+          [style.width.%]="getProgress(
+            (environment.temperature ?? -40) + 40,
+            60
+          )"
+        ></div>
+      </div>
+
+    </article>
+
+
+    <!-- HUMIDITY -->
+    <article class="metric-card">
+
+      <div class="metric-top">
+        <span class="metric-icon">HUM</span>
+        <span class="metric-live">LIVE</span>
+      </div>
+
+      <div class="metric-value">
+        {{ humidityDisplay }}
+      </div>
+
+      <div class="metric-label">
+        RELATIVE HUMIDITY
+      </div>
+
+      <div class="metric-secondary">
+        Atmospheric moisture
+      </div>
+
+      <div class="metric-bar">
+        <div
+          class="metric-fill blue"
+          [style.width.%]="environment.humidity ?? 0"
+        ></div>
+      </div>
+
+    </article>
+
+
+    <!-- WIND -->
+    <article class="metric-card">
+
+      <div class="metric-top">
+        <span class="metric-icon">WIND</span>
+        <span class="metric-live">LIVE</span>
+      </div>
+
+      <div class="metric-value">
+        {{ windDisplay }}
+      </div>
+
+      <div class="metric-label">
+        WIND SPEED
+      </div>
+
+      <div class="metric-secondary">
+        Direction
+        <strong>
+          {{ getWindDirection(environment.windDirection) }}
+        </strong>
+      </div>
+
+      <div class="metric-bar">
+        <div
+          class="metric-fill yellow"
+          [style.width.%]="getProgress(
+            environment.windSpeed ?? 0,
+            80
+          )"
+        ></div>
+      </div>
+
+    </article>
+
+
+    <!-- PRESSURE -->
+    <article class="metric-card">
+
+      <div class="metric-top">
+        <span class="metric-icon">PRS</span>
+        <span class="metric-live">LIVE</span>
+      </div>
+
+      <div class="metric-value">
+        {{ pressureDisplay }}
+      </div>
+
+      <div class="metric-label">
+        SURFACE PRESSURE
+      </div>
+
+      <div class="metric-secondary">
+        Standard atmospheric monitoring
+      </div>
+
+      <div class="metric-bar">
+        <div
+          class="metric-fill green"
+          [style.width.%]="getProgress(
+            environment.pressure ?? 0,
+            1100
+          )"
+        ></div>
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- ENVIRONMENTAL MONITORING -->
+  <section class="content-grid">
+
+    <!-- ATMOSPHERIC CONDITIONS -->
+    <article class="panel atmospheric-panel">
+
+      <div class="panel-header">
+
+        <div>
+          <span class="panel-kicker">
+            ATMOSPHERIC MONITORING
+          </span>
+
+          <h2>
+            Current Conditions
+          </h2>
+        </div>
+
+        <span class="panel-status">
+          ● LIVE
+        </span>
+
+      </div>
+
+
+      <div class="atmospheric-list">
+
+        <div class="environment-row">
+
+          <div class="row-title">
+            <span class="row-icon">☁</span>
+
+            <div>
+              <strong>
+                Cloud Cover
+              </strong>
+
+              <small>
+                Total cloud coverage
+              </small>
+            </div>
+          </div>
+
+          <div class="row-value">
+            {{ cloudDisplay }}
+
+            <div class="mini-bar">
+              <div
+                [style.width.%]="environment.cloudCover ?? 0"
+              ></div>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="environment-row">
+
+          <div class="row-title">
+            <span class="row-icon">💧</span>
+
+            <div>
+              <strong>
+                Precipitation
+              </strong>
+
+              <small>
+                Current accumulation
+              </small>
+            </div>
+          </div>
+
+          <div class="row-value">
+            {{ precipitationDisplay }}
+          </div>
+
+        </div>
+
+
+        <div class="environment-row">
+
+          <div class="row-title">
+            <span class="row-icon">◈</span>
+
+            <div>
+              <strong>
+                Visibility
+              </strong>
+
+              <small>
+                Surface visibility index
+              </small>
+            </div>
+          </div>
+
+          <div class="row-value">
+            {{ environment.visibility }}%
+
+            <div class="mini-bar">
+              <div
+                [style.width.%]="environment.visibility"
+              ></div>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="environment-row">
+
+          <div class="row-title">
+            <span class="row-icon">AIR</span>
+
+            <div>
+              <strong>
+                Air Quality
+              </strong>
+
+              <small>
+                Atmospheric cleanliness index
+              </small>
+            </div>
+          </div>
+
+          <div class="row-value healthy">
+            {{ environment.airQuality }}%
+          </div>
+
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- CRYOSPHERE -->
+    <article class="panel cryosphere-panel">
+
+      <div class="panel-header">
+
+        <div>
+          <span class="panel-kicker">
+            CRYOSPHERE
+          </span>
+
+          <h2>
+            Ice & Snow
+          </h2>
+        </div>
+
+        <span class="ice-status">
+          STABLE
+        </span>
+
+      </div>
+
+
+      <div class="cryosphere-visual">
+
+        <div class="ice-ring">
+
+          <div class="ice-ring-inner">
+
+            <strong>
+              {{ environment.seaIce }}%
+            </strong>
+
+            <span>
+              SEA ICE
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="cryosphere-stats">
+
+        <div class="cryo-stat">
+
+          <span>
+            SNOW DEPTH
+          </span>
+
+          <strong>
+            {{ environment.snowDepth }} cm
+          </strong>
+
+        </div>
+
+        <div class="cryo-stat">
+
+          <span>
+            ICE COVER
+          </span>
+
+          <strong>
+            {{ environment.seaIce }}%
+          </strong>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- ENVIRONMENTAL INDEX -->
+  <section class="bottom-grid">
+
+    <!-- RISK -->
+    <article class="panel risk-panel">
+
+      <div class="panel-header">
+
+        <div>
+          <span class="panel-kicker">
+            ENVIRONMENTAL RISK ENGINE
+          </span>
+
+          <h2>
+            Environmental Risk
+          </h2>
+        </div>
+
+        <span class="risk-badge">
+          {{ getRiskLabel() }}
+        </span>
+
+      </div>
+
+
+      <div class="risk-content">
+
+        <div class="risk-score">
+
+          <strong>
+            {{ getEnvironmentRisk() }}
+          </strong>
+
+          <span>
+            / 100
+          </span>
+
+        </div>
+
+        <div class="risk-bar">
+
+          <div
+            [style.width.%]="getEnvironmentRisk()"
+          ></div>
+
+        </div>
+
+        <p>
+          Environmental risk is calculated from
+          monitored temperature, wind, visibility
+          and snow conditions.
+        </p>
+
+      </div>
+
+    </article>
+
+
+    <!-- SOLAR -->
+    <article class="panel solar-panel">
+
+      <div class="panel-header">
+
+        <div>
+          <span class="panel-kicker">
+            SOLAR CONDITIONS
+          </span>
+
+          <h2>
+            Radiation Monitor
+          </h2>
+        </div>
+
+        <span class="solar-status">
+          MONITORING
+        </span>
+
+      </div>
+
+
+      <div class="solar-grid">
+
+        <div class="solar-value">
+
+          <span>
+            SOLAR RADIATION
+          </span>
+
+          <strong>
+            {{ environment.solarRadiation }}
+          </strong>
+
+          <small>
+            W/m²
+          </small>
+
+        </div>
+
+
+        <div class="solar-value">
+
+          <span>
+            UV INDEX
+          </span>
+
+          <strong>
+            {{ environment.uvIndex }}
+          </strong>
+
+          <small>
+            INDEX
+          </small>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- ERROR -->
+  <div
+    class="error-message"
+    *ngIf="error"
+  >
+    <span>⚠</span>
+
+    {{ error }}
+
+    <button
+      type="button"
+      (click)="retry()"
+    >
+      RETRY
+    </button>
+  </div>
+
+
+  <!-- FOOTER -->
+  <footer class="environment-footer">
+
+    <div>
+      <span class="footer-dot"></span>
+      POLARIS-TWIN ENVIRONMENTAL ENGINE
+    </div>
+
+    <div>
+      DATA SOURCE:
+      OPEN-METEO
+    </div>
+
+    <div>
+      {{ formattedDate }}
+      ·
+      {{ formattedTime }}
+      IST
+    </div>
+
+    <div class="simulated-label">
+      SIMULATED ENVIRONMENTAL TELEMETRY
+    </div>
+
+  </footer>
+
+</div>

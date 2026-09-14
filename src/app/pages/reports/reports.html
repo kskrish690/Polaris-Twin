@@ -1,0 +1,671 @@
+<section class="reports-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+       ===================================================== -->
+
+  <header class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-title">
+
+        <div class="title-icon">
+          ▤
+        </div>
+
+        <div>
+          <h1>REPORTS</h1>
+
+          <p>
+            Operational intelligence &amp; station analytics
+          </p>
+        </div>
+
+      </div>
+
+      <div class="header-actions">
+
+        <div class="live-indicator">
+          <span class="live-dot"></span>
+          SYSTEM ONLINE
+        </div>
+
+        <button
+          type="button"
+          class="generate-button"
+          (click)="generateReport()"
+        >
+          <span>＋</span>
+          GENERATE REPORT
+        </button>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       SUMMARY CARDS
+       ===================================================== -->
+
+  <section class="summary-grid">
+
+    <article class="summary-card">
+
+      <div class="summary-icon">
+        ▤
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          TOTAL REPORTS
+        </span>
+
+        <strong>
+          {{ totalReports }}
+        </strong>
+
+        <small>
+          REPORT LIBRARY
+        </small>
+
+      </div>
+
+    </article>
+
+
+    <article class="summary-card">
+
+      <div class="summary-icon">
+        ✓
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          READY
+        </span>
+
+        <strong>
+          {{ readyReports }}
+        </strong>
+
+        <small>
+          AVAILABLE REPORTS
+        </small>
+
+      </div>
+
+    </article>
+
+
+    <article class="summary-card">
+
+      <div class="summary-icon">
+        ◷
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          GENERATING
+        </span>
+
+        <strong>
+          {{ generatingReports }}
+        </strong>
+
+        <small>
+          ACTIVE JOBS
+        </small>
+
+      </div>
+
+    </article>
+
+
+    <article class="summary-card">
+
+      <div class="summary-icon">
+        #
+      </div>
+
+      <div class="summary-content">
+
+        <span class="summary-label">
+          DATA RECORDS
+        </span>
+
+        <strong>
+          {{ totalRecords | number }}
+        </strong>
+
+        <small>
+          PROCESSED RECORDS
+        </small>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- =====================================================
+       FILTER PANEL
+       ===================================================== -->
+
+  <section class="filter-panel">
+
+    <div class="filter-header">
+
+      <div>
+        <span class="section-kicker">
+          REPORT LIBRARY
+        </span>
+
+        <h2>
+          Intelligence Reports
+        </h2>
+      </div>
+
+      <span class="result-count">
+        {{ filteredReports.length }}
+        RESULTS
+      </span>
+
+    </div>
+
+
+    <div class="filter-controls">
+
+      <!-- SEARCH -->
+
+      <div class="search-box">
+
+        <span class="search-icon">
+          ⌕
+        </span>
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Search reports..."
+          aria-label="Search reports"
+        />
+
+      </div>
+
+
+      <!-- TYPE -->
+
+      <div class="select-box">
+
+        <label for="reportType">
+          TYPE
+        </label>
+
+        <select
+          id="reportType"
+          [(ngModel)]="selectedType"
+        >
+
+          <option value="ALL">
+            All Types
+          </option>
+
+          <option value="DAILY">
+            Daily
+          </option>
+
+          <option value="WEATHER">
+            Weather
+          </option>
+
+          <option value="ENVIRONMENT">
+            Environment
+          </option>
+
+          <option value="ENERGY">
+            Energy
+          </option>
+
+          <option value="INFRASTRUCTURE">
+            Infrastructure
+          </option>
+
+          <option value="LOGISTICS">
+            Logistics
+          </option>
+
+          <option value="INCIDENT">
+            Incident
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- STATION -->
+
+      <div class="select-box">
+
+        <label for="reportStation">
+          STATION
+        </label>
+
+        <select
+          id="reportStation"
+          [(ngModel)]="selectedStation"
+        >
+
+          <option value="ALL">
+            All Stations
+          </option>
+
+          <option value="MAITRI">
+            Maitri
+          </option>
+
+          <option value="BHARATI">
+            Bharati
+          </option>
+
+          <option value="NETWORK">
+            Network
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- RESET -->
+
+      <button
+        type="button"
+        class="reset-button"
+        (click)="resetFilters()"
+      >
+        RESET
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       REPORT LIST
+       ===================================================== -->
+
+  <section class="report-library">
+
+    <div
+      class="report-row"
+      *ngFor="
+        let report of filteredReports;
+        trackBy: trackByReportId
+      "
+    >
+
+      <!-- REPORT TYPE ICON -->
+
+      <div class="report-type-icon">
+        {{ getTypeIcon(report.type) }}
+      </div>
+
+
+      <!-- MAIN INFORMATION -->
+
+      <div class="report-main">
+
+        <div class="report-title-line">
+
+          <h3>
+            {{ report.title }}
+          </h3>
+
+          <span
+            class="status-badge"
+            [ngClass]="getStatusClass(report.status)"
+          >
+            {{ getStatusLabel(report.status) }}
+          </span>
+
+        </div>
+
+
+        <div class="report-meta">
+
+          <span>
+            {{ report.reportId }}
+          </span>
+
+          <span class="meta-divider">
+            •
+          </span>
+
+          <span>
+            {{ getTypeLabel(report.type) }}
+          </span>
+
+          <span class="meta-divider">
+            •
+          </span>
+
+          <span>
+            {{ report.station }}
+          </span>
+
+        </div>
+
+
+        <div class="report-period">
+          {{ report.period }}
+        </div>
+
+      </div>
+
+
+      <!-- REPORT DATA -->
+
+      <div class="report-data">
+
+        <div class="data-item">
+
+          <span>
+            RECORDS
+          </span>
+
+          <strong>
+            {{
+              report.records > 0
+                ? (report.records | number)
+                : '—'
+            }}
+          </strong>
+
+        </div>
+
+
+        <div class="data-item">
+
+          <span>
+            SIZE
+          </span>
+
+          <strong>
+            {{ report.size }}
+          </strong>
+
+        </div>
+
+
+        <div class="data-item">
+
+          <span>
+            GENERATED
+          </span>
+
+          <strong>
+            {{ getTimeAgo(report.generatedAt) }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- ACTIONS -->
+
+      <div class="report-actions">
+
+        <button
+          type="button"
+          class="action-button view"
+          [disabled]="report.status === 'GENERATING'"
+          (click)="viewReport(report)"
+        >
+          VIEW
+        </button>
+
+
+        <button
+          type="button"
+          class="action-button download"
+          [disabled]="report.status !== 'READY'"
+          (click)="downloadReport(report)"
+        >
+          DOWNLOAD
+        </button>
+
+
+        <button
+          *ngIf="report.status !== 'ARCHIVED'"
+          type="button"
+          class="action-button archive"
+          [disabled]="report.status === 'GENERATING'"
+          (click)="archiveReport(report)"
+        >
+          ARCHIVE
+        </button>
+
+
+        <button
+          *ngIf="report.status === 'ARCHIVED'"
+          type="button"
+          class="action-button restore"
+          (click)="restoreReport(report)"
+        >
+          RESTORE
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         EMPTY STATE
+         =================================================== -->
+
+    <div
+      class="empty-state"
+      *ngIf="filteredReports.length === 0"
+    >
+
+      <div class="empty-icon">
+        ⌕
+      </div>
+
+      <h3>
+        NO REPORTS FOUND
+      </h3>
+
+      <p>
+        No reports match the current search and filter criteria.
+      </p>
+
+      <button
+        type="button"
+        class="reset-button"
+        (click)="resetFilters()"
+      >
+        CLEAR FILTERS
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       REPORT PIPELINE
+       ===================================================== -->
+
+  <section class="pipeline-section">
+
+    <div class="section-heading">
+
+      <div>
+        <span class="section-kicker">
+          REPORT PIPELINE
+        </span>
+
+        <h2>
+          Generation Status
+        </h2>
+      </div>
+
+      <span class="pipeline-status">
+        {{ generatingReports }} ACTIVE
+      </span>
+
+    </div>
+
+
+    <div class="pipeline-track">
+
+      <div class="pipeline-step active">
+
+        <div class="pipeline-node">
+          01
+        </div>
+
+        <div class="pipeline-info">
+
+          <strong>
+            DATA COLLECTION
+          </strong>
+
+          <span>
+            Station telemetry aggregation
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="pipeline-line"></div>
+
+
+      <div class="pipeline-step active">
+
+        <div class="pipeline-node">
+          02
+        </div>
+
+        <div class="pipeline-info">
+
+          <strong>
+            ANALYSIS
+          </strong>
+
+          <span>
+            Digital twin processing
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="pipeline-line"></div>
+
+
+      <div class="pipeline-step active">
+
+        <div class="pipeline-node">
+          03
+        </div>
+
+        <div class="pipeline-info">
+
+          <strong>
+            REPORT BUILD
+          </strong>
+
+          <span>
+            Intelligence document generation
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="pipeline-line"></div>
+
+
+      <div class="pipeline-step">
+
+        <div class="pipeline-node">
+          04
+        </div>
+
+        <div class="pipeline-info">
+
+          <strong>
+            DISTRIBUTION
+          </strong>
+
+          <span>
+            Ready for authorized users
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+
+  <footer class="reports-footer">
+
+    <div class="footer-left">
+
+      <span class="footer-status-dot"></span>
+
+      <span>
+        POLARIS-TWIN SYSTEM
+      </span>
+
+      <span class="footer-divider">
+        |
+      </span>
+
+      <span>
+        SIMULATED REPORT TELEMETRY
+      </span>
+
+    </div>
+
+
+    <div class="footer-right">
+
+      <span>
+        {{ formattedDate }}
+      </span>
+
+      <span>
+        {{ formattedTime }} IST
+      </span>
+
+    </div>
+
+  </footer>
+
+</section>

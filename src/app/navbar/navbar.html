@@ -1,0 +1,234 @@
+<header class="polaris-header">
+
+  <!-- =====================================================
+       TOP HEADER
+       ===================================================== -->
+
+  <div class="header-top">
+
+    <!-- BRAND -->
+    <a
+      class="brand"
+      routerLink="/overview"
+      aria-label="POLARIS-TWIN Overview"
+    >
+
+      <div class="brand-mark">
+
+        <svg
+          viewBox="0 0 80 58"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+
+          <path
+            d="M4 50 L25 21 L35 34 L49 8 L76 50"
+          />
+
+          <path
+            d="M17 50 L30 32 L38 42 L50 25 L66 50"
+          />
+
+          <path
+            d="M49 8 L54 15 L60 8"
+          />
+
+        </svg>
+
+      </div>
+
+
+      <div class="brand-copy">
+
+        <div class="brand-title">
+          POLARIS-TWIN
+        </div>
+
+        <div class="brand-subtitle">
+          Digital Twin for India's Antarctic Research Stations
+        </div>
+
+      </div>
+
+    </a>
+
+
+    <!-- CENTER TAGLINE -->
+
+    <div class="system-strip">
+
+      <span>Observe</span>
+
+      <i></i>
+
+      <span>Predict</span>
+
+      <i></i>
+
+      <span>Simulate</span>
+
+      <i></i>
+
+      <span>Enable</span>
+
+      <i></i>
+
+      <strong>
+        For a Safer, Smarter Polar Tomorrow
+      </strong>
+
+    </div>
+
+
+    <!-- GOVERNMENT LOCKUP -->
+
+    <div class="government-lockup">
+
+      <div class="government-text">
+
+        <div class="gov-short">
+          NCPOR
+        </div>
+
+        <div>
+          Ministry of Earth Sciences
+        </div>
+
+        <div>
+          Government of India
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- DATE -->
+
+    <div class="system-time">
+
+      <span class="system-date">
+        {{ currentTime | date:'dd MMM yyyy' }}
+      </span>
+
+      <strong>
+        {{ currentTime | date:'HH:mm:ss' }}
+        <small>UTC</small>
+      </strong>
+
+    </div>
+
+
+    <!-- DEMO -->
+
+    <button
+      class="mode-switch"
+      type="button"
+      (click)="toggleDemoMode()"
+      [class.live]="!demoMode"
+    >
+
+      <span class="mode-light"></span>
+
+      <span class="mode-copy">
+
+        <strong>
+          {{ demoMode ? 'DEMO MODE' : 'LIVE MODE' }}
+        </strong>
+
+        <small>
+          {{ demoMode ? 'Simulated Data' : 'Operational Data' }}
+        </small>
+
+      </span>
+
+    </button>
+
+
+    <!-- USER -->
+
+    <button
+      class="profile-button"
+      type="button"
+      aria-label="User profile"
+    >
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+
+        <circle
+          cx="12"
+          cy="8"
+          r="3.5"
+        />
+
+        <path
+          d="M5 21C5 16.8 7.8 14.5 12 14.5C16.2 14.5 19 16.8 19 21"
+        />
+
+      </svg>
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       MAIN NAVIGATION
+       ===================================================== -->
+
+  <nav class="navigation-bar">
+
+    <div class="navigation-scroll">
+
+      <a
+        *ngFor="let item of navItems"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="navigation-item"
+      >
+
+        <span class="nav-label">
+          {{ item.label }}
+        </span>
+
+        <span class="nav-glow"></span>
+
+      </a>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="search-wrapper">
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+
+        <circle
+          cx="10.8"
+          cy="10.8"
+          r="6.5"
+        />
+
+        <path
+          d="M16 16L21 21"
+        />
+
+      </svg>
+
+      <input
+        type="search"
+        placeholder="Search assets, systems..."
+      />
+
+    </div>
+
+  </nav>
+
+</header>
