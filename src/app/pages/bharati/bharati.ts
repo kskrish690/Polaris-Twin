@@ -12,156 +12,118 @@ import {
   WeatherData
 } from '../../services/weather';
 
-
-interface BharatiWeather {
-
-  temperature: number | null;
-
-  feelsLike: number | null;
-
-  humidity: number | null;
-
-  windSpeed: number | null;
-
-  windDirection: number | null;
-
-  pressure: number | null;
-
-  precipitation: number | null;
-
-  weatherCode: number | null;
-
-  cloudCover: number | null;
-
-}
-
-
-type WeatherStatus =
-  | 'CONNECTING'
-  | 'UPDATING'
-  | 'LIVE'
-  | 'OFFLINE';
-
-
 @Component({
-
   selector: 'app-bharati',
-
   standalone: true,
-
   imports: [
     CommonModule
   ],
-
   templateUrl: './bharati.html',
-
-  styleUrls: [
-    './bharati.css'
-  ]
-
+  styleUrls: ['./bharati.css']
 })
+export class Bharati implements OnInit, OnDestroy {
 
-
-export class Bharati
-  implements OnInit, OnDestroy {
-
-
-  // ==========================================================
+  // ============================================================
   // STATION INFORMATION
-  // ==========================================================
+  // ============================================================
 
   readonly stationName = 'BHARATI';
 
-  readonly stationCode = 'BHA';
+  readonly stationCode = 'BHA-01';
 
-  readonly location = 'LARSEMANN HILLS';
+  readonly latitude = -69.406833;
 
-  readonly region = 'EAST ANTARCTICA';
+  readonly longitude = 76.195333;
 
-  readonly latitude = -69.40683;
+  readonly latitudeText = "69°24.41'S";
 
-  readonly longitude = 76.19533;
+  readonly longitudeText = "76°11.72'E";
 
-  readonly latitudeText = '69°24′24″ S';
+  readonly elevation = '~35 M ASL';
 
-  readonly longitudeText = '76°11′43″ E';
+  readonly location =
+    'Larsemann Hills, East Antarctica';
 
-  readonly elevation = '≈ 35 m';
-
-  readonly stationType =
-    'YEAR-ROUND RESEARCH STATION';
+  readonly region =
+    'PRYDZ BAY / LARSEMANN HILLS';
 
 
-  // ==========================================================
+  // ============================================================
   // WEATHER DATA
-  // ==========================================================
+  // ============================================================
 
-  weather: BharatiWeather = {
+  weather: WeatherData = {
+    latitude: this.latitude,
+    longitude: this.longitude,
 
-    temperature: null,
+    current: {
+      time: '',
+      interval: 0,
 
-    feelsLike: null,
+      temperature_2m: null,
+      apparent_temperature: null,
 
-    humidity: null,
+      relative_humidity_2m: null,
 
-    windSpeed: null,
+      wind_speed_10m: null,
+      wind_direction_10m: null,
 
-    windDirection: null,
+      surface_pressure: null,
 
-    pressure: null,
+      precipitation: null,
+      snowfall: null,
 
-    precipitation: null,
+      cloud_cover: null,
 
-    weatherCode: null,
+      visibility: null,
 
-    cloudCover: null
-
+      weather_code: null
+    }
   };
 
 
-  // ==========================================================
+  // ============================================================
   // PAGE STATE
-  // ==========================================================
+  // ============================================================
 
   loading = true;
 
   error = '';
 
-  weatherStatus: WeatherStatus =
-    'CONNECTING';
-
   lastUpdate: Date | null = null;
 
-  currentTime = new Date();
 
-
-  // ==========================================================
+  // ============================================================
   // TIMERS
-  // ==========================================================
+  // ============================================================
 
-  private clockTimer?:
-    ReturnType<typeof setInterval>;
+  private weatherTimer?: ReturnType<typeof setInterval>;
 
-  private weatherTimer?:
-    ReturnType<typeof setInterval>;
+  private clockTimer?: ReturnType<typeof setInterval>;
 
 
-  // ==========================================================
+  // ============================================================
+  // CURRENT DATE/TIME
+  // ============================================================
+
+  currentDateDisplay = '--';
+
+  currentTimeDisplay = '--:--:--';
+
+
+  // ============================================================
   // CONSTRUCTOR
-  // ==========================================================
+  // ============================================================
 
   constructor(
-
-    private readonly weatherService: WeatherService,
-
-    private readonly cdr: ChangeDetectorRef
-
+    private weatherService: WeatherService,
+    private cdr: ChangeDetectorRef
   ) {}
 
 
-  // ==========================================================
+  // ============================================================
   // INIT
-  // ==========================================================
+  // ============================================================
 
   ngOnInit(): void {
 
@@ -179,884 +141,61 @@ export class Bharati
     this.loadWeather();
 
 
+    // Refresh Open-Meteo data every 5 minutes
+
     this.weatherTimer = setInterval(() => {
 
       this.loadWeather();
 
     }, 5 * 60 * 1000);
-
   }
 
 
-  // ==========================================================
+  // ============================================================
   // DESTROY
-  // ==========================================================
+  // ============================================================
 
   ngOnDestroy(): void {
-
-    if (this.clockTimer) {
-
-      clearInterval(
-        this.clockTimer
-      );
-
-    }
-
 
     if (this.weatherTimer) {
 
       clearInterval(
         this.weatherTimer
       );
-
     }
 
+
+    if (this.clockTimer) {
+
+      clearInterval(
+        this.clockTimer
+      );
+    }
   }
 
 
-  // ==========================================================
+  // ============================================================
   // CLOCK
-  // ==========================================================
+  // ============================================================
 
   private updateClock(): void {
 
-    this.currentTime = new Date();
-
-  }
+    const now = new Date();
 
 
-  // ==========================================================
-  // LOAD WEATHER
-  // ==========================================================
-
-  loadWeather(): void {
-
-    this.loading = true;
-
-    this.error = '';
-
-    this.weatherStatus = 'UPDATING';
-
-    this.cdr.detectChanges();
-
-
-    console.log(
-      'Loading live Bharati weather...'
-    );
-
-
-    this.weatherService
-
-      .getWeather(
-        this.latitude,
-        this.longitude
-      )
-
-      .subscribe({
-
-        next: (
-          data: WeatherData
-        ) => {
-
-          console.log(
-            'BHARATI WEATHER DATA:',
-            data
-          );
-
-
-          this.applyWeatherData(
-            data
-          );
-
-
-          this.weatherStatus = 'LIVE';
-
-          this.loading = false;
-
-          this.lastUpdate = new Date();
-
-          this.cdr.detectChanges();
-
-
-          console.log(
-            'BHARATI weather updated successfully'
-          );
-
-        },
-
-
-        error: (
-          error
-        ) => {
-
-          console.error(
-            'BHARATI WEATHER API ERROR:',
-            error
-          );
-
-
-          this.weatherStatus = 'OFFLINE';
-
-          this.loading = false;
-
-          this.error =
-            'Unable to retrieve live Bharati weather data.';
-
-
-          this.cdr.detectChanges();
-
+    this.currentDateDisplay =
+      new Intl.DateTimeFormat(
+        'en-IN',
+        {
+          timeZone: 'Asia/Kolkata',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
         }
+      ).format(now);
 
-      });
 
-  }
-
-
-  // ==========================================================
-  // APPLY API DATA
-  // ==========================================================
-
-  private applyWeatherData(
-    data: WeatherData
-  ): void {
-
-    if (
-      !data ||
-      !data.current
-    ) {
-
-      this.weatherStatus = 'OFFLINE';
-
-      this.error =
-        'Invalid weather response received.';
-
-      return;
-
-    }
-
-
-    const current = data.current;
-
-
-    this.weather = {
-
-      temperature:
-        this.safeNumber(
-          current.temperature_2m
-        ),
-
-      feelsLike:
-        this.safeNumber(
-          current.apparent_temperature
-        ),
-
-      humidity:
-        this.safeNumber(
-          current.relative_humidity_2m
-        ),
-
-      windSpeed:
-        this.safeNumber(
-          current.wind_speed_10m
-        ),
-
-      windDirection:
-        this.safeNumber(
-          current.wind_direction_10m
-        ),
-
-      pressure:
-        this.safeNumber(
-          current.surface_pressure
-        ),
-
-      precipitation:
-        this.safeNumber(
-          current.precipitation
-        ),
-
-      weatherCode:
-        this.safeNumber(
-          current.weather_code
-        ),
-
-      cloudCover:
-        this.safeNumber(
-          current.cloud_cover
-        )
-
-    };
-
-  }
-
-
-  // ==========================================================
-  // SAFE NUMBER
-  // ==========================================================
-
-  private safeNumber(
-    value: number | null | undefined
-  ): number | null {
-
-    if (
-      value === null ||
-      value === undefined ||
-      Number.isNaN(value)
-    ) {
-
-      return null;
-
-    }
-
-    return Number(value);
-
-  }
-
-
-  // ==========================================================
-  // WEATHER DESCRIPTION
-  // ==========================================================
-
-  get weatherDescription(): string {
-
-    const code =
-      this.weather.weatherCode;
-
-
-    if (code === null) {
-      return 'NO DATA';
-    }
-
-
-    if (code === 0) {
-      return 'CLEAR SKY';
-    }
-
-
-    if (
-      [1, 2, 3].includes(code)
-    ) {
-
-      return 'CLOUDY';
-
-    }
-
-
-    if (
-      [45, 48].includes(code)
-    ) {
-
-      return 'FOG';
-
-    }
-
-
-    if (
-      [51, 53, 55, 56, 57].includes(code)
-    ) {
-
-      return 'DRIZZLE';
-
-    }
-
-
-    if (
-      [61, 63, 65, 66, 67].includes(code)
-    ) {
-
-      return 'RAIN';
-
-    }
-
-
-    if (
-      [71, 73, 75, 77, 85, 86].includes(code)
-    ) {
-
-      return 'SNOW';
-
-    }
-
-
-    if (
-      [80, 81, 82].includes(code)
-    ) {
-
-      return 'RAIN SHOWERS';
-
-    }
-
-
-    if (
-      [95, 96, 99].includes(code)
-    ) {
-
-      return 'THUNDERSTORM';
-
-    }
-
-
-    return 'UNKNOWN';
-
-  }
-
-
-  // ==========================================================
-  // WEATHER ICON
-  // ==========================================================
-
-  get weatherIcon(): string {
-
-    const code =
-      this.weather.weatherCode;
-
-
-    if (code === null) {
-      return '◌';
-    }
-
-
-    if (code === 0) {
-      return '☼';
-    }
-
-
-    if (
-      [1, 2, 3].includes(code)
-    ) {
-
-      return '☁';
-
-    }
-
-
-    if (
-      [45, 48].includes(code)
-    ) {
-
-      return '≋';
-
-    }
-
-
-    if (
-      [51, 53, 55, 56, 57].includes(code)
-    ) {
-
-      return '╌';
-
-    }
-
-
-    if (
-      [61, 63, 65, 66, 67].includes(code)
-    ) {
-
-      return '∴';
-
-    }
-
-
-    if (
-      [71, 73, 75, 77, 85, 86].includes(code)
-    ) {
-
-      return '❄';
-
-    }
-
-
-    if (
-      [80, 81, 82].includes(code)
-    ) {
-
-      return '◒';
-
-    }
-
-
-    if (
-      [95, 96, 99].includes(code)
-    ) {
-
-      return 'ϟ';
-
-    }
-
-
-    return '◌';
-
-  }
-
-
-  // ==========================================================
-  // WIND DIRECTION
-  // ==========================================================
-
-  get windDirectionText(): string {
-
-    const degrees =
-      this.weather.windDirection;
-
-
-    if (degrees === null) {
-      return '--';
-    }
-
-
-    const directions = [
-
-      'N',
-      'NE',
-      'E',
-      'SE',
-      'S',
-      'SW',
-      'W',
-      'NW'
-
-    ];
-
-
-    const index =
-      Math.round(
-        degrees / 45
-      ) % 8;
-
-
-    return directions[index];
-
-  }
-
-
-  // ==========================================================
-  // WIND ROTATION
-  // ==========================================================
-
-  get windRotation(): string {
-
-    const degrees =
-      this.weather.windDirection;
-
-
-    if (degrees === null) {
-
-      return 'rotate(0deg)';
-
-    }
-
-
-    return `rotate(${degrees}deg)`;
-
-  }
-
-
-  // ==========================================================
-  // TEMPERATURE
-  // ==========================================================
-
-  get temperatureDisplay(): string {
-
-    const value =
-      this.weather.temperature;
-
-
-    if (value === null) {
-
-      return '--.-°';
-
-    }
-
-
-    return `${value.toFixed(1)}°`;
-
-  }
-
-
-  // ==========================================================
-  // FEELS LIKE
-  // ==========================================================
-
-  get feelsLikeDisplay(): string {
-
-    const value =
-      this.weather.feelsLike;
-
-
-    if (value === null) {
-
-      return '--.- °C';
-
-    }
-
-
-    return `${value.toFixed(1)} °C`;
-
-  }
-
-
-  // ==========================================================
-  // HUMIDITY
-  // ==========================================================
-
-  get humidityDisplay(): string {
-
-    const value =
-      this.weather.humidity;
-
-
-    if (value === null) {
-
-      return '--%';
-
-    }
-
-
-    return `${Math.round(value)}%`;
-
-  }
-
-
-  // ==========================================================
-  // WIND
-  // ==========================================================
-
-  get windDisplay(): string {
-
-    const value =
-      this.weather.windSpeed;
-
-
-    if (value === null) {
-
-      return '--.-';
-
-    }
-
-
-    return value.toFixed(1);
-
-  }
-
-
-  // ==========================================================
-  // PRESSURE
-  // ==========================================================
-
-  get pressureDisplay(): string {
-
-    const value =
-      this.weather.pressure;
-
-
-    if (value === null) {
-
-      return '----';
-
-    }
-
-
-    return Math.round(value).toString();
-
-  }
-
-
-  // ==========================================================
-  // PRECIPITATION
-  // ==========================================================
-
-  get precipitationDisplay(): string {
-
-    const value =
-      this.weather.precipitation;
-
-
-    if (value === null) {
-
-      return '--';
-
-    }
-
-
-    return value.toFixed(1);
-
-  }
-
-
-  // ==========================================================
-  // CLOUD COVER
-  // ==========================================================
-
-  get cloudCoverDisplay(): string {
-
-    const value =
-      this.weather.cloudCover;
-
-
-    if (value === null) {
-
-      return '--%';
-
-    }
-
-
-    return `${Math.round(value)}%`;
-
-  }
-
-
-  // ==========================================================
-  // WIND DEGREES
-  // ==========================================================
-
-  get windDegreesDisplay(): string {
-
-    const value =
-      this.weather.windDirection;
-
-
-    if (value === null) {
-
-      return '---°';
-
-    }
-
-
-    return `${Math.round(value)}°`;
-
-  }
-
-
-  // ==========================================================
-  // TEMPERATURE BAR
-  // ==========================================================
-
-  getTemperatureWidth(): number {
-
-    const value =
-      this.weather.temperature;
-
-
-    if (value === null) {
-
-      return 0;
-
-    }
-
-
-    const percentage =
-      ((value + 40) / 60) * 100;
-
-
-    return this.clamp(
-      percentage,
-      5,
-      100
-    );
-
-  }
-
-
-  // ==========================================================
-  // WIND BAR
-  // ==========================================================
-
-  getWindWidth(): number {
-
-    const value =
-      this.weather.windSpeed;
-
-
-    if (value === null) {
-
-      return 0;
-
-    }
-
-
-    const percentage =
-      (value / 80) * 100;
-
-
-    return this.clamp(
-      percentage,
-      0,
-      100
-    );
-
-  }
-
-
-  // ==========================================================
-  // HUMIDITY BAR
-  // ==========================================================
-
-  getHumidityWidth(): number {
-
-    const value =
-      this.weather.humidity;
-
-
-    if (value === null) {
-
-      return 0;
-
-    }
-
-
-    return this.clamp(
-      value,
-      0,
-      100
-    );
-
-  }
-
-
-  // ==========================================================
-  // CLOUD BAR
-  // ==========================================================
-
-  getCloudWidth(): number {
-
-    const value =
-      this.weather.cloudCover;
-
-
-    if (value === null) {
-
-      return 0;
-
-    }
-
-
-    return this.clamp(
-      value,
-      0,
-      100
-    );
-
-  }
-
-
-  // ==========================================================
-  // PRECIPITATION BAR
-  // ==========================================================
-
-  getPrecipitationWidth(): number {
-
-    const value =
-      this.weather.precipitation;
-
-
-    if (value === null) {
-
-      return 0;
-
-    }
-
-
-    return this.clamp(
-      value * 20,
-      0,
-      100
-    );
-
-  }
-
-
-  // ==========================================================
-  // CLAMP
-  // ==========================================================
-
-  private clamp(
-    value: number,
-    minimum: number,
-    maximum: number
-  ): number {
-
-    return Math.min(
-      maximum,
-      Math.max(
-        minimum,
-        value
-      )
-    );
-
-  }
-
-
-  // ==========================================================
-  // STATUS TEXT
-  // ==========================================================
-
-  get weatherStatusText(): string {
-
-    switch (
-      this.weatherStatus
-    ) {
-
-      case 'LIVE':
-        return 'LIVE';
-
-      case 'UPDATING':
-        return 'UPDATING';
-
-      case 'OFFLINE':
-        return 'OFFLINE';
-
-      case 'CONNECTING':
-      default:
-        return 'CONNECTING';
-
-    }
-
-  }
-
-
-  // ==========================================================
-  // STATUS CLASS
-  // ==========================================================
-
-  get weatherStatusClass(): string {
-
-    switch (
-      this.weatherStatus
-    ) {
-
-      case 'LIVE':
-        return 'is-live';
-
-      case 'UPDATING':
-        return 'is-updating';
-
-      case 'OFFLINE':
-        return 'is-offline';
-
-      case 'CONNECTING':
-      default:
-        return 'is-connecting';
-
-    }
-
-  }
-
-
-  // ==========================================================
-  // LAST UPDATE — IST
-  // ==========================================================
-
-  get lastUpdateDisplay(): string {
-
-    if (!this.lastUpdate) {
-
-      return '--:--:-- IST';
-
-    }
-
-
-    return (
-
+    this.currentTimeDisplay =
       new Intl.DateTimeFormat(
         'en-IN',
         {
@@ -1066,93 +205,802 @@ export class Bharati
           second: '2-digit',
           hour12: false
         }
-      ).format(
-        this.lastUpdate
+      ).format(now);
+  }
+
+
+  // ============================================================
+  // LOAD WEATHER
+  // ============================================================
+
+  loadWeather(): void {
+
+    this.loading = true;
+
+    this.error = '';
+
+    this.cdr.detectChanges();
+
+
+    this.weatherService
+      .getWeather(
+        this.latitude,
+        this.longitude
       )
+      .subscribe({
 
-      + ' IST'
+        // ------------------------------------------------------
+        // SUCCESS
+        // ------------------------------------------------------
 
-    );
+        next: (data: WeatherData) => {
 
-  }
-
-
-  // ==========================================================
-  // CURRENT TIME — IST
-  // ==========================================================
-
-  get currentTimeDisplay(): string {
-
-    return new Intl.DateTimeFormat(
-      'en-IN',
-      {
-        timeZone: 'Asia/Kolkata',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      }
-    ).format(
-      this.currentTime
-    );
-
-  }
+          console.log(
+            'BHARATI OPEN-METEO DATA:',
+            data
+          );
 
 
-  // ==========================================================
-  // CURRENT DATE — IST
-  // ==========================================================
+          if (
+            !data ||
+            !data.current
+          ) {
 
-  get currentDateDisplay(): string {
+            this.error =
+              'Invalid weather data received from Open-Meteo.';
 
-    const parts =
-      new Intl.DateTimeFormat(
-        'en-CA',
-        {
-          timeZone: 'Asia/Kolkata',
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit'
+            this.loading = false;
+
+            this.cdr.detectChanges();
+
+            return;
+          }
+
+
+          this.weather = data;
+
+          this.loading = false;
+
+          this.lastUpdate = new Date();
+
+
+          this.cdr.detectChanges();
+        },
+
+
+        // ------------------------------------------------------
+        // ERROR
+        // ------------------------------------------------------
+
+        error: (err) => {
+
+          console.error(
+            'BHARATI WEATHER ERROR:',
+            err
+          );
+
+
+          this.loading = false;
+
+          this.error =
+            'Unable to retrieve live Bharati weather data from Open-Meteo.';
+
+
+          this.cdr.detectChanges();
         }
-      ).formatToParts(
-        this.currentTime
-      );
 
-
-    const year =
-      parts.find(
-        part =>
-          part.type === 'year'
-      )?.value ?? '----';
-
-
-    const month =
-      parts.find(
-        part =>
-          part.type === 'month'
-      )?.value ?? '--';
-
-
-    const day =
-      parts.find(
-        part =>
-          part.type === 'day'
-      )?.value ?? '--';
-
-
-    return `${year}-${month}-${day}`;
-
+      });
   }
 
 
-  // ==========================================================
+  // ============================================================
   // RETRY
-  // ==========================================================
+  // ============================================================
 
   retryWeather(): void {
 
     this.loadWeather();
-
   }
 
+
+  // ============================================================
+  // WEATHER STATUS
+  // ============================================================
+
+  get weatherStatusClass(): string {
+
+    if (this.loading) {
+
+      return 'status-updating';
+    }
+
+
+    if (
+      this.error ||
+      !this.hasWeatherData
+    ) {
+
+      return 'status-offline';
+    }
+
+
+    return 'status-live';
+  }
+
+
+  get weatherStatusText(): string {
+
+    if (this.loading) {
+
+      return 'UPDATING';
+    }
+
+
+    if (
+      this.error ||
+      !this.hasWeatherData
+    ) {
+
+      return 'OFFLINE';
+    }
+
+
+    return 'LIVE';
+  }
+
+
+  // ============================================================
+  // WEATHER AVAILABLE
+  // ============================================================
+
+  get hasWeatherData(): boolean {
+
+    return (
+      this.weather?.current?.temperature_2m !== null &&
+      this.weather?.current?.temperature_2m !== undefined
+    );
+  }
+
+
+  // ============================================================
+  // CURRENT TEMPERATURE
+  // ============================================================
+
+  get temperature(): number | null {
+
+    return this.safeNumber(
+      this.weather?.current?.temperature_2m
+    );
+  }
+
+
+  get temperatureDisplay(): string {
+
+    const value = this.temperature;
+
+    if (value === null) {
+
+      return '-- °C';
+    }
+
+
+    return `${value.toFixed(1)} °C`;
+  }
+
+
+  // ============================================================
+  // FEELS LIKE
+  // ============================================================
+
+  get feelsLike(): number | null {
+
+    return this.safeNumber(
+      this.weather?.current?.apparent_temperature
+    );
+  }
+
+
+  get feelsLikeDisplay(): string {
+
+    const value = this.feelsLike;
+
+    if (value === null) {
+
+      return '-- °C';
+    }
+
+
+    return `${value.toFixed(1)} °C`;
+  }
+
+
+  // ============================================================
+  // HUMIDITY
+  // ============================================================
+
+  get humidity(): number | null {
+
+    return this.safeNumber(
+      this.weather?.current?.relative_humidity_2m
+    );
+  }
+
+
+  get humidityDisplay(): string {
+
+    const value = this.humidity;
+
+    if (value === null) {
+
+      return '--%';
+    }
+
+
+    return `${value.toFixed(0)}%`;
+  }
+
+
+  // ============================================================
+  // WIND SPEED
+  // ============================================================
+
+  get windSpeed(): number | null {
+
+    return this.safeNumber(
+      this.weather?.current?.wind_speed_10m
+    );
+  }
+
+
+  get windDisplay(): string {
+
+    const value = this.windSpeed;
+
+    if (value === null) {
+
+      return '--';
+    }
+
+
+    return value.toFixed(1);
+  }
+
+
+  // ============================================================
+  // WIND DIRECTION
+  // ============================================================
+
+  get windDirection(): number | null {
+
+    return this.safeNumber(
+      this.weather?.current?.wind_direction_10m
+    );
+  }
+
+
+  get windDirectionText(): string {
+
+    const degrees = this.windDirection;
+
+    if (degrees === null) {
+
+      return '--';
+    }
+
+
+    const directions = [
+      'N',
+      'NE',
+      'E',
+      'SE',
+      'S',
+      'SW',
+      'W',
+      'NW'
+    ];
+
+
+    const index =
+      Math.round(degrees / 45) % 8;
+
+
+    return directions[index];
+  }
+
+
+  get windDegreesDisplay(): string {
+
+    const degrees = this.windDirection;
+
+    if (degrees === null) {
+
+      return '--°';
+    }
+
+
+    return `${Math.round(degrees)}°`;
+  }
+
+
+  get windRotation(): string {
+
+    const degrees = this.windDirection;
+
+    if (degrees === null) {
+
+      return 'rotate(0deg)';
+    }
+
+
+    return `rotate(${degrees}deg)`;
+  }
+
+
+  // ============================================================
+  // PRESSURE
+  // ============================================================
+
+  get pressure(): number | null {
+
+    return this.safeNumber(
+      this.weather?.current?.surface_pressure
+    );
+  }
+
+
+  get pressureDisplay(): string {
+
+    const value = this.pressure;
+
+    if (value === null) {
+
+      return '--';
+    }
+
+
+    return value.toFixed(0);
+  }
+
+
+  // ============================================================
+  // CLOUD COVER
+  // ============================================================
+
+  get cloudCover(): number | null {
+
+    return this.safeNumber(
+      this.weather?.current?.cloud_cover
+    );
+  }
+
+
+  get cloudCoverDisplay(): string {
+
+    const value = this.cloudCover;
+
+    if (value === null) {
+
+      return '--%';
+    }
+
+
+    return `${value.toFixed(0)}%`;
+  }
+
+
+  // ============================================================
+  // PRECIPITATION
+  // ============================================================
+
+  get precipitation(): number | null {
+
+    return this.safeNumber(
+      this.weather?.current?.precipitation
+    );
+  }
+
+
+  get precipitationDisplay(): string {
+
+    const value = this.precipitation;
+
+    if (value === null) {
+
+      return '--';
+    }
+
+
+    return value.toFixed(2);
+  }
+
+
+  // ============================================================
+  // SNOWFALL
+  // ============================================================
+
+  get snowfall(): number | null {
+
+    return this.safeNumber(
+      this.weather?.current?.snowfall
+    );
+  }
+
+
+  // ============================================================
+  // VISIBILITY
+  // ============================================================
+
+  get visibility(): number | null {
+
+    return this.safeNumber(
+      this.weather?.current?.visibility
+    );
+  }
+
+
+  // ============================================================
+  // WEATHER CODE
+  // ============================================================
+
+  get weatherCode(): number | null {
+
+    return this.safeNumber(
+      this.weather?.current?.weather_code
+    );
+  }
+
+
+  // ============================================================
+  // WEATHER DESCRIPTION
+  // ============================================================
+
+  get weatherDescription(): string {
+
+    const code = this.weatherCode;
+
+
+    if (code === null) {
+
+      return 'NO DATA';
+    }
+
+
+    if (code === 0) {
+
+      return 'CLEAR SKY';
+    }
+
+
+    if ([1, 2, 3].includes(code)) {
+
+      return 'CLOUDY';
+    }
+
+
+    if ([45, 48].includes(code)) {
+
+      return 'FOG';
+    }
+
+
+    if (
+      [51, 53, 55, 56, 57]
+        .includes(code)
+    ) {
+
+      return 'DRIZZLE';
+    }
+
+
+    if (
+      [61, 63, 65, 66, 67]
+        .includes(code)
+    ) {
+
+      return 'RAIN';
+    }
+
+
+    if (
+      [71, 73, 75, 77, 85, 86]
+        .includes(code)
+    ) {
+
+      return 'SNOW';
+    }
+
+
+    if (
+      [80, 81, 82]
+        .includes(code)
+    ) {
+
+      return 'RAIN SHOWERS';
+    }
+
+
+    if (
+      [95, 96, 99]
+        .includes(code)
+    ) {
+
+      return 'THUNDERSTORM';
+    }
+
+
+    return 'UNKNOWN';
+  }
+
+
+  // ============================================================
+  // WEATHER ICON
+  // ============================================================
+
+  get weatherIcon(): string {
+
+    const code = this.weatherCode;
+
+
+    if (code === null) {
+
+      return '◌';
+    }
+
+
+    if (code === 0) {
+
+      return '☀';
+    }
+
+
+    if ([1, 2, 3].includes(code)) {
+
+      return '☁';
+    }
+
+
+    if ([45, 48].includes(code)) {
+
+      return '≋';
+    }
+
+
+    if (
+      [51, 53, 55, 56, 57].includes(code)
+    ) {
+
+      return '☂';
+    }
+
+
+    if (
+      [61, 63, 65, 66, 67, 80, 81, 82].includes(code)
+    ) {
+
+      return '☂';
+    }
+
+
+    if (
+      [71, 73, 75, 77, 85, 86].includes(code)
+    ) {
+
+      return '❄';
+    }
+
+
+    if (
+      [95, 96, 99].includes(code)
+    ) {
+
+      return 'ϟ';
+    }
+
+
+    return '◌';
+  }
+
+
+  // ============================================================
+  // LAST UPDATE DISPLAY
+  // ============================================================
+
+  get lastUpdateDisplay(): string {
+
+    if (!this.lastUpdate) {
+
+      return 'WAITING FOR DATA';
+    }
+
+
+    const time =
+      new Intl.DateTimeFormat(
+        'en-IN',
+        {
+          timeZone: 'Asia/Kolkata',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        }
+      ).format(this.lastUpdate);
+
+
+    return `${time} IST`;
+  }
+
+
+  // ============================================================
+  // OPEN-METEO TIMESTAMP
+  // ============================================================
+
+  get weatherSourceTime(): string {
+
+    const value =
+      this.weather?.current?.time;
+
+
+    if (!value) {
+
+      return '--';
+    }
+
+
+    return value;
+  }
+
+
+  // ============================================================
+  // PROGRESS BARS
+  // ============================================================
+
+  getTemperatureWidth(): number {
+
+    const value = this.temperature;
+
+    if (value === null) {
+
+      return 0;
+    }
+
+
+    /*
+     * Antarctic visual scale:
+     * -50°C = 0%
+     * +10°C = 100%
+     */
+
+    const width =
+      ((value + 50) / 60) * 100;
+
+
+    return this.clamp(
+      width,
+      0,
+      100
+    );
+  }
+
+
+  getHumidityWidth(): number {
+
+    const value = this.humidity;
+
+    if (value === null) {
+
+      return 0;
+    }
+
+
+    return this.clamp(
+      value,
+      0,
+      100
+    );
+  }
+
+
+  getWindWidth(): number {
+
+    const value = this.windSpeed;
+
+    if (value === null) {
+
+      return 0;
+    }
+
+
+    /*
+     * Visual scale:
+     * 0–100 km/h
+     */
+
+    return this.clamp(
+      (value / 100) * 100,
+      0,
+      100
+    );
+  }
+
+
+  getCloudWidth(): number {
+
+    const value = this.cloudCover;
+
+    if (value === null) {
+
+      return 0;
+    }
+
+
+    return this.clamp(
+      value,
+      0,
+      100
+    );
+  }
+
+
+  getPrecipitationWidth(): number {
+
+    const value = this.precipitation;
+
+    if (value === null) {
+
+      return 0;
+    }
+
+
+    /*
+     * 0–10 mm visual scale.
+     */
+
+    return this.clamp(
+      (value / 10) * 100,
+      0,
+      100
+    );
+  }
+
+
+  // ============================================================
+  // SAFE NUMBER
+  // ============================================================
+
+  private safeNumber(
+    value: number | null | undefined
+  ): number | null {
+
+    if (
+      value === null ||
+      value === undefined ||
+      Number.isNaN(Number(value))
+    ) {
+
+      return null;
+    }
+
+
+    return Number(value);
+  }
+
+
+  // ============================================================
+  // CLAMP
+  // ============================================================
+
+  private clamp(
+    value: number,
+    min: number,
+    max: number
+  ): number {
+
+    return Math.min(
+      Math.max(
+        value,
+        min
+      ),
+      max
+    );
+  }
 }

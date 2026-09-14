@@ -1,172 +1,158 @@
 <div class="infrastructure-page">
 
-  <!-- =====================================================
+
+  <!-- =========================================================
        PAGE HEADER
-       ===================================================== -->
+       ========================================================= -->
 
-  <header class="page-header">
+  <header class="infrastructure-header">
 
-    <div class="header-left">
+    <div class="header-copy">
 
-      <div class="page-chip">
-        <span class="chip-dot"></span>
-        DIGITAL TWIN / INFRASTRUCTURE
-      </div>
+      <span class="page-eyebrow">
+        POLARIS-TWIN / INFRASTRUCTURE
+      </span>
 
-      <h1>INFRASTRUCTURE</h1>
+      <h1>
+        STATION INFRASTRUCTURE
+      </h1>
 
       <p>
-        Antarctic Station Infrastructure Intelligence
+        Digital infrastructure monitoring and geospatial intelligence
+        for India's Antarctic research network.
       </p>
 
     </div>
 
-    <div class="header-right">
 
-      <div class="network-status">
-        <span class="network-dot"></span>
-        <span>INFRASTRUCTURE NETWORK</span>
-      </div>
+    <div class="header-clock">
 
-      <div class="time-block">
-        <span>INDIA STANDARD TIME</span>
-        <strong>{{ formattedTime }} IST</strong>
-      </div>
+      <span>
+        INDIA STANDARD TIME
+      </span>
+
+      <strong>
+        {{ formattedTime }}
+      </strong>
+
+      <small>
+        {{ formattedDate }}
+      </small>
 
     </div>
 
   </header>
 
 
-  <!-- =====================================================
-       STATION OVERVIEW
-       ===================================================== -->
 
-  <section class="station-overview">
+  <!-- =========================================================
+       STATION NETWORK SELECTOR
+       ========================================================= -->
 
-    <!-- Station identity -->
+  <section class="station-network-selector">
 
-    <div class="station-identity">
+    <div class="network-selector-heading">
 
-      <div class="station-symbol">
-        <div class="symbol-ring"></div>
-
-        <div class="symbol-core">
-          B
-        </div>
-      </div>
-
-      <div class="station-info">
-
-        <div class="station-title">
-
-          <h2>BHARATI</h2>
-
-          <span>BHA-01</span>
-
-        </div>
-
-        <p class="station-location">
-          LARSEMANN HILLS · EAST ANTARCTICA
-        </p>
-
-        <p class="station-description">
-          Integrated infrastructure monitoring
-          and digital-twin status overview
-        </p>
-
-      </div>
-
-    </div>
-
-
-    <!-- Infrastructure health -->
-
-    <div class="overview-stat health-stat">
-
-      <span>INFRASTRUCTURE HEALTH</span>
-
-      <strong>
-        {{ infrastructureHealth }}
-        <small>%</small>
-      </strong>
-
-      <div
-        class="health-ring"
-        [style.--health]="infrastructureHealth + '%'"
-      >
-        <div class="health-ring-progress"></div>
-      </div>
-
-    </div>
-
-
-    <!-- Active systems -->
-
-    <div class="overview-stat">
-
-      <span>ACTIVE SYSTEMS</span>
-
-      <strong>
-        {{ operationalCount }}
-        <small>/ {{ infrastructureItems.length }}</small>
-      </strong>
-
-      <p>
-        SYSTEMS OPERATIONAL
-      </p>
-
-    </div>
-
-
-    <!-- Average utilization -->
-
-    <div class="overview-stat">
-
-      <span>AVG UTILIZATION</span>
-
-      <strong>
-        {{ utilizationAverage }}
-        <small>%</small>
-      </strong>
-
-      <p>
-        CURRENT LOAD
-      </p>
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       FILTER
-       ===================================================== -->
-
-  <section class="filter-section">
-
-    <div class="filter-title">
-
-      <span class="section-code">
-        INFRA / 01
+      <span>
+        ANTARCTIC RESEARCH NETWORK
       </span>
 
-      <h2>
-        INFRASTRUCTURE ASSET NETWORK
-      </h2>
+      <small>
+        SELECT STATION NODE
+      </small>
 
     </div>
 
 
-    <div class="category-filter">
+    <div class="station-selector-buttons">
+
+
+      <!-- =====================================================
+           BHARATI
+           ===================================================== -->
 
       <button
-        *ngFor="let category of categories"
         type="button"
-        [class.active]="selectedCategory === category"
-        (click)="selectCategory(category)"
+
+        class="station-switch-button"
+
+        [class.active]="
+          selectedStation.id === 'BHARATI'
+        "
+
+        (click)="selectStation('BHARATI')"
       >
-        {{ category }}
+
+        <span class="station-switch-indicator"></span>
+
+
+        <span class="station-switch-copy">
+
+          <strong>
+            BHARATI
+          </strong>
+
+          <small>
+            LARSEMANN HILLS
+          </small>
+
+        </span>
+
+
+        <span
+          class="station-switch-active"
+          *ngIf="
+            selectedStation.id === 'BHARATI'
+          "
+        >
+          ACTIVE
+        </span>
+
+      </button>
+
+
+
+      <!-- =====================================================
+           MAITRI
+           ===================================================== -->
+
+      <button
+        type="button"
+
+        class="station-switch-button"
+
+        [class.active]="
+          selectedStation.id === 'MAITRI'
+        "
+
+        (click)="selectStation('MAITRI')"
+      >
+
+        <span class="station-switch-indicator"></span>
+
+
+        <span class="station-switch-copy">
+
+          <strong>
+            MAITRI
+          </strong>
+
+          <small>
+            SCHIRMACHER OASIS
+          </small>
+
+        </span>
+
+
+        <span
+          class="station-switch-active"
+          *ngIf="
+            selectedStation.id === 'MAITRI'
+          "
+        >
+          ACTIVE
+        </span>
+
       </button>
 
     </div>
@@ -174,21 +160,357 @@
   </section>
 
 
-  <!-- =====================================================
-       STATUS SUMMARY
-       ===================================================== -->
 
-  <section class="status-summary">
+  <!-- =========================================================
+       STATION OVERVIEW
+       ========================================================= -->
 
-    <!-- Operational -->
+  <section class="station-overview">
 
-    <div class="summary-card operational">
+    <div class="station-overview-main">
 
-      <div class="summary-icon">
-        ✓
-      </div>
+      <span class="section-code">
+        STATION / {{ selectedStation.shortName }}
+      </span>
+
+
+      <h2>
+        {{ selectedStation.name }}
+      </h2>
+
+
+      <p>
+        {{ selectedStation.description }}
+      </p>
+
+    </div>
+
+
+
+    <div class="station-fact">
+
+      <span>
+        REGION
+      </span>
+
+      <strong>
+        {{ selectedStation.region }}
+      </strong>
+
+    </div>
+
+
+    <div class="station-fact">
+
+      <span>
+        LATITUDE
+      </span>
+
+      <strong>
+        {{ selectedStation.latitude }}
+      </strong>
+
+    </div>
+
+
+    <div class="station-fact">
+
+      <span>
+        LONGITUDE
+      </span>
+
+      <strong>
+        {{ selectedStation.longitude }}
+      </strong>
+
+    </div>
+
+
+    <div class="station-fact">
+
+      <span>
+        ELEVATION
+      </span>
+
+      <strong>
+        {{ selectedStation.elevation }}
+      </strong>
+
+    </div>
+
+
+    <div class="station-fact">
+
+      <span>
+        COMMISSIONED
+      </span>
+
+      <strong>
+        {{ selectedStation.commissioned }}
+      </strong>
+
+    </div>
+
+
+    <div class="station-fact">
+
+      <span>
+        STATION NODE
+      </span>
+
+      <strong class="active-node">
+
+        <span></span>
+
+        ACTIVE
+
+      </strong>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =========================================================
+       GEO DIGITAL TWIN
+       ========================================================= -->
+
+  <section class="geo-section">
+
+
+    <div class="section-heading">
 
       <div>
+
+        <span>
+          GEO INTELLIGENCE / 01
+        </span>
+
+        <h2>
+          {{ selectedStation.name }} · GEO DIGITAL TWIN
+        </h2>
+
+      </div>
+
+
+      <div class="map-status">
+
+        <span></span>
+
+        MAP ONLINE
+
+      </div>
+
+    </div>
+
+
+
+    <div class="geo-panel">
+
+
+      <!-- =====================================================
+           LEAFLET MAP
+           ===================================================== -->
+
+      <div class="map-container">
+
+        <div
+          #stationMap
+          class="leaflet-map"
+        ></div>
+
+
+        <!-- Map overlay -->
+
+        <div class="map-overlay">
+
+          <div class="map-overlay-row">
+
+            <span>
+              POLARIS-TWIN
+            </span>
+
+            <strong>
+              GEO NODE / 001
+            </strong>
+
+          </div>
+
+
+          <div class="map-overlay-row">
+
+            <span>
+              LAT
+            </span>
+
+            <strong>
+              {{ selectedStation.latitude }}
+            </strong>
+
+          </div>
+
+
+          <div class="map-overlay-row">
+
+            <span>
+              LNG
+            </span>
+
+            <strong>
+              {{ selectedStation.longitude }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="map-scan-line"></div>
+
+      </div>
+
+
+
+      <!-- =====================================================
+           MAP INFORMATION PANEL
+           ===================================================== -->
+
+      <aside class="geo-information">
+
+        <span class="section-code">
+          STATION / GEO NODE
+        </span>
+
+
+        <h3>
+          {{ selectedStation.shortName }}
+        </h3>
+
+
+        <strong class="geo-region">
+          {{ selectedStation.region }}
+          · EAST ANTARCTICA
+        </strong>
+
+
+        <p>
+          Interactive geographic view of India's
+          {{ selectedStation.shortName | titlecase }}
+          Research Station and its Antarctic location.
+        </p>
+
+
+        <div class="geo-facts">
+
+
+          <div>
+
+            <span>
+              LATITUDE
+            </span>
+
+            <strong>
+              {{ selectedStation.latitude }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              LONGITUDE
+            </span>
+
+            <strong>
+              {{ selectedStation.longitude }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              ELEVATION
+            </span>
+
+            <strong>
+              {{ selectedStation.elevation }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              NODE
+            </span>
+
+            <strong>
+              {{ selectedStation.shortName }}-01
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="geo-status">
+
+          <span class="status-pulse"></span>
+
+          <div>
+
+            <strong>
+              GEO NODE ACTIVE
+            </strong>
+
+            <small>
+              LEAFLET SPATIAL VIEW
+            </small>
+
+          </div>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =========================================================
+       STATUS SUMMARY
+       ========================================================= -->
+
+  <section class="status-summary-section">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span>
+          INFRASTRUCTURE STATUS / 02
+        </span>
+
+        <h2>
+          SYSTEM STATUS
+        </h2>
+
+      </div>
+
+    </div>
+
+
+    <div class="status-summary-grid">
+
+
+      <div class="summary-card">
 
         <span>
           OPERATIONAL
@@ -198,20 +520,14 @@
           {{ operationalCount }}
         </strong>
 
+        <small>
+          ACTIVE ASSETS
+        </small>
+
       </div>
 
-    </div>
 
-
-    <!-- Monitoring -->
-
-    <div class="summary-card monitoring">
-
-      <div class="summary-icon">
-        ◌
-      </div>
-
-      <div>
+      <div class="summary-card">
 
         <span>
           MONITORING
@@ -221,20 +537,14 @@
           {{ monitoringCount }}
         </strong>
 
+        <small>
+          UNDER OBSERVATION
+        </small>
+
       </div>
 
-    </div>
 
-
-    <!-- Maintenance -->
-
-    <div class="summary-card maintenance">
-
-      <div class="summary-icon">
-        ⚙
-      </div>
-
-      <div>
+      <div class="summary-card">
 
         <span>
           MAINTENANCE
@@ -244,20 +554,14 @@
           {{ maintenanceCount }}
         </strong>
 
+        <small>
+          SERVICE REQUIRED
+        </small>
+
       </div>
 
-    </div>
 
-
-    <!-- Offline -->
-
-    <div class="summary-card offline">
-
-      <div class="summary-icon">
-        !
-      </div>
-
-      <div>
+      <div class="summary-card">
 
         <span>
           OFFLINE
@@ -267,6 +571,44 @@
           {{ offlineCount }}
         </strong>
 
+        <small>
+          UNAVAILABLE
+        </small>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <span>
+          INFRASTRUCTURE HEALTH
+        </span>
+
+        <strong>
+          {{ infrastructureHealth }}%
+        </strong>
+
+        <small>
+          AGGREGATED INDEX
+        </small>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <span>
+          UTILIZATION
+        </span>
+
+        <strong>
+          {{ utilizationAverage }}%
+        </strong>
+
+        <small>
+          NETWORK AVERAGE
+        </small>
+
       </div>
 
     </div>
@@ -274,29 +616,32 @@
   </section>
 
 
-  <!-- =====================================================
-       ASSET REGISTRY
-       ===================================================== -->
 
-  <section class="assets-section">
+  <!-- =========================================================
+       CATEGORY FILTER
+       ========================================================= -->
+
+  <section class="asset-filter-section">
 
     <div class="section-heading">
 
       <div>
 
         <span>
-          ASSET REGISTRY
+          INFRASTRUCTURE REGISTRY / 03
         </span>
 
         <h2>
-          STATION INFRASTRUCTURE
+          ASSET REGISTRY
         </h2>
 
       </div>
 
+
       <div class="asset-count">
 
         {{ filteredInfrastructure.length }}
+
         ASSETS
 
       </div>
@@ -304,141 +649,170 @@
     </div>
 
 
+    <div class="category-filter">
+
+      <button
+        type="button"
+
+        *ngFor="
+          let category of categories
+        "
+
+        [class.active]="
+          selectedCategory === category
+        "
+
+        (click)="selectCategory(category)"
+      >
+
+        {{ category }}
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =========================================================
+       ASSET GRID
+       ========================================================= -->
+
+  <section class="asset-grid-section">
+
     <div class="asset-grid">
+
 
       <article
         class="asset-card"
-        *ngFor="let item of filteredInfrastructure"
+
+        *ngFor="
+          let item of filteredInfrastructure
+        "
       >
 
-        <!-- Card header -->
 
-        <div class="asset-card-top">
+        <div class="asset-card-header">
 
-          <div class="asset-category">
-            {{ item.category }}
-          </div>
+          <div>
 
-          <div
-            class="asset-status"
-            [ngClass]="getStatusClass(item.status)"
-          >
-
-            <span></span>
-
-            {{ item.status }}
-
-          </div>
-
-        </div>
-
-
-        <!-- Asset identity -->
-
-        <div class="asset-main">
-
-          <div class="asset-icon">
-            <span>+</span>
-          </div>
-
-          <div class="asset-name">
+            <span class="asset-category">
+              {{ item.category }}
+            </span>
 
             <h3>
               {{ item.name }}
             </h3>
 
-            <span>
-              {{ item.code }}
-            </span>
-
           </div>
+
+
+          <span class="asset-code">
+            {{ item.code }}
+          </span>
 
         </div>
 
-
-        <!-- Description -->
 
         <p class="asset-description">
           {{ item.description }}
         </p>
 
 
-        <!-- Metrics -->
+        <div class="asset-status-row">
 
-        <div class="asset-metrics">
+          <span
+            class="asset-status"
+            [ngClass]="
+              getStatusClass(item.status)
+            "
+          >
 
-          <!-- Health -->
+            <i></i>
 
-          <div class="asset-metric">
+            {{ item.status }}
 
-            <div class="metric-label-row">
-
-              <span>
-                HEALTH
-              </span>
-
-              <strong>
-                {{ item.health }}%
-              </strong>
-
-            </div>
-
-            <div class="asset-bar">
-
-              <div
-                class="asset-bar-fill"
-                [ngClass]="getHealthClass(item.health)"
-                [style.width.%]="getHealthWidth(item.health)"
-              ></div>
-
-            </div>
-
-          </div>
-
-
-          <!-- Utilization -->
-
-          <div class="asset-metric">
-
-            <div class="metric-label-row">
-
-              <span>
-                UTILIZATION
-              </span>
-
-              <strong>
-                {{ item.utilization }}%
-              </strong>
-
-            </div>
-
-            <div class="asset-bar">
-
-              <div
-                class="asset-bar-fill utilization"
-                [style.width.%]="getUtilizationWidth(item.utilization)"
-              ></div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- Footer -->
-
-        <div class="asset-footer">
-
-          <span>
-            TELEMETRY
           </span>
 
-          <strong>
-            ACTIVE
-          </strong>
+
+          <span
+            class="health-label"
+            [ngClass]="
+              getHealthClass(item.health)
+            "
+          >
+            {{ item.health }}%
+          </span>
 
         </div>
+
+
+        <div class="asset-meter">
+
+          <div class="meter-header">
+
+            <span>
+              HEALTH
+            </span>
+
+            <strong>
+              {{ item.health }}%
+            </strong>
+
+          </div>
+
+
+          <div class="meter-track">
+
+            <div
+              class="meter-fill health-fill"
+
+              [ngClass]="
+                getHealthClass(item.health)
+              "
+
+              [style.width.%]="
+                getHealthWidth(item.health)
+              "
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="asset-meter">
+
+          <div class="meter-header">
+
+            <span>
+              UTILIZATION
+            </span>
+
+            <strong>
+              {{ item.utilization }}%
+            </strong>
+
+          </div>
+
+
+          <div class="meter-track">
+
+            <div
+              class="meter-fill utilization-fill"
+
+              [style.width.%]="
+                getUtilizationWidth(
+                  item.utilization
+                )
+              "
+            ></div>
+
+          </div>
+
+        </div>
+
 
       </article>
 
@@ -447,52 +821,57 @@
   </section>
 
 
-  <!-- =====================================================
-       SYSTEM CAPACITY
-       ===================================================== -->
 
-  <section class="metrics-section">
+  <!-- =========================================================
+       SYSTEM CAPACITY
+       ========================================================= -->
+
+  <section class="capacity-section">
 
     <div class="section-heading">
 
       <div>
 
         <span>
-          TELEMETRY / 02
+          SYSTEM CAPACITY / 04
         </span>
 
         <h2>
-          SYSTEM CAPACITY
+          INFRASTRUCTURE CAPACITY
         </h2>
 
       </div>
 
-      <div class="live-indicator">
-
-        <span></span>
-
-        LIVE MONITORING
-
+      <div class="telemetry-badge">
+        SIMULATED TELEMETRY
       </div>
 
     </div>
 
 
-    <div class="system-metrics-grid">
+    <div class="capacity-grid">
+
 
       <article
-        class="system-metric"
-        *ngFor="let metric of systemMetrics"
+        class="capacity-card"
+
+        *ngFor="
+          let metric of systemMetrics
+        "
       >
 
-        <div class="system-metric-header">
+        <div class="capacity-card-header">
 
           <span>
             {{ metric.label }}
           </span>
 
           <strong
-            [ngClass]="getMetricClass(metric.status)"
+            [ngClass]="
+              getMetricClass(
+                metric.status
+              )
+            "
           >
             {{ metric.status }}
           </strong>
@@ -500,7 +879,7 @@
         </div>
 
 
-        <div class="system-value">
+        <div class="capacity-value">
 
           <strong>
             {{ metric.value }}
@@ -513,24 +892,37 @@
         </div>
 
 
-        <div class="system-progress">
+        <div class="capacity-track">
 
           <div
-            class="system-progress-fill"
-            [style.width.%]="metric.percentage"
+            class="capacity-fill"
+
+            [ngClass]="
+              getMetricClass(
+                metric.status
+              )
+            "
+
+            [style.width.%]="
+              metric.percentage
+            "
           ></div>
 
         </div>
 
 
-        <div class="system-footer">
+        <div class="capacity-footer">
+
+          <span>
+            0
+          </span>
 
           <span>
             CAPACITY
           </span>
 
           <span>
-            {{ metric.percentage }}%
+            100
           </span>
 
         </div>
@@ -542,92 +934,137 @@
   </section>
 
 
-  <!-- =====================================================
-       DIGITAL TWIN
-       ===================================================== -->
 
-  <section class="digital-twin-panel">
+  <!-- =========================================================
+       DIGITAL TWIN PANEL
+       ========================================================= -->
 
-    <div class="twin-visual">
+  <section class="digital-twin-section">
 
-      <div class="twin-grid"></div>
+    <div class="section-heading">
 
-      <div class="twin-node node-1"></div>
-      <div class="twin-node node-2"></div>
-      <div class="twin-node node-3"></div>
-      <div class="twin-node node-4"></div>
-
-      <div class="twin-core">
-
-        <div class="core-ring"></div>
-
-        <strong>
-          BHA
-        </strong>
+      <div>
 
         <span>
-          DIGITAL TWIN
+          DIGITAL TWIN / 05
         </span>
+
+        <h2>
+          STATION DIGITAL REPRESENTATION
+        </h2>
+
+      </div>
+
+      <div class="twin-status">
+
+        <span></span>
+
+        TWIN SYNCHRONIZED
 
       </div>
 
     </div>
 
 
-    <div class="twin-information">
-
-      <span class="section-code">
-        DIGITAL TWIN / 03
-      </span>
-
-      <h2>
-        INFRASTRUCTURE SYNCHRONIZATION
-      </h2>
-
-      <p>
-        Bharati station infrastructure is represented
-        through a continuously monitored digital model.
-        System health, capacity and operational states
-        are visualized for situational awareness.
-      </p>
+    <div class="digital-twin-panel">
 
 
-      <div class="sync-grid">
+      <div class="twin-grid-background"></div>
 
-        <div>
 
-          <span>
-            MODEL STATUS
-          </span>
+      <div class="twin-content">
 
-          <strong>
-            SYNCHRONIZED
-          </strong>
+        <span class="section-code">
+          POLARIS-TWIN / NODE
+        </span>
+
+
+        <h3>
+          {{ selectedStation.shortName }}
+        </h3>
+
+
+        <p>
+          Digital representation of the
+          {{ selectedStation.name | titlecase }}
+          infrastructure network.
+        </p>
+
+
+        <div class="twin-meta">
+
+          <div>
+
+            <span>
+              STATION
+            </span>
+
+            <strong>
+              {{ selectedStation.shortName }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              REGION
+            </span>
+
+            <strong>
+              {{ selectedStation.region }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              NODE STATUS
+            </span>
+
+            <strong>
+              ACTIVE
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              HEALTH INDEX
+            </span>
+
+            <strong>
+              {{ infrastructureHealth }}%
+            </strong>
+
+          </div>
 
         </div>
 
+      </div>
 
-        <div>
+
+      <div class="twin-visual">
+
+        <div class="twin-ring ring-one"></div>
+
+        <div class="twin-ring ring-two"></div>
+
+        <div class="twin-ring ring-three"></div>
+
+        <div class="twin-core">
 
           <span>
-            DATA CHANNEL
+            {{ selectedStation.shortName }}
           </span>
 
           <strong>
             ACTIVE
-          </strong>
-
-        </div>
-
-
-        <div>
-
-          <span>
-            LAST CYCLE
-          </span>
-
-          <strong>
-            {{ formattedTime }}
           </strong>
 
         </div>
@@ -639,43 +1076,32 @@
   </section>
 
 
-  <!-- =====================================================
+
+  <!-- =========================================================
        FOOTER
-       ===================================================== -->
+       ========================================================= -->
 
-  <footer class="page-footer">
+  <footer class="infrastructure-footer">
 
     <div>
 
-      <strong>
-        POLARIS-TWIN
-      </strong>
+      <span class="footer-dot"></span>
 
-      <span>
-        BHARATI INFRASTRUCTURE MODULE
-      </span>
+      POLARIS-TWIN
 
     </div>
 
 
-    <div class="footer-live">
+    <span>
+      {{ selectedStation.shortName }} NODE · INFRASTRUCTURE MONITOR
+    </span>
 
-      <span></span>
 
+    <span>
       SIMULATED TELEMETRY ACTIVE
-
-    </div>
-
-
-    <div>
-
-      {{ formattedDate }}
-      ·
-      {{ formattedTime }}
-      IST
-
-    </div>
+    </span>
 
   </footer>
+
 
 </div>

@@ -1,0 +1,1498 @@
+:host {
+  display: block;
+
+  --bg: #020810;
+  --bg-soft: #06131f;
+  --panel: rgba(7, 22, 34, 0.72);
+
+  --text: #eef8ff;
+  --muted: #8da7b9;
+  --dim: #536d7e;
+
+  --cyan: #55d9ff;
+  --cyan-soft: rgba(85, 217, 255, 0.18);
+
+  --line: rgba(116, 176, 202, 0.18);
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.landing-page {
+  position: relative;
+
+  min-height: calc(100vh - 132px);
+
+  overflow: hidden;
+
+  color: var(--text);
+
+  background:
+    radial-gradient(
+      circle at 70% 42%,
+      rgba(26, 91, 122, 0.18),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 18% 75%,
+      rgba(15, 72, 100, 0.13),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #01060c 0%,
+      #03101a 52%,
+      #020811 100%
+    );
+
+  font-family:
+    Inter,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
+
+.background-grid {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0.25;
+
+  background-image:
+    linear-gradient(
+      rgba(85, 217, 255, 0.045) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(85, 217, 255, 0.045) 1px,
+      transparent 1px
+    );
+
+  background-size: 70px 70px;
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent,
+      black 15%,
+      black 75%,
+      transparent
+    );
+}
+
+
+.background-glow {
+  position: absolute;
+
+  width: 500px;
+  height: 500px;
+
+  border-radius: 50%;
+
+  filter: blur(90px);
+
+  pointer-events: none;
+}
+
+
+.glow-one {
+  top: 5%;
+  right: 5%;
+
+  background: rgba(30, 148, 192, 0.09);
+}
+
+
+.glow-two {
+  bottom: -20%;
+  left: 15%;
+
+  background: rgba(37, 118, 157, 0.07);
+}
+
+
+/* =========================================================
+   PARTICLES
+   ========================================================= */
+
+.particles {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+}
+
+
+.particle {
+  position: absolute;
+
+  width: 2px;
+  height: 2px;
+
+  border-radius: 50%;
+
+  background: rgba(150, 230, 255, 0.65);
+
+  animation:
+    particleFloat 7s ease-in-out infinite;
+}
+
+
+.p1 {
+  top: 18%;
+  left: 9%;
+}
+
+
+.p2 {
+  top: 33%;
+  left: 25%;
+
+  animation-delay: 1s;
+}
+
+
+.p3 {
+  top: 21%;
+  right: 25%;
+
+  animation-delay: 2s;
+}
+
+
+.p4 {
+  top: 65%;
+  right: 14%;
+
+  animation-delay: 3s;
+}
+
+
+.p5 {
+  bottom: 25%;
+  left: 38%;
+
+  animation-delay: 1.5s;
+}
+
+
+.p6 {
+  top: 12%;
+  right: 42%;
+
+  animation-delay: 4s;
+}
+
+
+.p7 {
+  bottom: 17%;
+  right: 32%;
+
+  animation-delay: 2.5s;
+}
+
+
+.p8 {
+  top: 55%;
+  left: 6%;
+
+  animation-delay: 5s;
+}
+
+
+@keyframes particleFloat {
+
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-15px);
+  }
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.landing-header {
+  position: relative;
+  z-index: 10;
+
+  height: 82px;
+
+  padding: 0 48px;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    auto
+    1fr;
+
+  align-items: center;
+
+  border-bottom: 1px solid var(--line);
+
+  background: rgba(1, 8, 14, 0.62);
+
+  backdrop-filter: blur(18px);
+}
+
+
+.brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+
+.brand-mark {
+  position: relative;
+
+  width: 44px;
+  height: 34px;
+}
+
+
+.mountain {
+  position: absolute;
+
+  bottom: 4px;
+
+  display: block;
+
+  width: 0;
+  height: 0;
+
+  border-left: 13px solid transparent;
+  border-right: 13px solid transparent;
+  border-bottom: 25px solid rgba(115, 219, 249, 0.85);
+
+  filter:
+    drop-shadow(
+      0 0 7px
+      rgba(85, 217, 255, 0.3)
+    );
+}
+
+
+.mountain-one {
+  left: 0;
+}
+
+
+.mountain-two {
+  left: 11px;
+
+  border-left-width: 17px;
+  border-right-width: 17px;
+  border-bottom-width: 30px;
+
+  opacity: 0.65;
+}
+
+
+.mountain-three {
+  left: 27px;
+
+  border-left-width: 12px;
+  border-right-width: 12px;
+  border-bottom-width: 21px;
+
+  opacity: 0.4;
+}
+
+
+.brand-text {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+
+.brand-text strong {
+  font-size: 17px;
+
+  letter-spacing: 0.19em;
+
+  font-weight: 700;
+}
+
+
+.brand-text span {
+  color: var(--dim);
+
+  font-size: 8px;
+
+  letter-spacing: 0.23em;
+}
+
+
+.header-center {
+  color: #91adbd;
+
+  font-size: 10px;
+
+  letter-spacing: 0.17em;
+
+  white-space: nowrap;
+}
+
+
+.header-center span {
+  margin: 0 10px;
+
+  color: rgba(85, 217, 255, 0.35);
+}
+
+
+.header-right {
+  justify-self: end;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 24px;
+}
+
+
+.system-status {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color: #8ca8b9;
+
+  font-size: 9px;
+
+  letter-spacing: 0.13em;
+}
+
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #55e49c;
+
+  box-shadow:
+    0 0 12px
+    rgba(85, 228, 156, 0.75);
+
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+
+@keyframes statusPulse {
+
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+
+.header-time {
+  color: #6e8999;
+
+  font-size: 9px;
+
+  letter-spacing: 0.12em;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+  position: relative;
+  z-index: 2;
+
+  min-height: 650px;
+
+  display: grid;
+
+  grid-template-columns: 48% 52%;
+
+  align-items: center;
+
+  padding: 40px 7% 30px;
+}
+
+
+.hero-content {
+  position: relative;
+
+  z-index: 5;
+
+  max-width: 670px;
+}
+
+
+.eyebrow {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  color: var(--cyan);
+
+  font-size: 9px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.28em;
+}
+
+
+.eyebrow-line {
+  width: 30px;
+  height: 1px;
+
+  background: rgba(85, 217, 255, 0.6);
+}
+
+
+.hero h1 {
+  margin: 28px 0 24px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  line-height: 0.93;
+}
+
+
+.title-small {
+  margin-bottom: 10px;
+
+  color: #829cab;
+
+  font-size: clamp(22px, 2.3vw, 36px);
+
+  font-weight: 300;
+
+  letter-spacing: 0.18em;
+}
+
+
+.title-main {
+  color: #f1f9fd;
+
+  font-size: clamp(58px, 6.5vw, 100px);
+
+  font-weight: 200;
+
+  letter-spacing: -0.045em;
+}
+
+
+.title-accent {
+  color: transparent;
+
+  font-size: clamp(58px, 6.5vw, 100px);
+
+  font-weight: 700;
+
+  letter-spacing: -0.05em;
+
+  background:
+    linear-gradient(
+      100deg,
+      #ffffff 5%,
+      #73dcfa 48%,
+      #3688a6 100%
+    );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  filter:
+    drop-shadow(
+      0 0 25px
+      rgba(85, 217, 255, 0.12)
+    );
+}
+
+
+.hero-description {
+  max-width: 540px;
+
+  margin: 0 0 32px;
+
+  color: #829bab;
+
+  font-size: 15px;
+
+  line-height: 1.8;
+
+  font-weight: 300;
+}
+
+
+.hero-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+}
+
+
+.primary-button,
+.secondary-button {
+  height: 48px;
+
+  padding: 0 22px;
+
+  border-radius: 2px;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.15em;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+
+.primary-button {
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  border: 1px solid rgba(85, 217, 255, 0.7);
+
+  color: #021019;
+
+  background: #7cdef8;
+
+  box-shadow:
+    0 0 30px
+    rgba(85, 217, 255, 0.08);
+}
+
+
+.primary-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 30px
+    rgba(85, 217, 255, 0.18);
+}
+
+
+.button-arrow {
+  font-size: 17px;
+}
+
+
+.secondary-button {
+  color: #a5bbc7;
+
+  border: 1px solid rgba(127, 166, 184, 0.25);
+
+  background: rgba(7, 23, 34, 0.5);
+}
+
+
+.secondary-button:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(85, 217, 255, 0.45);
+
+  color: #d9f6ff;
+}
+
+
+.hero-note {
+  margin-top: 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color: #536d7e;
+
+  font-size: 8px;
+
+  letter-spacing: 0.18em;
+}
+
+
+.note-dot {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #4e7689;
+}
+
+
+/* =========================================================
+   HERO VISUAL
+   ========================================================= */
+
+.hero-visual {
+  position: relative;
+
+  width: min(600px, 100%);
+
+  aspect-ratio: 1;
+
+  justify-self: center;
+}
+
+
+.earth {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 310px;
+  height: 310px;
+
+  transform: translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      rgba(75, 153, 188, 0.55),
+      rgba(6, 30, 46, 0.8) 48%,
+      #010b13 75%
+    );
+
+  box-shadow:
+    inset -35px -20px 60px
+      rgba(0, 0, 0, 0.65),
+
+    0 0 60px
+      rgba(37, 155, 202, 0.15),
+
+    0 0 120px
+      rgba(37, 155, 202, 0.07);
+}
+
+
+.earth-glow {
+  position: absolute;
+
+  inset: -20px;
+
+  border-radius: 50%;
+
+  border: 1px solid
+    rgba(100, 213, 244, 0.24);
+
+  box-shadow:
+    inset 0 0 35px
+    rgba(85, 217, 255, 0.1);
+}
+
+
+.continent {
+  position: absolute;
+
+  background:
+    rgba(151, 207, 218, 0.18);
+
+  filter: blur(1px);
+}
+
+
+.continent-one {
+  width: 120px;
+  height: 55px;
+
+  top: 72px;
+  left: 70px;
+
+  border-radius:
+    45% 65% 35% 55%;
+  
+  transform: rotate(-18deg);
+}
+
+
+.continent-two {
+  width: 90px;
+  height: 110px;
+
+  top: 130px;
+  left: 170px;
+
+  border-radius:
+    60% 35% 60% 40%;
+
+  transform: rotate(24deg);
+}
+
+
+.continent-three {
+  width: 100px;
+  height: 45px;
+
+  top: 190px;
+  left: 75px;
+
+  border-radius: 50%;
+
+  transform: rotate(12deg);
+}
+
+
+.antarctica {
+  position: absolute;
+
+  left: 50%;
+  bottom: 18px;
+
+  width: 170px;
+  height: 55px;
+
+  transform: translateX(-50%);
+
+  border-radius:
+    48% 52% 60% 40%;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(237, 252, 255, 0.92),
+      rgba(136, 197, 215, 0.4)
+    );
+
+  filter:
+    drop-shadow(
+      0 0 15px
+      rgba(150, 232, 255, 0.35)
+    );
+}
+
+
+.antarctica span {
+  position: absolute;
+
+  left: 50%;
+  top: 12px;
+
+  width: 90px;
+  height: 22px;
+
+  transform: translateX(-50%);
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.75);
+}
+
+
+/* =========================================================
+   ORBITS
+   ========================================================= */
+
+.orbit {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  border: 1px solid
+    rgba(88, 190, 221, 0.16);
+
+  border-radius: 50%;
+
+  transform:
+    translate(-50%, -50%)
+    rotate(-18deg);
+}
+
+
+.orbit-one {
+  width: 390px;
+  height: 150px;
+}
+
+
+.orbit-two {
+  width: 470px;
+  height: 210px;
+
+  transform:
+    translate(-50%, -50%)
+    rotate(34deg);
+
+  border-color:
+    rgba(88, 190, 221, 0.11);
+}
+
+
+.orbit-three {
+  width: 540px;
+  height: 300px;
+
+  transform:
+    translate(-50%, -50%)
+    rotate(-48deg);
+
+  border-color:
+    rgba(88, 190, 221, 0.07);
+}
+
+
+/* =========================================================
+   STATION MARKERS
+   ========================================================= */
+
+.station-marker {
+  position: absolute;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0;
+
+  border: 0;
+
+  color: white;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  text-align: left;
+}
+
+
+.maitri-marker {
+  top: 57%;
+  left: 18%;
+}
+
+
+.bharati-marker {
+  top: 48%;
+  right: 5%;
+}
+
+
+.marker-point {
+  position: relative;
+  z-index: 2;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #72e4ff;
+
+  box-shadow:
+    0 0 15px
+    rgba(85, 217, 255, 0.9);
+}
+
+
+.marker-pulse {
+  position: absolute;
+
+  left: -5px;
+  top: -5px;
+
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+
+  border: 1px solid
+    rgba(85, 217, 255, 0.7);
+
+  animation:
+    markerPulse 2s ease-out infinite;
+}
+
+
+@keyframes markerPulse {
+
+  0% {
+    transform: scale(0.5);
+
+    opacity: 0.9;
+  }
+
+  100% {
+    transform: scale(2.2);
+
+    opacity: 0;
+  }
+}
+
+
+.marker-label {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+
+  padding: 7px 10px;
+
+  border-left: 1px solid
+    rgba(85, 217, 255, 0.35);
+
+  background:
+    rgba(2, 14, 23, 0.78);
+
+  backdrop-filter: blur(8px);
+}
+
+
+.marker-label strong {
+  font-size: 9px;
+
+  letter-spacing: 0.16em;
+}
+
+
+.marker-label small {
+  color: #688394;
+
+  font-size: 7px;
+
+  letter-spacing: 0.1em;
+}
+
+
+.satellite {
+  position: absolute;
+
+  color: #76dffb;
+
+  font-size: 16px;
+
+  filter:
+    drop-shadow(
+      0 0 8px
+      rgba(85, 217, 255, 0.7)
+    );
+
+  animation:
+    satelliteFloat 4s ease-in-out infinite;
+}
+
+
+.satellite-one {
+  top: 17%;
+  right: 22%;
+}
+
+
+.satellite-two {
+  bottom: 18%;
+  left: 27%;
+
+  animation-delay: 1.5s;
+}
+
+
+@keyframes satelliteFloat {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+
+  50% {
+    transform: translateY(-9px) rotate(25deg);
+  }
+}
+
+
+/* =========================================================
+   INTELLIGENCE STRIP
+   ========================================================= */
+
+.intelligence-strip {
+  position: relative;
+  z-index: 5;
+
+  margin: 0 7%;
+
+  min-height: 92px;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1px
+    1fr
+    1px
+    1fr
+    1px
+    1fr;
+
+  align-items: center;
+
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+
+.intel-item {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 14px;
+}
+
+
+.intel-number,
+.intel-symbol {
+  color: var(--cyan);
+
+  font-size: 18px;
+
+  font-weight: 300;
+}
+
+
+.intel-item div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+
+.intel-item strong {
+  color: #b4cad5;
+
+  font-size: 9px;
+
+  letter-spacing: 0.13em;
+}
+
+
+.intel-item small {
+  color: #526c7c;
+
+  font-size: 7px;
+
+  letter-spacing: 0.12em;
+}
+
+
+.intel-divider {
+  width: 1px;
+  height: 30px;
+
+  background: var(--line);
+}
+
+
+/* =========================================================
+   MISSION
+   ========================================================= */
+
+.mission-section {
+  position: relative;
+  z-index: 3;
+
+  margin: 40px 7% 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 30px;
+}
+
+
+.mission-line {
+  width: 55px;
+  height: 1px;
+
+  background: var(--cyan);
+}
+
+
+.mission-content {
+  flex: 1;
+}
+
+
+.mission-label {
+  color: #557487;
+
+  font-size: 8px;
+
+  letter-spacing: 0.2em;
+}
+
+
+.mission-content p {
+  margin: 8px 0 0;
+
+  color: #8ca5b3;
+
+  font-size: 13px;
+
+  letter-spacing: 0.06em;
+}
+
+
+.mission-coordinates {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-end;
+
+  gap: 4px;
+
+  color: #4f6b7b;
+
+  font-size: 7px;
+
+  letter-spacing: 0.14em;
+}
+
+
+.mission-coordinates strong {
+  color: #94dff3;
+
+  font-size: 15px;
+
+  font-weight: 400;
+}
+
+
+.mission-coordinates small {
+  font-size: 6px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.landing-footer {
+  position: relative;
+  z-index: 5;
+
+  margin-top: 28px;
+
+  padding: 18px 7%;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  color: #405a69;
+
+  border-top: 1px solid
+    rgba(116, 176, 202, 0.1);
+
+  font-size: 7px;
+
+  letter-spacing: 0.12em;
+}
+
+
+.landing-footer span {
+  margin: 0 8px;
+
+  color: #243d4c;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+  .landing-header {
+    padding: 0 30px;
+  }
+
+  .header-center {
+    display: none;
+  }
+
+  .hero {
+    grid-template-columns: 1fr 1fr;
+
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  .title-main,
+  .title-accent {
+    font-size: clamp(50px, 6vw, 80px);
+  }
+
+  .intelligence-strip {
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+
+  .mission-section {
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+
+  .landing-footer {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
+
+@media (max-width: 800px) {
+
+  .landing-page {
+    min-height: 100vh;
+  }
+
+  .landing-header {
+    height: 70px;
+
+    padding: 0 20px;
+  }
+
+  .brand-text span,
+  .header-time {
+    display: none;
+  }
+
+  .system-status {
+    font-size: 8px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+
+    min-height: auto;
+
+    padding:
+      65px 24px
+      30px;
+  }
+
+  .hero-content {
+    text-align: center;
+
+    max-width: none;
+  }
+
+  .eyebrow {
+    justify-content: center;
+  }
+
+  .hero h1 {
+    align-items: center;
+  }
+
+  .hero-description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .hero-note {
+    justify-content: center;
+  }
+
+  .hero-visual {
+    width: min(500px, 100%);
+
+    margin-top: 20px;
+  }
+
+  .intelligence-strip {
+    grid-template-columns: 1fr 1fr;
+
+    padding: 18px 0;
+  }
+
+  .intel-divider {
+    display: none;
+  }
+
+  .intel-item {
+    min-height: 55px;
+  }
+
+  .mission-section {
+    flex-wrap: wrap;
+
+    margin-top: 30px;
+  }
+
+  .mission-coordinates {
+    margin-left: auto;
+  }
+
+  .landing-footer {
+    flex-direction: column;
+
+    gap: 10px;
+
+    line-height: 1.7;
+  }
+}
+
+
+@media (max-width: 520px) {
+
+  .brand-text strong {
+    font-size: 13px;
+  }
+
+  .hero {
+    padding-top: 45px;
+  }
+
+  .title-small {
+    font-size: 17px;
+  }
+
+  .title-main,
+  .title-accent {
+    font-size: 49px;
+  }
+
+  .hero-description {
+    font-size: 13px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+
+    width: 100%;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+
+    justify-content: center;
+  }
+
+  .earth {
+    width: 250px;
+    height: 250px;
+  }
+
+  .orbit-one {
+    width: 320px;
+    height: 120px;
+  }
+
+  .orbit-two {
+    width: 380px;
+    height: 170px;
+  }
+
+  .orbit-three {
+    width: 420px;
+    height: 220px;
+  }
+
+  .maitri-marker {
+    left: 3%;
+  }
+
+  .bharati-marker {
+    right: 0;
+  }
+
+  .marker-label {
+    padding: 5px 7px;
+  }
+
+  .marker-label small {
+    font-size: 6px;
+  }
+
+  .intelligence-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .intel-item {
+    justify-content: flex-start;
+
+    padding: 10px 20px;
+  }
+
+  .mission-section {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .landing-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}

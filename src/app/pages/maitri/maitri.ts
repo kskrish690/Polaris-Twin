@@ -1,6 +1,6 @@
 import {
-  ChangeDetectorRef,
   Component,
+  ChangeDetectorRef,
   OnDestroy,
   OnInit
 } from '@angular/core';
@@ -13,36 +13,6 @@ import {
 } from '../../services/weather';
 
 
-interface MaitriWeather {
-
-  temperature: number | null;
-
-  feelsLike: number | null;
-
-  humidity: number | null;
-
-  windSpeed: number | null;
-
-  windDirection: number | null;
-
-  pressure: number | null;
-
-  precipitation: number | null;
-
-  weatherCode: number | null;
-
-  cloudCover: number | null;
-
-}
-
-
-type WeatherStatus =
-  | 'CONNECTING'
-  | 'UPDATING'
-  | 'LIVE'
-  | 'OFFLINE';
-
-
 @Component({
 
   selector: 'app-maitri',
@@ -53,7 +23,8 @@ type WeatherStatus =
     CommonModule
   ],
 
-  templateUrl: './maitri.html',
+  templateUrl:
+    './maitri.html',
 
   styleUrls: [
     './maitri.css'
@@ -67,72 +38,85 @@ export class Maitri
 
 
   // ==========================================================
-  // STATION INFORMATION
+  // STATION
   // ==========================================================
 
-  readonly stationName = 'MAITRI';
+  readonly stationCode =
+    'MAI-01';
 
-  readonly stationCode = 'MAI';
+  readonly stationName =
+    'MAITRI';
 
-  readonly location = 'SCHIRMACHER OASIS';
+  readonly location =
+    'SCHIRMACHER OASIS';
 
-  readonly region = 'CENTRAL DRONNING MAUD LAND';
+  readonly region =
+    'SCHIRMACHER OASIS';
 
-  readonly latitude = -70.76444;
+  readonly elevation =
+    '≈ 50 m';
 
-  readonly longitude = 11.73417;
+  readonly latitudeText =
+    "70°45.52'S";
 
-  readonly latitudeText = '70°45′52″ S';
-
-  readonly longitudeText = '11°44′03″ E';
-
-  readonly elevation = '≈ 50 m';
-
-  readonly stationType =
-    'YEAR-ROUND RESEARCH STATION';
+  readonly longitudeText =
+    "11°44.05'E";
 
 
   // ==========================================================
-  // WEATHER DATA
+  // COORDINATES
   // ==========================================================
 
-  weather: MaitriWeather = {
+  readonly latitude =
+    -70.76444;
 
-    temperature: null,
+  readonly longitude =
+    11.73417;
 
-    feelsLike: null,
 
-    humidity: null,
+  // ==========================================================
+  // WEATHER
+  // ==========================================================
 
-    windSpeed: null,
+  weather: WeatherData['current'] = {
 
-    windDirection: null,
+    time: '',
 
-    pressure: null,
+    temperature_2m: null,
+
+    apparent_temperature: null,
+
+    relative_humidity_2m: null,
+
+    wind_speed_10m: null,
+
+    wind_direction_10m: null,
 
     precipitation: null,
 
-    weatherCode: null,
+    snowfall: null,
 
-    cloudCover: null
+    visibility: null,
+
+    cloud_cover: null,
+
+    surface_pressure: null,
+
+    weather_code: null
 
   };
 
 
   // ==========================================================
-  // PAGE STATE
+  // STATE
   // ==========================================================
 
   loading = true;
 
   error = '';
 
-  weatherStatus: WeatherStatus =
-    'CONNECTING';
-
-  lastUpdate: Date | null = null;
-
-  currentTime = new Date();
+  lastWeatherUpdate:
+    Date | null = null;
 
 
   // ==========================================================
@@ -152,48 +136,69 @@ export class Maitri
 
   constructor(
 
-    private readonly weatherService: WeatherService,
+    private weatherService:
+      WeatherService,
 
-    private readonly cdr: ChangeDetectorRef
+    private cdr:
+      ChangeDetectorRef
 
   ) {}
 
 
   // ==========================================================
-  // COMPONENT INIT
+  // INIT
   // ==========================================================
 
   ngOnInit(): void {
 
     this.updateClock();
 
-    this.clockTimer = setInterval(() => {
-
-      this.updateClock();
-
-      this.cdr.detectChanges();
-
-    }, 1000);
-
-
-    // First weather request
-
     this.loadWeather();
 
 
-    // Refresh weather every 5 minutes
+    // --------------------------------------------------------
+    // LIVE CLOCK
+    // --------------------------------------------------------
 
-    this.weatherTimer = setInterval(() => {
+    this.clockTimer =
+      setInterval(
 
-      this.loadWeather();
+        () => {
 
-    }, 5 * 60 * 1000);
+          this.updateClock();
+
+          this.cdr.detectChanges();
+
+        },
+
+        1000
+
+      );
+
+
+    // --------------------------------------------------------
+    // WEATHER REFRESH
+    // Open-Meteo data refreshed every 5 minutes
+    // --------------------------------------------------------
+
+    this.weatherTimer =
+      setInterval(
+
+        () => {
+
+          this.loadWeather();
+
+        },
+
+        5 * 60 * 1000
+
+      );
 
   }
 
 
   // ==========================================================
-  // COMPONENT DESTROY
+  // DESTROY
   // ==========================================================
 
   ngOnDestroy(): void {
@@ -219,18 +224,7 @@ export class Maitri
 
 
   // ==========================================================
-  // CLOCK
-  // ==========================================================
-
-  private updateClock(): void {
-
-    this.currentTime = new Date();
-
-  }
-
-
-  // ==========================================================
-  // LOAD LIVE WEATHER
+  // LOAD WEATHER
   // ==========================================================
 
   loadWeather(): void {
@@ -239,85 +233,75 @@ export class Maitri
 
     this.error = '';
 
-    this.weatherStatus = 'UPDATING';
-
-    this.cdr.detectChanges();
-
-
-    console.log(
-      'Loading live Maitri weather...'
-    );
-
 
     this.weatherService
 
       .getWeather(
+
         this.latitude,
+
         this.longitude
+
       )
 
       .subscribe({
 
-        // ====================================================
+        // ----------------------------------------------------
         // SUCCESS
-        // ====================================================
+        // ----------------------------------------------------
 
-        next: (
-          data: WeatherData
-        ) => {
+        next:
+          (
+            data: WeatherData
+          ) => {
 
-          console.log(
-            'MAITRI WEATHER DATA:',
-            data
-          );
+            if (data && data.current) {
 
+              this.weather =
+                data.current;
 
-          this.applyWeatherData(
-            data
-          );
+            }
 
 
-          this.weatherStatus = 'LIVE';
-
-          this.loading = false;
-
-          this.lastUpdate = new Date();
-
-          this.cdr.detectChanges();
+            this.loading =
+              false;
 
 
-          console.log(
-            'MAITRI weather updated successfully'
-          );
-
-        },
+            this.lastWeatherUpdate =
+              new Date();
 
 
-        // ====================================================
+            this.cdr.detectChanges();
+
+          },
+
+
+        // ----------------------------------------------------
         // ERROR
-        // ====================================================
+        // ----------------------------------------------------
 
-        error: (
-          error
-        ) => {
-
-          console.error(
-            'MAITRI WEATHER API ERROR:',
+        error:
+          (
             error
-          );
+          ) => {
+
+            console.error(
+              'MAITRI Open-Meteo error:',
+              error
+            );
 
 
-          this.weatherStatus = 'OFFLINE';
-
-          this.loading = false;
-
-          this.error =
-            'Unable to retrieve live Maitri weather data.';
+            this.loading =
+              false;
 
 
-          this.cdr.detectChanges();
+            this.error =
+              'Unable to retrieve live MAITRI weather data from Open-Meteo.';
 
-        }
+
+            this.cdr.detectChanges();
+
+          }
 
       });
 
@@ -325,102 +309,151 @@ export class Maitri
 
 
   // ==========================================================
-  // APPLY API DATA
+  // RETRY WEATHER
   // ==========================================================
 
-  private applyWeatherData(
-    data: WeatherData
-  ): void {
+  retryWeather(): void {
 
-    if (
-      !data ||
-      !data.current
-    ) {
-
-      this.weatherStatus = 'OFFLINE';
-
-      this.error =
-        'Invalid weather response received.';
-
-      return;
-
-    }
-
-
-    const current = data.current;
-
-
-    this.weather = {
-
-      temperature:
-        this.safeNumber(
-          current.temperature_2m
-        ),
-
-      feelsLike:
-        this.safeNumber(
-          current.apparent_temperature
-        ),
-
-      humidity:
-        this.safeNumber(
-          current.relative_humidity_2m
-        ),
-
-      windSpeed:
-        this.safeNumber(
-          current.wind_speed_10m
-        ),
-
-      windDirection:
-        this.safeNumber(
-          current.wind_direction_10m
-        ),
-
-      pressure:
-        this.safeNumber(
-          current.surface_pressure
-        ),
-
-      precipitation:
-        this.safeNumber(
-          current.precipitation
-        ),
-
-      weatherCode:
-        this.safeNumber(
-          current.weather_code
-        ),
-
-      cloudCover:
-        this.safeNumber(
-          current.cloud_cover
-        )
-
-    };
+    this.loadWeather();
 
   }
 
 
   // ==========================================================
-  // SAFE NUMBER
+  // CLOCK
   // ==========================================================
 
-  private safeNumber(
-    value: number | null | undefined
-  ): number | null {
+  private updateClock(): void {
 
-    if (
-      value === null ||
-      value === undefined ||
-      Number.isNaN(value)
-    ) {
+    /*
+     * Clock intentionally uses the browser clock.
+     *
+     * Display methods below convert the current time
+     * into Indian Standard Time.
+     */
 
-      return null;
+  }
+
+
+  // ==========================================================
+  // CURRENT DATE
+  // ==========================================================
+
+  get currentDateDisplay(): string {
+
+    return new Intl.DateTimeFormat(
+
+      'en-IN',
+
+      {
+
+        timeZone:
+          'Asia/Kolkata',
+
+        year:
+          'numeric',
+
+        month:
+          'short',
+
+        day:
+          '2-digit'
+
+      }
+
+    ).format(
+
+      new Date()
+
+    );
+
+  }
+
+
+  // ==========================================================
+  // CURRENT TIME
+  // ==========================================================
+
+  get currentTimeDisplay(): string {
+
+    return new Intl.DateTimeFormat(
+
+      'en-IN',
+
+      {
+
+        timeZone:
+          'Asia/Kolkata',
+
+        hour:
+          '2-digit',
+
+        minute:
+          '2-digit',
+
+        second:
+          '2-digit',
+
+        hour12:
+          false
+
+      }
+
+    ).format(
+
+      new Date()
+
+    );
+
+  }
+
+
+  // ==========================================================
+  // WEATHER STATUS CLASS
+  // ==========================================================
+
+  get weatherStatusClass(): string {
+
+    if (this.loading) {
+
+      return 'status-updating';
 
     }
 
-    return Number(value);
+
+    if (this.error) {
+
+      return 'status-offline';
+
+    }
+
+
+    return 'status-live';
+
+  }
+
+
+  // ==========================================================
+  // WEATHER STATUS TEXT
+  // ==========================================================
+
+  get weatherStatusText(): string {
+
+    if (this.loading) {
+
+      return 'UPDATING';
+
+    }
+
+
+    if (this.error) {
+
+      return 'OFFLINE';
+
+    }
+
+
+    return 'LIVE · OPEN-METEO';
 
   }
 
@@ -431,22 +464,48 @@ export class Maitri
 
   get weatherDescription(): string {
 
-    const code =
-      this.weather.weatherCode;
+    return this.getWeatherDescription(
 
+      this.weather.weather_code
+
+    );
+
+  }
+
+
+  getWeatherDescription(
+
+    code:
+      number | null
+
+  ): string {
 
     if (code === null) {
+
       return 'NO DATA';
+
     }
 
+
+    // --------------------------------------------------------
+    // Clear
+    // --------------------------------------------------------
 
     if (code === 0) {
+
       return 'CLEAR SKY';
+
     }
 
 
+    // --------------------------------------------------------
+    // Cloudy
+    // --------------------------------------------------------
+
     if (
+
       [1, 2, 3].includes(code)
+
     ) {
 
       return 'CLOUDY';
@@ -454,8 +513,14 @@ export class Maitri
     }
 
 
+    // --------------------------------------------------------
+    // Fog
+    // --------------------------------------------------------
+
     if (
+
       [45, 48].includes(code)
+
     ) {
 
       return 'FOG';
@@ -463,8 +528,22 @@ export class Maitri
     }
 
 
+    // --------------------------------------------------------
+    // Drizzle
+    // --------------------------------------------------------
+
     if (
-      [51, 53, 55, 56, 57].includes(code)
+
+      [
+
+        51,
+        53,
+        55,
+        56,
+        57
+
+      ].includes(code)
+
     ) {
 
       return 'DRIZZLE';
@@ -472,8 +551,22 @@ export class Maitri
     }
 
 
+    // --------------------------------------------------------
+    // Rain
+    // --------------------------------------------------------
+
     if (
-      [61, 63, 65, 66, 67].includes(code)
+
+      [
+
+        61,
+        63,
+        65,
+        66,
+        67
+
+      ].includes(code)
+
     ) {
 
       return 'RAIN';
@@ -481,8 +574,23 @@ export class Maitri
     }
 
 
+    // --------------------------------------------------------
+    // Snow
+    // --------------------------------------------------------
+
     if (
-      [71, 73, 75, 77, 85, 86].includes(code)
+
+      [
+
+        71,
+        73,
+        75,
+        77,
+        85,
+        86
+
+      ].includes(code)
+
     ) {
 
       return 'SNOW';
@@ -490,8 +598,20 @@ export class Maitri
     }
 
 
+    // --------------------------------------------------------
+    // Rain showers
+    // --------------------------------------------------------
+
     if (
-      [80, 81, 82].includes(code)
+
+      [
+
+        80,
+        81,
+        82
+
+      ].includes(code)
+
     ) {
 
       return 'RAIN SHOWERS';
@@ -499,8 +619,20 @@ export class Maitri
     }
 
 
+    // --------------------------------------------------------
+    // Thunderstorm
+    // --------------------------------------------------------
+
     if (
-      [95, 96, 99].includes(code)
+
+      [
+
+        95,
+        96,
+        99
+
+      ].includes(code)
+
     ) {
 
       return 'THUNDERSTORM';
@@ -520,21 +652,31 @@ export class Maitri
   get weatherIcon(): string {
 
     const code =
-      this.weather.weatherCode;
+      this.weather.weather_code;
 
 
     if (code === null) {
-      return '◌';
+
+      return '—';
+
     }
 
+
+    // Clear
 
     if (code === 0) {
+
       return '☼';
+
     }
 
 
+    // Cloud
+
     if (
+
       [1, 2, 3].includes(code)
+
     ) {
 
       return '☁';
@@ -542,8 +684,12 @@ export class Maitri
     }
 
 
+    // Fog
+
     if (
+
       [45, 48].includes(code)
+
     ) {
 
       return '≋';
@@ -551,26 +697,52 @@ export class Maitri
     }
 
 
+    // Rain / drizzle / showers
+
     if (
-      [51, 53, 55, 56, 57].includes(code)
+
+      [
+
+        51,
+        53,
+        55,
+        56,
+        57,
+
+        61,
+        63,
+        65,
+        66,
+        67,
+
+        80,
+        81,
+        82
+
+      ].includes(code)
+
     ) {
 
-      return '╌';
+      return '雨';
 
     }
 
 
-    if (
-      [61, 63, 65, 66, 67].includes(code)
-    ) {
-
-      return '∴';
-
-    }
-
+    // Snow
 
     if (
-      [71, 73, 75, 77, 85, 86].includes(code)
+
+      [
+
+        71,
+        73,
+        75,
+        77,
+        85,
+        86
+
+      ].includes(code)
+
     ) {
 
       return '❄';
@@ -578,17 +750,18 @@ export class Maitri
     }
 
 
-    if (
-      [80, 81, 82].includes(code)
-    ) {
-
-      return '◒';
-
-    }
-
+    // Thunderstorm
 
     if (
-      [95, 96, 99].includes(code)
+
+      [
+
+        95,
+        96,
+        99
+
+      ].includes(code)
+
     ) {
 
       return 'ϟ';
@@ -596,7 +769,99 @@ export class Maitri
     }
 
 
-    return '◌';
+    return '•';
+
+  }
+
+
+  // ==========================================================
+  // TEMPERATURE
+  // ==========================================================
+
+  get temperatureDisplay(): string {
+
+    return this.format(
+
+      this.weather.temperature_2m,
+
+      1
+
+    ) + '°C';
+
+  }
+
+
+  // ==========================================================
+  // FEELS LIKE
+  // ==========================================================
+
+  get feelsLikeDisplay(): string {
+
+    return this.format(
+
+      this.weather.apparent_temperature,
+
+      1
+
+    ) + '°C';
+
+  }
+
+
+  // ==========================================================
+  // TEMPERATURE BAR
+  // ==========================================================
+
+  getTemperatureWidth(): number {
+
+    const value =
+      this.weather.temperature_2m;
+
+
+    if (value === null) {
+
+      return 0;
+
+    }
+
+
+    /*
+     * Visual Antarctic temperature scale:
+     *
+     * -50°C = 0%
+     * +10°C = 100%
+     */
+
+    return Math.max(
+
+      0,
+
+      Math.min(
+
+        100,
+
+        ((value + 50) / 60) * 100
+
+      )
+
+    );
+
+  }
+
+
+  // ==========================================================
+  // WIND
+  // ==========================================================
+
+  get windDisplay(): string {
+
+    return this.format(
+
+      this.weather.wind_speed_10m,
+
+      1
+
+    );
 
   }
 
@@ -607,12 +872,73 @@ export class Maitri
 
   get windDirectionText(): string {
 
-    const degrees =
-      this.weather.windDirection;
+    return this.getWindDirection(
 
+      this.weather.wind_direction_10m
+
+    );
+
+  }
+
+
+  // ==========================================================
+  // WIND DEGREES
+  // ==========================================================
+
+  get windDegreesDisplay(): string {
+
+    if (
+
+      this.weather.wind_direction_10m === null
+
+    ) {
+
+      return '--°';
+
+    }
+
+
+    return this.format(
+
+      this.weather.wind_direction_10m,
+
+      0
+
+    ) + '°';
+
+  }
+
+
+  // ==========================================================
+  // WIND ROTATION
+  // ==========================================================
+
+  get windRotation(): number {
+
+    return (
+
+      this.weather.wind_direction_10m ?? 0
+
+    );
+
+  }
+
+
+  // ==========================================================
+  // WIND DIRECTION CONVERTER
+  // ==========================================================
+
+  getWindDirection(
+
+    degrees:
+      number | null
+
+  ): string {
 
     if (degrees === null) {
+
       return '--';
+
     }
 
 
@@ -630,253 +956,25 @@ export class Maitri
     ];
 
 
-    const index =
+    return directions[
+
       Math.round(
         degrees / 45
-      ) % 8;
+      ) % 8
 
-
-    return directions[index];
-
-  }
-
-
-  // ==========================================================
-  // WIND ROTATION
-  // ==========================================================
-
-  get windRotation(): string {
-
-    const degrees =
-      this.weather.windDirection;
-
-
-    if (degrees === null) {
-
-      return 'rotate(0deg)';
-
-    }
-
-
-    return `rotate(${degrees}deg)`;
+    ];
 
   }
 
 
   // ==========================================================
-  // TEMPERATURE DISPLAY
-  // ==========================================================
-
-  get temperatureDisplay(): string {
-
-    const value =
-      this.weather.temperature;
-
-
-    if (value === null) {
-
-      return '--.-°';
-
-    }
-
-
-    return `${value.toFixed(1)}°`;
-
-  }
-
-
-  // ==========================================================
-  // FEELS LIKE DISPLAY
-  // ==========================================================
-
-  get feelsLikeDisplay(): string {
-
-    const value =
-      this.weather.feelsLike;
-
-
-    if (value === null) {
-
-      return '--.- °C';
-
-    }
-
-
-    return `${value.toFixed(1)} °C`;
-
-  }
-
-
-  // ==========================================================
-  // HUMIDITY DISPLAY
-  // ==========================================================
-
-  get humidityDisplay(): string {
-
-    const value =
-      this.weather.humidity;
-
-
-    if (value === null) {
-
-      return '--%';
-
-    }
-
-
-    return `${Math.round(value)}%`;
-
-  }
-
-
-  // ==========================================================
-  // WIND DISPLAY
-  // ==========================================================
-
-  get windDisplay(): string {
-
-    const value =
-      this.weather.windSpeed;
-
-
-    if (value === null) {
-
-      return '--.-';
-
-    }
-
-
-    return value.toFixed(1);
-
-  }
-
-
-  // ==========================================================
-  // PRESSURE DISPLAY
-  // ==========================================================
-
-  get pressureDisplay(): string {
-
-    const value =
-      this.weather.pressure;
-
-
-    if (value === null) {
-
-      return '----';
-
-    }
-
-
-    return Math.round(value).toString();
-
-  }
-
-
-  // ==========================================================
-  // PRECIPITATION DISPLAY
-  // ==========================================================
-
-  get precipitationDisplay(): string {
-
-    const value =
-      this.weather.precipitation;
-
-
-    if (value === null) {
-
-      return '--';
-
-    }
-
-
-    return value.toFixed(1);
-
-  }
-
-
-  // ==========================================================
-  // CLOUD COVER DISPLAY
-  // ==========================================================
-
-  get cloudCoverDisplay(): string {
-
-    const value =
-      this.weather.cloudCover;
-
-
-    if (value === null) {
-
-      return '--%';
-
-    }
-
-
-    return `${Math.round(value)}%`;
-
-  }
-
-
-  // ==========================================================
-  // WIND DEGREES
-  // ==========================================================
-
-  get windDegreesDisplay(): string {
-
-    const value =
-      this.weather.windDirection;
-
-
-    if (value === null) {
-
-      return '---°';
-
-    }
-
-
-    return `${Math.round(value)}°`;
-
-  }
-
-
-  // ==========================================================
-  // TELEMETRY BAR — TEMPERATURE
-  // ==========================================================
-
-  getTemperatureWidth(): number {
-
-    const value =
-      this.weather.temperature;
-
-
-    if (value === null) {
-
-      return 0;
-
-    }
-
-
-    const percentage =
-      ((value + 40) / 60) * 100;
-
-
-    return this.clamp(
-      percentage,
-      5,
-      100
-    );
-
-  }
-
-
-  // ==========================================================
-  // TELEMETRY BAR — WIND
+  // WIND BAR
   // ==========================================================
 
   getWindWidth(): number {
 
     const value =
-      this.weather.windSpeed;
+      this.weather.wind_speed_10m;
 
 
     if (value === null) {
@@ -886,27 +984,52 @@ export class Maitri
     }
 
 
-    const percentage =
-      (value / 80) * 100;
+    /*
+     * 0–80 km/h visual scale
+     */
 
+    return Math.max(
 
-    return this.clamp(
-      percentage,
       0,
-      100
+
+      Math.min(
+
+        100,
+
+        (value / 80) * 100
+
+      )
+
     );
 
   }
 
 
   // ==========================================================
-  // TELEMETRY BAR — HUMIDITY
+  // HUMIDITY
+  // ==========================================================
+
+  get humidityDisplay(): string {
+
+    return this.format(
+
+      this.weather.relative_humidity_2m,
+
+      0
+
+    ) + '%';
+
+  }
+
+
+  // ==========================================================
+  // HUMIDITY BAR
   // ==========================================================
 
   getHumidityWidth(): number {
 
     const value =
-      this.weather.humidity;
+      this.weather.relative_humidity_2m;
 
 
     if (value === null) {
@@ -916,23 +1039,65 @@ export class Maitri
     }
 
 
-    return this.clamp(
-      value,
+    return Math.max(
+
       0,
-      100
+
+      Math.min(
+
+        100,
+
+        value
+
+      )
+
     );
 
   }
 
 
   // ==========================================================
-  // TELEMETRY BAR — CLOUD COVER
+  // PRESSURE
+  // ==========================================================
+
+  get pressureDisplay(): string {
+
+    return this.format(
+
+      this.weather.surface_pressure,
+
+      0
+
+    );
+
+  }
+
+
+  // ==========================================================
+  // CLOUD COVER
+  // ==========================================================
+
+  get cloudCoverDisplay(): string {
+
+    return this.format(
+
+      this.weather.cloud_cover,
+
+      0
+
+    ) + '%';
+
+  }
+
+
+  // ==========================================================
+  // CLOUD COVER BAR
   // ==========================================================
 
   getCloudWidth(): number {
 
     const value =
-      this.weather.cloudCover;
+      this.weather.cloud_cover;
 
 
     if (value === null) {
@@ -942,17 +1107,42 @@ export class Maitri
     }
 
 
-    return this.clamp(
-      value,
+    return Math.max(
+
       0,
-      100
+
+      Math.min(
+
+        100,
+
+        value
+
+      )
+
     );
 
   }
 
 
   // ==========================================================
-  // TELEMETRY BAR — PRECIPITATION
+  // PRECIPITATION
+  // ==========================================================
+
+  get precipitationDisplay(): string {
+
+    return this.format(
+
+      this.weather.precipitation,
+
+      2
+
+    );
+
+  }
+
+
+  // ==========================================================
+  // PRECIPITATION BAR
   // ==========================================================
 
   getPrecipitationWidth(): number {
@@ -968,202 +1158,165 @@ export class Maitri
     }
 
 
-    return this.clamp(
-      value * 20,
+    /*
+     * 0–10 mm visual scale.
+     */
+
+    return Math.max(
+
       0,
-      100
-    );
 
-  }
+      Math.min(
 
+        100,
 
-  // ==========================================================
-  // CLAMP VALUE
-  // ==========================================================
+        (value / 10) * 100
 
-  private clamp(
-    value: number,
-    minimum: number,
-    maximum: number
-  ): number {
-
-    return Math.min(
-      maximum,
-      Math.max(
-        minimum,
-        value
       )
+
     );
 
   }
 
 
   // ==========================================================
-  // WEATHER STATUS TEXT
+  // SNOWFALL
   // ==========================================================
 
-  get weatherStatusText(): string {
+  formatSnowfall(): string {
 
-    switch (
-      this.weatherStatus
-    ) {
+    return this.format(
 
-      case 'LIVE':
-        return 'LIVE';
+      this.weather.snowfall,
 
-      case 'UPDATING':
-        return 'UPDATING';
+      2
 
-      case 'OFFLINE':
-        return 'OFFLINE';
-
-      case 'CONNECTING':
-      default:
-        return 'CONNECTING';
-
-    }
+    );
 
   }
 
 
   // ==========================================================
-  // WEATHER STATUS CSS CLASS
+  // VISIBILITY
   // ==========================================================
 
-  get weatherStatusClass(): string {
+  get visibilityDisplay(): string {
 
-    switch (
-      this.weatherStatus
-    ) {
+    return this.format(
 
-      case 'LIVE':
-        return 'is-live';
+      this.weather.visibility,
 
-      case 'UPDATING':
-        return 'is-updating';
+      0
 
-      case 'OFFLINE':
-        return 'is-offline';
-
-      case 'CONNECTING':
-      default:
-        return 'is-connecting';
-
-    }
+    );
 
   }
 
 
   // ==========================================================
-  // LAST UPDATE — INDIA TIME
+  // WEATHER API TIME
+  // ==========================================================
+
+  get weatherApiTimeDisplay(): string {
+
+    if (!this.weather.time) {
+
+      return '--';
+
+    }
+
+
+    return this.weather.time;
+
+  }
+
+
+  // ==========================================================
+  // LAST UPDATE
   // ==========================================================
 
   get lastUpdateDisplay(): string {
 
-    if (!this.lastUpdate) {
+    if (
+
+      !this.lastWeatherUpdate
+
+    ) {
 
       return '--:--:-- IST';
 
     }
 
 
-    return (
+    const time =
 
       new Intl.DateTimeFormat(
+
         'en-IN',
+
         {
-          timeZone: 'Asia/Kolkata',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false
+
+          timeZone:
+            'Asia/Kolkata',
+
+          hour:
+            '2-digit',
+
+          minute:
+            '2-digit',
+
+          second:
+            '2-digit',
+
+          hour12:
+            false
+
         }
+
       ).format(
-        this.lastUpdate
-      )
 
-      + ' IST'
+        this.lastWeatherUpdate
 
-    );
-
-  }
-
-
-  // ==========================================================
-  // CURRENT TIME — INDIA
-  // ==========================================================
-
-  get currentTimeDisplay(): string {
-
-    return new Intl.DateTimeFormat(
-      'en-IN',
-      {
-        timeZone: 'Asia/Kolkata',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      }
-    ).format(
-      this.currentTime
-    );
-
-  }
-
-
-  // ==========================================================
-  // CURRENT DATE — INDIA
-  // ==========================================================
-
-  get currentDateDisplay(): string {
-
-    const parts =
-      new Intl.DateTimeFormat(
-        'en-CA',
-        {
-          timeZone: 'Asia/Kolkata',
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit'
-        }
-      ).formatToParts(
-        this.currentTime
       );
 
 
-    const year =
-      parts.find(
-        part =>
-          part.type === 'year'
-      )?.value ?? '----';
-
-
-    const month =
-      parts.find(
-        part =>
-          part.type === 'month'
-      )?.value ?? '--';
-
-
-    const day =
-      parts.find(
-        part =>
-          part.type === 'day'
-      )?.value ?? '--';
-
-
-    return `${year}-${month}-${day}`;
+    return `${time} IST`;
 
   }
 
 
   // ==========================================================
-  // RETRY WEATHER
+  // NUMBER FORMAT
   // ==========================================================
 
-  retryWeather(): void {
+  private format(
 
-    this.loadWeather();
+    value:
+      number | null,
+
+    decimals =
+      1
+
+  ): string {
+
+    if (
+
+      value === null ||
+
+      value === undefined ||
+
+      Number.isNaN(value)
+
+    ) {
+
+      return '--';
+
+    }
+
+
+    return Number(value)
+
+      .toFixed(decimals);
 
   }
 

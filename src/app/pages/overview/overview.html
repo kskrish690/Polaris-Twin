@@ -35,7 +35,7 @@
           </strong>
 
           <small>
-            Live Antarctic meteorological data
+            Open-Meteo Antarctic weather data
           </small>
         </div>
 
@@ -93,7 +93,7 @@
       </div>
 
       <div class="kpi-description">
-        Stations reporting live weather
+        Stations reporting weather data
       </div>
 
       <div class="kpi-progress">
@@ -110,11 +110,18 @@
       <div class="kpi-footer">
 
         <span>
-          {{ operationalStations === 2 ? 'ALL STATIONS LIVE' : 'PARTIAL DATA' }}
+          {{
+            operationalStations === 2
+              ? 'ALL STATIONS LIVE'
+              : 'PARTIAL DATA'
+          }}
         </span>
 
         <span>
-          {{ (operationalStations / 2) * 100 | number:'1.0-0' }}%
+          {{
+            (operationalStations / 2) * 100
+              | number:'1.0-0'
+          }}%
         </span>
 
       </div>
@@ -161,18 +168,32 @@
       <div class="kpi-mini-grid">
 
         <div>
-          <span>WIND</span>
+
+          <span>
+            WIND
+          </span>
+
           <strong>
+
             {{ formatNumber(maitri.windSpeed, 0) }}
             km/h
+
           </strong>
+
         </div>
 
         <div>
-          <span>HUMIDITY</span>
+
+          <span>
+            HUMIDITY
+          </span>
+
           <strong>
+
             {{ formatNumber(maitri.humidity, 0) }}%
+
           </strong>
+
         </div>
 
       </div>
@@ -219,18 +240,32 @@
       <div class="kpi-mini-grid">
 
         <div>
-          <span>WIND</span>
+
+          <span>
+            WIND
+          </span>
+
           <strong>
+
             {{ formatNumber(bharati.windSpeed, 0) }}
             km/h
+
           </strong>
+
         </div>
 
         <div>
-          <span>HUMIDITY</span>
+
+          <span>
+            HUMIDITY
+          </span>
+
           <strong>
+
             {{ formatNumber(bharati.humidity, 0) }}%
+
           </strong>
+
         </div>
 
       </div>
@@ -238,7 +273,7 @@
     </article>
 
 
-    <!-- AVERAGE ENVIRONMENT -->
+    <!-- REGIONAL CONDITIONS -->
 
     <article class="kpi-card">
 
@@ -294,9 +329,7 @@
   <section class="main-grid">
 
 
-    <!-- ======================================================= -->
-    <!-- DIGITAL TWIN MAP                                        -->
-    <!-- ======================================================= -->
+    <!-- DIGITAL TWIN -->
 
     <article class="panel twin-panel">
 
@@ -336,13 +369,8 @@
 
       <div class="twin-map">
 
-
-        <!-- GRID -->
-
         <div class="map-grid"></div>
 
-
-        <!-- COORDINATES -->
 
         <div class="map-coordinate top-left">
           70°S
@@ -361,8 +389,6 @@
         </div>
 
 
-        <!-- ANTARCTICA -->
-
         <div class="antarctica-shape">
 
           <div class="ice-ridge ridge-1"></div>
@@ -372,12 +398,10 @@
         </div>
 
 
-        <!-- CONNECTION LINE -->
-
         <div class="station-route"></div>
 
 
-        <!-- MAITRI MARKER -->
+        <!-- MAITRI -->
 
         <div class="station-marker maitri-marker">
 
@@ -404,7 +428,7 @@
         </div>
 
 
-        <!-- BHARATI MARKER -->
+        <!-- BHARATI -->
 
         <div class="station-marker bharati-marker">
 
@@ -431,8 +455,6 @@
         </div>
 
 
-        <!-- MAP LABELS -->
-
         <div class="map-label label-maitri">
           MAITRI
         </div>
@@ -442,18 +464,14 @@
         </div>
 
 
-        <!-- LIVE TELEMETRY -->
-
         <div class="map-live">
 
           <span class="live-dot"></span>
 
-          LIVE WEATHER TELEMETRY
+          OPEN-METEO WEATHER API
 
         </div>
 
-
-        <!-- SCALE -->
 
         <div class="map-scale">
 
@@ -491,7 +509,7 @@
         </div>
 
         <span class="live-badge">
-          LIVE
+          API
         </span>
 
       </div>
@@ -499,14 +517,9 @@
 
       <div class="station-list">
 
-
-        <!-- STATION -->
-
         <div
           class="station-row"
-          *ngFor="let station of stations"
-        >
-
+          *ngFor="let station of stations">
 
           <div class="station-identity">
 
@@ -515,7 +528,6 @@
               [class.live]="station.status === 'LIVE'"
               [class.offline]="station.status !== 'LIVE'">
             </div>
-
 
             <div>
 
@@ -542,11 +554,7 @@
 
             <div class="weather-condition">
 
-              {{
-                getWeatherDescription(
-                  station.weatherCode
-                )
-              }}
+              {{ getWeatherDescription(station.weatherCode) }}
 
             </div>
 
@@ -554,7 +562,6 @@
 
 
           <div class="station-metrics">
-
 
             <div>
 
@@ -619,8 +626,6 @@
       </div>
 
 
-      <!-- STATION READINESS -->
-
       <div class="readiness-section">
 
         <div class="readiness-header">
@@ -630,10 +635,14 @@
           </span>
 
           <strong>
-            {{ (operationalStations / 2) * 100 | number:'1.0-0' }}%
+            {{
+              (operationalStations / 2) * 100
+                | number:'1.0-0'
+            }}%
           </strong>
 
         </div>
+
 
         <div class="readiness-bar">
 
@@ -646,8 +655,9 @@
 
         </div>
 
+
         <small>
-          Data connection status for Maitri and Bharati
+          Open-Meteo API connection status for Maitri and Bharati
         </small>
 
       </div>
@@ -658,15 +668,13 @@
 
 
   <!-- ========================================================= -->
-  <!-- ENVIRONMENT / ENERGY / ALERTS                              -->
+  <!-- ENVIRONMENT / WEATHER / ALERTS                             -->
   <!-- ========================================================= -->
 
   <section class="lower-grid">
 
 
-    <!-- ======================================================= -->
-    <!-- ENVIRONMENT                                             -->
-    <!-- ======================================================= -->
+    <!-- ENVIRONMENT -->
 
     <article class="panel environment-panel">
 
@@ -675,7 +683,7 @@
         <div>
 
           <span class="panel-eyebrow">
-            LIVE TELEMETRY
+            LIVE WEATHER API
           </span>
 
           <h2>
@@ -685,14 +693,13 @@
         </div>
 
         <span class="live-badge">
-          LIVE
+          API
         </span>
 
       </div>
 
 
       <div class="environment-grid">
-
 
         <div class="environment-stat">
 
@@ -803,9 +810,7 @@
     </article>
 
 
-    <!-- ======================================================= -->
-    <!-- WEATHER COMPARISON                                      -->
-    <!-- ======================================================= -->
+    <!-- CURRENT CONDITIONS -->
 
     <article class="panel weather-panel">
 
@@ -814,7 +819,7 @@
         <div>
 
           <span class="panel-eyebrow">
-            STATION COMPARISON
+            OPEN-METEO
           </span>
 
           <h2>
@@ -856,11 +861,7 @@
 
           <div class="comparison-condition">
 
-            {{
-              getWeatherDescription(
-                maitri.weatherCode
-              )
-            }}
+            {{ getWeatherDescription(maitri.weatherCode) }}
 
           </div>
 
@@ -879,6 +880,7 @@
 
             </div>
 
+
             <div>
 
               <span>
@@ -891,6 +893,7 @@
               </strong>
 
             </div>
+
 
             <div>
 
@@ -936,11 +939,7 @@
 
           <div class="comparison-condition">
 
-            {{
-              getWeatherDescription(
-                bharati.weatherCode
-              )
-            }}
+            {{ getWeatherDescription(bharati.weatherCode) }}
 
           </div>
 
@@ -959,6 +958,7 @@
 
             </div>
 
+
             <div>
 
               <span>
@@ -971,6 +971,7 @@
               </strong>
 
             </div>
+
 
             <div>
 
@@ -993,9 +994,7 @@
     </article>
 
 
-    <!-- ======================================================= -->
-    <!-- WEATHER ALERTS                                          -->
-    <!-- ======================================================= -->
+    <!-- WEATHER CONDITIONS -->
 
     <article class="panel alert-panel">
 
@@ -1014,7 +1013,7 @@
         </div>
 
         <span class="live-badge">
-          LIVE
+          API
         </span>
 
       </div>
@@ -1126,7 +1125,6 @@
 
         </div>
 
-
       </div>
 
     </article>
@@ -1135,11 +1133,10 @@
 
 
   <!-- ========================================================= -->
-  <!-- SYSTEM FOOTER                                             -->
+  <!-- FOOTER                                                     -->
   <!-- ========================================================= -->
 
   <footer class="dashboard-footer">
-
 
     <div class="footer-system">
 
@@ -1193,7 +1190,7 @@
       </span>
 
       <strong>
-        LIVE
+        OPEN-METEO
       </strong>
 
     </div>
@@ -1216,7 +1213,7 @@
 
 
   <!-- ========================================================= -->
-  <!-- ERROR MESSAGE                                             -->
+  <!-- ERROR                                                      -->
   <!-- ========================================================= -->
 
   <div
@@ -1240,6 +1237,5 @@
     </button>
 
   </div>
-
 
 </div>

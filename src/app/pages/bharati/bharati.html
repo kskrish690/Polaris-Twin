@@ -1,16 +1,24 @@
 <div class="bharati-page">
 
-  <!-- HEADER -->
+  <!-- ========================================================= -->
+  <!-- HEADER                                                    -->
+  <!-- ========================================================= -->
+
   <section class="page-header">
 
     <div class="header-left">
 
       <div class="station-chip">
+
         <span class="chip-dot"></span>
+
         ANTARCTIC RESEARCH STATION
+
       </div>
 
-      <h1>BHARATI</h1>
+      <h1>
+        BHARATI
+      </h1>
 
       <p>
         Digital Twin Station Intelligence
@@ -50,7 +58,10 @@
   </section>
 
 
-  <!-- ERROR -->
+  <!-- ========================================================= -->
+  <!-- ERROR                                                     -->
+  <!-- ========================================================= -->
+
   <div
     class="error-banner"
     *ngIf="error"
@@ -74,7 +85,10 @@
   </div>
 
 
-  <!-- STATION IDENTITY -->
+  <!-- ========================================================= -->
+  <!-- STATION IDENTITY                                          -->
+  <!-- ========================================================= -->
+
   <section class="station-identity">
 
     <div class="identity-main">
@@ -177,10 +191,17 @@
   </section>
 
 
-  <!-- WEATHER -->
+  <!-- ========================================================= -->
+  <!-- WEATHER                                                   -->
+  <!-- ========================================================= -->
+
   <section class="weather-layout">
 
-    <!-- CURRENT CONDITIONS -->
+
+    <!-- ======================================================= -->
+    <!-- CURRENT CONDITIONS                                     -->
+    <!-- ======================================================= -->
+
     <article class="weather-card primary-weather">
 
       <div class="card-header">
@@ -213,28 +234,30 @@
 
 
       <!-- LOADING -->
+
       <div
         class="loading-state"
         *ngIf="
           loading &&
-          weather.temperature === null
+          !hasWeatherData
         "
       >
 
         <div class="loading-spinner"></div>
 
         <span>
-          CONNECTING TO WEATHER SERVICE
+          CONNECTING TO OPEN-METEO
         </span>
 
       </div>
 
 
       <!-- WEATHER -->
+
       <div
         class="current-weather"
         *ngIf="
-          weather.temperature !== null ||
+          hasWeatherData ||
           !loading
         "
       >
@@ -271,6 +294,9 @@
 
         <div class="weather-side-data">
 
+
+          <!-- HUMIDITY -->
+
           <div class="side-metric">
 
             <span class="side-label">
@@ -284,6 +310,8 @@
           </div>
 
 
+          <!-- PRESSURE -->
+
           <div class="side-metric">
 
             <span class="side-label">
@@ -291,12 +319,19 @@
             </span>
 
             <strong>
+
               {{ pressureDisplay }}
-              <small>hPa</small>
+
+              <small>
+                hPa
+              </small>
+
             </strong>
 
           </div>
 
+
+          <!-- CLOUD -->
 
           <div class="side-metric">
 
@@ -320,7 +355,10 @@
     </article>
 
 
-    <!-- WIND -->
+    <!-- ======================================================= -->
+    <!-- WIND                                                    -->
+    <!-- ======================================================= -->
+
     <article class="weather-card wind-card">
 
       <div class="card-header">
@@ -411,7 +449,10 @@
     </article>
 
 
-    <!-- PRECIPITATION -->
+    <!-- ======================================================= -->
+    <!-- PRECIPITATION                                           -->
+    <!-- ======================================================= -->
+
     <article class="weather-card precipitation-card">
 
       <div class="card-header">
@@ -473,7 +514,10 @@
   </section>
 
 
-  <!-- PARAMETERS -->
+  <!-- ========================================================= -->
+  <!-- PARAMETERS                                                -->
+  <!-- ========================================================= -->
+
   <section class="metrics-section">
 
     <div class="section-heading">
@@ -495,7 +539,7 @@
 
         <span class="pulse-dot"></span>
 
-        TELEMETRY STREAM ACTIVE
+        OPEN-METEO WEATHER STREAM
 
       </div>
 
@@ -504,7 +548,9 @@
 
     <div class="metrics-grid">
 
+
       <!-- TEMPERATURE -->
+
       <article class="metric-card">
 
         <div class="metric-top">
@@ -549,6 +595,7 @@
 
 
       <!-- HUMIDITY -->
+
       <article class="metric-card">
 
         <div class="metric-top">
@@ -593,6 +640,7 @@
 
 
       <!-- WIND -->
+
       <article class="metric-card">
 
         <div class="metric-top">
@@ -641,6 +689,7 @@
 
 
       <!-- CLOUD -->
+
       <article class="metric-card">
 
         <div class="metric-top">
@@ -685,6 +734,7 @@
 
 
       <!-- PRESSURE -->
+
       <article class="metric-card">
 
         <div class="metric-top">
@@ -731,6 +781,7 @@
 
 
       <!-- PRECIPITATION -->
+
       <article class="metric-card">
 
         <div class="metric-top">
@@ -782,7 +833,10 @@
   </section>
 
 
-  <!-- SYSTEM STATUS -->
+  <!-- ========================================================= -->
+  <!-- SYSTEM STATUS                                             -->
+  <!-- ========================================================= -->
+
   <section class="system-section">
 
     <div class="section-heading">
@@ -803,6 +857,9 @@
 
 
     <div class="system-grid">
+
+
+      <!-- WEATHER LINK -->
 
       <div class="system-card">
 
@@ -827,6 +884,8 @@
       </div>
 
 
+      <!-- STATION -->
+
       <div class="system-card">
 
         <div class="system-icon">
@@ -847,6 +906,8 @@
 
       </div>
 
+
+      <!-- LOCATION -->
 
       <div class="system-card">
 
@@ -869,6 +930,8 @@
       </div>
 
 
+      <!-- SOURCE -->
+
       <div class="system-card">
 
         <div class="system-icon">
@@ -882,7 +945,7 @@
           </span>
 
           <strong>
-            LIVE WEATHER
+            OPEN-METEO API
           </strong>
 
         </div>
@@ -894,7 +957,10 @@
   </section>
 
 
-  <!-- PROFILE -->
+  <!-- ========================================================= -->
+  <!-- PROFILE                                                   -->
+  <!-- ========================================================= -->
+
   <section class="profile-section">
 
     <div class="profile-header">
@@ -921,6 +987,9 @@
 
     <div class="profile-grid">
 
+
+      <!-- LOCATION -->
+
       <div class="profile-block">
 
         <span>
@@ -937,6 +1006,8 @@
 
       </div>
 
+
+      <!-- TYPE -->
 
       <div class="profile-block">
 
@@ -955,6 +1026,8 @@
       </div>
 
 
+      <!-- COORDINATES -->
+
       <div class="profile-block">
 
         <span>
@@ -972,6 +1045,8 @@
       </div>
 
 
+      <!-- DIGITAL TWIN -->
+
       <div class="profile-block">
 
         <span>
@@ -983,7 +1058,7 @@
         </strong>
 
         <small>
-          Environmental telemetry layer active
+          Environmental weather layer active
         </small>
 
       </div>
@@ -993,7 +1068,50 @@
   </section>
 
 
-  <!-- FOOTER -->
+  <!-- ========================================================= -->
+  <!-- WEATHER SOURCE                                           -->
+  <!-- ========================================================= -->
+
+  <section class="source-section">
+
+    <div class="source-left">
+
+      <span class="source-dot"></span>
+
+      <div>
+
+        <strong>
+          WEATHER SOURCE · OPEN-METEO API
+        </strong>
+
+        <small>
+          Current meteorological conditions for Bharati coordinates
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div class="source-time">
+
+      <span>
+        API TIMESTAMP
+      </span>
+
+      <strong>
+        {{ weatherSourceTime }}
+      </strong>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================= -->
+  <!-- FOOTER                                                    -->
+  <!-- ========================================================= -->
+
   <footer class="bharati-footer">
 
     <div class="footer-left">

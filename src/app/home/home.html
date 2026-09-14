@@ -1,1 +1,272 @@
-<p>home works!</p>
+<section class="landing-page">
+
+  <!-- Atmospheric background -->
+  <div class="background-grid"></div>
+  <div class="background-glow glow-one"></div>
+  <div class="background-glow glow-two"></div>
+
+  <!-- Animated polar particles -->
+  <div class="particles">
+    <span class="particle p1"></span>
+    <span class="particle p2"></span>
+    <span class="particle p3"></span>
+    <span class="particle p4"></span>
+    <span class="particle p5"></span>
+    <span class="particle p6"></span>
+    <span class="particle p7"></span>
+    <span class="particle p8"></span>
+  </div>
+
+
+
+  <!-- HERO -->
+  <main class="hero">
+
+    <div class="hero-content">
+
+      <div class="eyebrow">
+        <span class="eyebrow-line"></span>
+        INDIA'S ANTARCTIC RESEARCH NETWORK
+        <span class="eyebrow-line"></span>
+      </div>
+
+
+      <h1>
+
+        <span class="title-small">
+          DIGITAL TWIN FOR
+        </span>
+
+        <span class="title-main">
+          INDIA'S
+        </span>
+
+        <span class="title-accent">
+          POLAR FRONTIER
+        </span>
+
+      </h1>
+
+
+      <p class="hero-description">
+        A unified intelligence platform for observing,
+        understanding and simulating India's Antarctic
+        research stations in near real time.
+      </p>
+
+
+      <div class="hero-actions">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="enterDashboard()"
+        >
+          <span>ENTER DIGITAL TWIN</span>
+          <span class="button-arrow">→</span>
+        </button>
+
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="exploreStation('MAITRI')"
+        >
+          EXPLORE MAITRI
+        </button>
+
+      </div>
+
+
+      <div class="hero-note">
+        <span class="note-dot"></span>
+        SIMULATED INTELLIGENCE ENVIRONMENT
+      </div>
+
+    </div>
+
+
+    <!-- HERO VISUAL -->
+    <div class="hero-visual">
+
+      <div class="orbit orbit-one"></div>
+      <div class="orbit orbit-two"></div>
+      <div class="orbit orbit-three"></div>
+
+
+      <div class="earth">
+
+        <div class="earth-glow"></div>
+
+        <div class="continent continent-one"></div>
+        <div class="continent continent-two"></div>
+        <div class="continent continent-three"></div>
+
+        <div class="antarctica">
+          <span></span>
+        </div>
+
+      </div>
+
+
+      <!-- Station markers -->
+
+      <button
+        type="button"
+        class="station-marker maitri-marker"
+        (click)="exploreStation('MAITRI')"
+      >
+        <span class="marker-pulse"></span>
+        <span class="marker-point"></span>
+
+        <span class="marker-label">
+          <strong>MAITRI</strong>
+          <small>70.76°S · 11.73°E</small>
+        </span>
+      </button>
+
+
+      <button
+        type="button"
+        class="station-marker bharati-marker"
+        (click)="exploreStation('BHARATI')"
+      >
+        <span class="marker-pulse"></span>
+        <span class="marker-point"></span>
+
+        <span class="marker-label">
+          <strong>BHARATI</strong>
+          <small>69.41°S · 76.20°E</small>
+        </span>
+      </button>
+
+
+      <div class="satellite satellite-one">
+        ◇
+      </div>
+
+      <div class="satellite satellite-two">
+        ◇
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- INTELLIGENCE STRIP -->
+  <section class="intelligence-strip">
+
+    <div class="intel-item">
+
+      <span class="intel-number">
+        02
+      </span>
+
+      <div>
+        <strong>RESEARCH STATIONS</strong>
+        <small>MAITRI · BHARATI</small>
+      </div>
+
+    </div>
+
+
+    <div class="intel-divider"></div>
+
+
+    <div class="intel-item">
+
+      <span class="intel-symbol">
+        ◉
+      </span>
+
+      <div>
+        <strong>LIVE WEATHER</strong>
+        <small>ATMOSPHERIC OBSERVATION</small>
+      </div>
+
+    </div>
+
+
+    <div class="intel-divider"></div>
+
+
+    <div class="intel-item">
+
+      <span class="intel-symbol">
+        ⌁
+      </span>
+
+      <div>
+        <strong>DIGITAL SIMULATION</strong>
+        <small>SCENARIO INTELLIGENCE</small>
+      </div>
+
+    </div>
+
+
+    <div class="intel-divider"></div>
+
+
+    <div class="intel-item">
+
+      <span class="intel-symbol">
+        ◈
+      </span>
+
+      <div>
+        <strong>DECISION SUPPORT</strong>
+        <small>MISSION READINESS</small>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- BOTTOM MESSAGE -->
+  <section class="mission-section">
+
+    <div class="mission-line"></div>
+
+    <div class="mission-content">
+
+      <span class="mission-label">
+        THE POLAR MISSION
+      </span>
+
+      <p>
+        Observe the present.
+        Predict the future.
+        Simulate the possibilities.
+      </p>
+
+    </div>
+
+    <div class="mission-coordinates">
+      <span>ANTARCTICA</span>
+      <strong>70° S</strong>
+      <small>INDIAN POLAR RESEARCH PROGRAMME</small>
+    </div>
+
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer class="landing-footer">
+
+    <div>
+      POLARIS-TWIN
+      <span>·</span>
+      DIGITAL TWIN FOR INDIA'S ANTARCTIC RESEARCH STATIONS
+    </div>
+
+    <div>
+      {{ formattedDate }}
+      <span>·</span>
+      {{ formattedTime }} IST
+    </div>
+
+  </footer>
+
+</section>

@@ -1,14 +1,46 @@
 import { Routes } from '@angular/router';
-
+import { authGuard } from './guards/auth-guard';
 export const routes: Routes = [
+
+  /* =========================
+     HOME
+     ========================= */
+
   {
     path: '',
-    redirectTo: 'overview',
-    pathMatch: 'full'
+    loadComponent: () =>
+      import('./home/home')
+        .then(m => m.Home)
   },
+
+
+  /* =========================
+     AUTH
+     ========================= */
+
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./pages/login/login')
+        .then(m => m.Login)
+  },
+    {
+    path: 'signup',
+    loadComponent: () =>
+      import('./pages/signup/signup')
+        .then(m => m.Signup)
+  },
+
+
+
+
+  /* =========================
+     PROTECTED DASHBOARD
+     ========================= */
 
   {
     path: 'overview',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/overview/overview')
         .then(m => m.Overview)
@@ -16,6 +48,7 @@ export const routes: Routes = [
 
   {
     path: 'maitri',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/maitri/maitri')
         .then(m => m.Maitri)
@@ -23,6 +56,7 @@ export const routes: Routes = [
 
   {
     path: 'bharati',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/bharati/bharati')
         .then(m => m.Bharati)
@@ -30,6 +64,7 @@ export const routes: Routes = [
 
   {
     path: 'infrastructure',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/infrastructure/infrastructure')
         .then(m => m.Infrastructure)
@@ -37,6 +72,7 @@ export const routes: Routes = [
 
   {
     path: 'energy',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/energy/energy')
         .then(m => m.Energy)
@@ -44,6 +80,7 @@ export const routes: Routes = [
 
   {
     path: 'logistics',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/logistics/logistics')
         .then(m => m.Logistics)
@@ -51,6 +88,7 @@ export const routes: Routes = [
 
   {
     path: 'environment',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/environment/environment')
         .then(m => m.Environment)
@@ -58,6 +96,7 @@ export const routes: Routes = [
 
   {
     path: 'simulation',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/simulation/simulation')
         .then(m => m.Simulation)
@@ -65,6 +104,7 @@ export const routes: Routes = [
 
   {
     path: 'alerts',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/alerts/alerts')
         .then(m => m.Alerts)
@@ -72,8 +112,20 @@ export const routes: Routes = [
 
   {
     path: 'reports',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/reports/reports')
         .then(m => m.Reports)
+  },
+
+
+  /* =========================
+     FALLBACK
+     ========================= */
+
+  {
+    path: '**',
+    redirectTo: ''
   }
+
 ];

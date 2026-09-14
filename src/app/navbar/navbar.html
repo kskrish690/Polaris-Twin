@@ -9,8 +9,8 @@
     <!-- BRAND -->
     <a
       class="brand"
-      routerLink="/overview"
-      aria-label="POLARIS-TWIN Overview"
+      routerLink="/"
+      aria-label="POLARIS-TWIN Home"
     >
 
       <div class="brand-mark">
@@ -52,7 +52,9 @@
     </a>
 
 
-    <!-- CENTER TAGLINE -->
+    <!-- =====================================================
+         CENTER TAGLINE
+         ===================================================== -->
 
     <div class="system-strip">
 
@@ -79,7 +81,9 @@
     </div>
 
 
-    <!-- GOVERNMENT LOCKUP -->
+    <!-- =====================================================
+         GOVERNMENT LOCKUP
+         ===================================================== -->
 
     <div class="government-lockup">
 
@@ -102,7 +106,9 @@
     </div>
 
 
-    <!-- DATE -->
+    <!-- =====================================================
+         DATE / TIME
+         ===================================================== -->
 
     <div class="system-time">
 
@@ -118,7 +124,9 @@
     </div>
 
 
-    <!-- DEMO -->
+    <!-- =====================================================
+         DEMO / LIVE
+         ===================================================== -->
 
     <button
       class="mode-switch"
@@ -144,32 +152,250 @@
     </button>
 
 
-    <!-- USER -->
+    <!-- =====================================================
+         USER PROFILE
+         ===================================================== -->
 
-    <button
-      class="profile-button"
-      type="button"
-      aria-label="User profile"
-    >
+    <div class="profile-wrapper">
 
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
+      <!-- PERSON ICON -->
+
+      <button
+        class="profile-button"
+        type="button"
+        aria-label="User profile"
+        aria-haspopup="true"
+        [attr.aria-expanded]="profileDropdownOpen"
+        (click)="toggleProfileDropdown()"
+        [class.active]="profileDropdownOpen"
       >
 
-        <circle
-          cx="12"
-          cy="8"
-          r="3.5"
-        />
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
 
-        <path
-          d="M5 21C5 16.8 7.8 14.5 12 14.5C16.2 14.5 19 16.8 19 21"
-        />
+          <circle
+            cx="12"
+            cy="8"
+            r="3.5"
+          />
 
-      </svg>
+          <path
+            d="M5 21C5 16.8 7.8 14.5 12 14.5C16.2 14.5 19 16.8 19 21"
+          />
 
-    </button>
+        </svg>
+
+      </button>
+
+
+      <!-- =================================================
+           PROFILE DROPDOWN
+           ================================================= -->
+
+      <div
+        class="profile-dropdown"
+        *ngIf="profileDropdownOpen"
+      >
+
+
+        <!-- =================================================
+             LOGGED OUT
+             ================================================= -->
+
+        <ng-container *ngIf="!authService.isLoggedIn">
+
+          <div class="profile-dropdown-header">
+
+            <div class="profile-dropdown-icon">
+
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+
+                <circle
+                  cx="12"
+                  cy="8"
+                  r="3.5"
+                />
+
+                <path
+                  d="M5 21C5 16.8 7.8 14.5 12 14.5C16.2 14.5 19 16.8 19 21"
+                />
+
+              </svg>
+
+            </div>
+
+
+            <div>
+
+              <strong>
+                POLARIS ACCESS
+              </strong>
+
+              <span>
+                Login to access the Digital Twin
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="profile-divider"></div>
+
+
+          <!-- LOGIN -->
+
+          <button
+            class="profile-action"
+            type="button"
+            (click)="login()"
+          >
+
+            <span class="profile-action-icon login-icon">
+              ↪
+            </span>
+
+            <span class="profile-action-text">
+
+              <strong>
+                LOGIN
+              </strong>
+
+              <small>
+                Access your POLARIS-TWIN account
+              </small>
+
+            </span>
+
+            <span class="profile-action-arrow">
+              →
+            </span>
+
+          </button>
+
+
+          <!-- SIGN UP -->
+
+          <button
+            class="profile-action"
+            type="button"
+            (click)="signup()"
+          >
+
+            <span class="profile-action-icon signup-icon">
+              +
+            </span>
+
+            <span class="profile-action-text">
+
+              <strong>
+                SIGN UP
+              </strong>
+
+              <small>
+                Create a new researcher account
+              </small>
+
+            </span>
+
+            <span class="profile-action-arrow">
+              →
+            </span>
+
+          </button>
+
+        </ng-container>
+
+
+        <!-- =================================================
+             LOGGED IN
+             ================================================= -->
+
+        <ng-container *ngIf="authService.isLoggedIn">
+
+          <div class="profile-dropdown-header">
+
+            <div class="profile-dropdown-icon logged">
+
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+
+                <circle
+                  cx="12"
+                  cy="8"
+                  r="3.5"
+                />
+
+                <path
+                  d="M5 21C5 16.8 7.8 14.5 12 14.5C16.2 14.5 19 16.8 19 21"
+                />
+
+              </svg>
+
+            </div>
+
+
+            <div>
+
+              <strong>
+                {{ authService.currentUser?.name }}
+              </strong>
+
+              <span>
+                {{ authService.currentUser?.email }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="profile-divider"></div>
+
+
+          <!-- LOGOUT -->
+
+          <button
+            class="profile-action logout"
+            type="button"
+            (click)="logout()"
+          >
+
+            <span class="profile-action-icon logout-icon">
+              ↪
+            </span>
+
+            <span class="profile-action-text">
+
+              <strong>
+                LOGOUT
+              </strong>
+
+              <small>
+                End your POLARIS-TWIN session
+              </small>
+
+            </span>
+
+            <span class="profile-action-arrow">
+              →
+            </span>
+
+          </button>
+
+        </ng-container>
+
+      </div>
+
+    </div>
 
   </div>
 
@@ -201,7 +427,9 @@
     </div>
 
 
-    <!-- SEARCH -->
+    <!-- =====================================================
+         SEARCH
+         ===================================================== -->
 
     <div class="search-wrapper">
 
