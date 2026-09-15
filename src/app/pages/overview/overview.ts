@@ -1,1151 +1,483 @@
 import {
+  AfterViewInit,
+  ChangeDetectorRef,
   Component,
+  ElementRef,
   OnDestroy,
   OnInit,
-  ChangeDetectorRef
+  ViewChild
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Subscription, interval } from 'rxjs';
 
-import {
-  WeatherService,
-  WeatherData
-} from '../../services/weather';
+import * as L from 'leaflet';
 
+type StationId = 'BHARATI' | 'MAITRI';
 
-// ============================================================
-// STATION INTERFACE
-// ============================================================
-
-interface Station {
-
+interface WeatherStation {
+  id: StationId;
   name: string;
-
   code: string;
-
   latitude: number;
-
   longitude: number;
+  region: string;
+  location: string;
+  elevation: string;
+}
+
+interface WeatherData {
+  loading: boolean;
+  online: boolean;
 
   temperature: number | null;
-
-  feelsLike: number | null;
-
+  apparentTemperature: number | null;
   humidity: number | null;
 
   windSpeed: number | null;
-
   windDirection: number | null;
 
-  pressure: number | null;
-
   precipitation: number | null;
-
   snowfall: number | null;
-
   visibility: number | null;
+
+  cloudCover: number | null;
+  pressure: number | null;
 
   weatherCode: number | null;
 
-  cloudCover: number | null;
-
-  apiTime: string | null;
-
-  status:
-    | 'CONNECTING'
-    | 'UPDATING'
-    | 'LIVE'
-    | 'OFFLINE';
-
+  lastUpdated: Date | null;
 }
 
+interface OpenMeteoResponse {
+  latitude: number;
+  longitude: number;
+  elevation: number;
 
-// ============================================================
-// COMPONENT
-// ============================================================
+  current: {
+    time: string;
+    interval: number;
+
+    temperature_2m: number;
+    apparent_temperature: number;
+    relative_humidity_2m: number;
+
+    wind_speed_10m: number;
+    wind_direction_10m: number;
+
+    precipitation: number;
+    snowfall: number;
+    visibility: number;
+
+    cloud_cover: number;
+    surface_pressure: number;
+
+    weather_code: number;
+  };
+}
 
 @Component({
-
   selector: 'app-overview',
-
   standalone: true,
-
   imports: [
     CommonModule
   ],
-
-  templateUrl:
-    './overview.html',
-
-  styleUrls: [
-    './overview.css'
-  ]
-
+  templateUrl: './overview.html',
+  styleUrls: ['./overview.css']
 })
-
-
 export class Overview
-  implements OnInit, OnDestroy {
+  implements OnInit, AfterViewInit, OnDestroy {
 
+  // ============================================================
+  // SATELLITE MAP
+  // ============================================================
 
-  // ==========================================================
-  // CLOCK
-  // ==========================================================
+  @ViewChild('satelliteMap')
+  satelliteMapElement?: ElementRef<HTMLDivElement>;
 
-  currentTime = new Date();
+  private satelliteMap?: L.Map;
+  private satelliteLayer?: L.TileLayer;
 
+  private stationMarkers: Record<
+    StationId,
+    L.CircleMarker | undefined
+  > = {
+    BHARATI: undefined,
+    MAITRI: undefined
+  };
 
-  // ==========================================================
-  // PAGE STATE
-  // ==========================================================
+  // ============================================================
+  // MAP STATE
+  // ============================================================
 
-  loading = true;
+  mapMode: 'network' | 'satellite' = 'network';
 
-  error = '';
+  selectedStation: StationId = 'BHARATI';
 
-  lastWeatherUpdate:
-    Date | null = null;
+  // ============================================================
+  // STATION REGISTRY
+  // ============================================================
 
+  readonly stations: Record<StationId, WeatherStation> = {
 
-  // ==========================================================
-  // TIMERS
-  // ==========================================================
-
-  private clockTimer?:
-    ReturnType<typeof setInterval>;
-
-  private weatherTimer?:
-    ReturnType<typeof setInterval>;
-
-
-  // ==========================================================
-  // STATIONS
-  // ==========================================================
-
-  stations: Station[] = [
-
-    // ========================================================
-    // MAITRI
-    // ========================================================
-
-    {
-
-      name: 'MAITRI',
-
-      code: 'MAI',
-
-      latitude: -70.76444,
-
-      longitude: 11.73417,
-
-      temperature: null,
-
-      feelsLike: null,
-
-      humidity: null,
-
-      windSpeed: null,
-
-      windDirection: null,
-
-      pressure: null,
-
-      precipitation: null,
-
-      snowfall: null,
-
-      visibility: null,
-
-      weatherCode: null,
-
-      cloudCover: null,
-
-      apiTime: null,
-
-      status: 'CONNECTING'
-
+    BHARATI: {
+      id: 'BHARATI',
+      name: 'BHARATI',
+      code: 'BRI-01',
+      latitude: -69.406833,
+      longitude: 76.195333,
+      region: 'LARSEMANN HILLS',
+      location: 'PRYDZ BAY / LARSEMANN HILLS',
+      elevation: '~35 M ASL'
     },
 
-
-    // ========================================================
-    // BHARATI
-    // ========================================================
-
-    {
-
-      name: 'BHARATI',
-
-      code: 'BHA',
-
-      latitude: -69.406833,
-
-      longitude: 76.195333,
-
-      temperature: null,
-
-      feelsLike: null,
-
-      humidity: null,
-
-      windSpeed: null,
-
-      windDirection: null,
-
-      pressure: null,
-
-      precipitation: null,
-
-      snowfall: null,
-
-      visibility: null,
-
-      weatherCode: null,
-
-      cloudCover: null,
-
-      apiTime: null,
-
-      status: 'CONNECTING'
-
+    MAITRI: {
+      id: 'MAITRI',
+      name: 'MAITRI',
+      code: 'MAI-01',
+      latitude: -70.755714,
+      longitude: 11.654676,
+      region: 'SCHIRMACHER OASIS',
+      location: 'SCHIRMACHER OASIS',
+      elevation: '~114 M ASL'
     }
 
-  ];
+  };
 
+  // ============================================================
+  // WEATHER
+  // ============================================================
 
-  // ==========================================================
+  weather: Record<StationId, WeatherData> = {
+    BHARATI: this.createEmptyWeather(),
+    MAITRI: this.createEmptyWeather()
+  };
+
+  // ============================================================
+  // TELEMETRY
+  // Non-weather digital twin values remain simulated
+  // ============================================================
+
+  telemetry = {
+    power: 94,
+    network: 98,
+    cpu: 41,
+    storage: 68,
+    battery: 87,
+    thermal: -18
+  };
+
+  private weatherRefreshSubscription?: Subscription;
+  private telemetrySubscription?: Subscription;
+
+  private satelliteInitialized = false;
+
+  // ============================================================
   // CONSTRUCTOR
-  // ==========================================================
+  // ============================================================
 
   constructor(
-
-    private weatherService:
-      WeatherService,
-
-    private cdr:
-      ChangeDetectorRef
-
+    private readonly http: HttpClient,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
-
-  // ==========================================================
-  // INIT
-  // ==========================================================
+  // ============================================================
+  // INITIALIZATION
+  // ============================================================
 
   ngOnInit(): void {
 
-    this.updateClock();
+    /*
+     * IMPORTANT:
+     * Weather loading starts here rather than waiting for a
+     * button click or map interaction.
+     */
 
+    this.loadAllWeather();
 
-    // --------------------------------------------------------
-    // India clock
-    // --------------------------------------------------------
+    /*
+     * Refresh Open-Meteo every 5 minutes.
+     */
 
-    this.clockTimer =
-      setInterval(
-        () => {
+    this.weatherRefreshSubscription = interval(5 * 60 * 1000)
+      .subscribe(() => {
+        this.loadAllWeather();
+      });
 
-          this.updateClock();
+    /*
+     * Digital twin telemetry remains simulated.
+     */
 
-          this.cdr.detectChanges();
+    this.telemetrySubscription = interval(5000)
+      .subscribe(() => {
+        this.updateTelemetry();
+      });
 
-        },
-        1000
-      );
+    /*
+     * Make initial LOADING state visible immediately.
+     */
 
-
-    // --------------------------------------------------------
-    // First API request
-    // --------------------------------------------------------
-
-    this.loadWeather();
-
-
-    // --------------------------------------------------------
-    // Open-Meteo refresh
-    // Every 5 minutes
-    // --------------------------------------------------------
-
-    this.weatherTimer =
-      setInterval(
-        () => {
-
-          this.loadWeather();
-
-        },
-        5 * 60 * 1000
-      );
-
+    this.cdr.detectChanges();
   }
 
+  ngAfterViewInit(): void {
 
-  // ==========================================================
-  // DESTROY
-  // ==========================================================
+    /*
+     * If the page starts directly in satellite mode,
+     * initialize the map.
+     */
+
+    if (this.mapMode === 'satellite') {
+      setTimeout(() => {
+        this.initializeSatelliteMap();
+      }, 100);
+    }
+  }
 
   ngOnDestroy(): void {
 
-    if (this.clockTimer) {
+    this.weatherRefreshSubscription?.unsubscribe();
 
-      clearInterval(
-        this.clockTimer
-      );
+    this.telemetrySubscription?.unsubscribe();
 
+    if (this.satelliteMap) {
+      this.satelliteMap.remove();
     }
-
-
-    if (this.weatherTimer) {
-
-      clearInterval(
-        this.weatherTimer
-      );
-
-    }
-
   }
 
+  // ============================================================
+  // WEATHER
+  // ============================================================
 
-  // ==========================================================
-  // CLOCK
-  // ==========================================================
+  loadAllWeather(): void {
 
-  private updateClock(): void {
+    /*
+     * Set both stations to LOADING first.
+     *
+     * This is important:
+     * loading !== offline
+     */
 
-    this.currentTime =
-      new Date();
+    this.setStationLoading('BHARATI');
+    this.setStationLoading('MAITRI');
 
-  }
-
-
-  // ==========================================================
-  // LOAD WEATHER
-  // ==========================================================
-
-  loadWeather(): void {
-
-    this.loading = true;
-
-    this.error = '';
-
-
-    this.stations.forEach(
-      station => {
-
-        station.status =
-          'UPDATING';
-
-      }
-    );
-
+    this.loadStationWeather('BHARATI');
+    this.loadStationWeather('MAITRI');
 
     this.cdr.detectChanges();
-
-
-    let completed = 0;
-
-
-    // --------------------------------------------------------
-    // Request both stations
-    // --------------------------------------------------------
-
-    this.stations.forEach(
-      station => {
-
-        this.weatherService
-
-          .getWeather(
-            station.latitude,
-            station.longitude
-          )
-
-          .subscribe({
-
-            next:
-              (
-                data: WeatherData
-              ) => {
-
-                this.applyWeatherData(
-                  station,
-                  data
-                );
-
-
-                station.status =
-                  'LIVE';
-
-
-                completed++;
-
-
-                if (
-                  completed ===
-                  this.stations.length
-                ) {
-
-                  this.loading =
-                    false;
-
-                  this.lastWeatherUpdate =
-                    new Date();
-
-                }
-
-
-                this.cdr.detectChanges();
-
-              },
-
-
-            error:
-              (
-                error
-              ) => {
-
-                console.error(
-                  `${station.name} weather error:`,
-                  error
-                );
-
-
-                station.status =
-                  'OFFLINE';
-
-
-                completed++;
-
-
-                if (
-                  completed ===
-                  this.stations.length
-                ) {
-
-                  this.loading =
-                    false;
-
-                  this.lastWeatherUpdate =
-                    new Date();
-
-
-                  const live =
-                    this.operationalStations;
-
-
-                  if (live === 0) {
-
-                    this.error =
-                      'Unable to retrieve live weather data from Open-Meteo. Check your internet connection.';
-
-                  }
-
-                  else {
-
-                    this.error =
-                      'Some station weather data could not be retrieved.';
-
-                  }
-
-                }
-
-
-                this.cdr.detectChanges();
-
-              }
-
-          });
-
-      }
-    );
-
   }
 
-
-  // ==========================================================
-  // APPLY OPEN-METEO DATA
-  // ==========================================================
-
-  private applyWeatherData(
-
-    station: Station,
-
-    data: WeatherData
-
+  private loadStationWeather(
+    stationId: StationId
   ): void {
 
-    if (
-      !data ||
-      !data.current
-    ) {
+    const station = this.stations[stationId];
 
-      station.status =
-        'OFFLINE';
+    const url =
+      'https://api.open-meteo.com/v1/forecast' +
+      `?latitude=${station.latitude}` +
+      `&longitude=${station.longitude}` +
+      '&current=' +
+      [
+        'temperature_2m',
+        'apparent_temperature',
+        'relative_humidity_2m',
+        'wind_speed_10m',
+        'wind_direction_10m',
+        'precipitation',
+        'snowfall',
+        'visibility',
+        'cloud_cover',
+        'surface_pressure',
+        'weather_code'
+      ].join(',') +
+      '&timezone=UTC';
 
-      return;
+    this.http
+      .get<OpenMeteoResponse>(url)
+      .subscribe({
 
-    }
+        next: (response) => {
 
+          const current = response.current;
 
-    const current =
-      data.current;
+          this.weather[stationId] = {
 
+            loading: false,
+            online: true,
 
-    station.temperature =
-      this.safeNumber(
-        current.temperature_2m
-      );
+            temperature: current.temperature_2m,
 
+            apparentTemperature:
+              current.apparent_temperature,
 
-    station.feelsLike =
-      this.safeNumber(
-        current.apparent_temperature
-      );
+            humidity:
+              current.relative_humidity_2m,
 
+            windSpeed:
+              current.wind_speed_10m,
 
-    station.humidity =
-      this.safeNumber(
-        current.relative_humidity_2m
-      );
+            windDirection:
+              current.wind_direction_10m,
 
+            precipitation:
+              current.precipitation,
 
-    station.windSpeed =
-      this.safeNumber(
-        current.wind_speed_10m
-      );
+            snowfall:
+              current.snowfall,
 
+            visibility:
+              current.visibility,
 
-    station.windDirection =
-      this.safeNumber(
-        current.wind_direction_10m
-      );
+            cloudCover:
+              current.cloud_cover,
 
+            pressure:
+              current.surface_pressure,
 
-    station.pressure =
-      this.safeNumber(
-        current.surface_pressure
-      );
+            weatherCode:
+              current.weather_code,
 
+            lastUpdated:
+              new Date()
 
-    station.precipitation =
-      this.safeNumber(
-        current.precipitation
-      );
+          };
 
+          /*
+           * Force Angular to immediately refresh
+           * the dashboard after the HTTP callback.
+           */
 
-    station.snowfall =
-      this.safeNumber(
-        current.snowfall
-      );
+          this.cdr.detectChanges();
 
+          /*
+           * Update satellite marker if map is active.
+           */
 
-    station.visibility =
-      this.safeNumber(
-        current.visibility
-      );
+          this.updateStationMarker(stationId);
+        },
 
+        error: (error) => {
 
-    station.weatherCode =
-      this.safeNumber(
-        current.weather_code
-      );
+          console.error(
+            `Open-Meteo error for ${stationId}:`,
+            error
+          );
 
+          this.weather[stationId] = {
 
-    station.cloudCover =
-      this.safeNumber(
-        current.cloud_cover
-      );
+            ...this.weather[stationId],
 
+            loading: false,
 
-    station.apiTime =
-      current.time ?? null;
+            online: false
 
+          };
 
-    station.status =
-      'LIVE';
+          this.cdr.detectChanges();
 
-  }
-
-
-  // ==========================================================
-  // SAFE NUMBER
-  // ==========================================================
-
-  private safeNumber(
-
-    value:
-      number |
-      null |
-      undefined
-
-  ): number | null {
-
-    if (
-      value === null ||
-      value === undefined ||
-      Number.isNaN(value)
-    ) {
-
-      return null;
-
-    }
-
-    return Number(value);
-
-  }
-
-
-  // ==========================================================
-  // MAITRI
-  // ==========================================================
-
-  get maitri(): Station {
-
-    return this.stations[0];
-
-  }
-
-
-  // ==========================================================
-  // BHARATI
-  // ==========================================================
-
-  get bharati(): Station {
-
-    return this.stations[1];
-
-  }
-
-
-  // ==========================================================
-  // OPERATIONAL STATIONS
-  // ==========================================================
-
-  get operationalStations(): number {
-
-    return this.stations.filter(
-      station =>
-        station.status === 'LIVE'
-    ).length;
-
-  }
-
-
-  // ==========================================================
-  // AVERAGE TEMPERATURE
-  // ==========================================================
-
-  get averageTemperature():
-    number | null {
-
-    return this.average(
-      this.stations.map(
-        station =>
-          station.temperature
-      )
-    );
-
-  }
-
-
-  // ==========================================================
-  // AVERAGE WIND
-  // ==========================================================
-
-  get averageWindSpeed():
-    number | null {
-
-    return this.average(
-      this.stations.map(
-        station =>
-          station.windSpeed
-      )
-    );
-
-  }
-
-
-  // ==========================================================
-  // AVERAGE PRESSURE
-  // ==========================================================
-
-  get averagePressure():
-    number | null {
-
-    return this.average(
-      this.stations.map(
-        station =>
-          station.pressure
-      )
-    );
-
-  }
-
-
-  // ==========================================================
-  // AVERAGE HUMIDITY
-  // ==========================================================
-
-  get averageHumidity():
-    number | null {
-
-    return this.average(
-      this.stations.map(
-        station =>
-          station.humidity
-      )
-    );
-
-  }
-
-
-  // ==========================================================
-  // AVERAGE CLOUD COVER
-  // ==========================================================
-
-  get averageCloudCover():
-    number | null {
-
-    return this.average(
-      this.stations.map(
-        station =>
-          station.cloudCover
-      )
-    );
-
-  }
-
-
-  // ==========================================================
-  // TOTAL PRECIPITATION
-  // ==========================================================
-
-  get totalPrecipitation():
-    number | null {
-
-    const values =
-      this.stations
-        .map(
-          station =>
-            station.precipitation
-        )
-        .filter(
-          (
-            value
-          ): value is number =>
-            value !== null
-        );
-
-
-    if (
-      values.length === 0
-    ) {
-
-      return null;
-
-    }
-
-
-    return values.reduce(
-      (
-        total,
-        value
-      ) =>
-        total + value,
-      0
-    );
-
-  }
-
-
-  // ==========================================================
-  // GENERIC AVERAGE
-  // ==========================================================
-
-  private average(
-
-    values:
-      Array<number | null>
-
-  ): number | null {
-
-    const valid =
-      values.filter(
-        (
-          value
-        ): value is number =>
-          value !== null
-      );
-
-
-    if (
-      valid.length === 0
-    ) {
-
-      return null;
-
-    }
-
-
-    return (
-      valid.reduce(
-        (
-          total,
-          value
-        ) =>
-          total + value,
-        0
-      ) /
-      valid.length
-    );
-
-  }
-
-
-  // ==========================================================
-  // FORMATTED DATE
-  // ==========================================================
-
-  get formattedDate(): string {
-
-    const parts =
-      new Intl.DateTimeFormat(
-        'en-CA',
-        {
-
-          timeZone:
-            'Asia/Kolkata',
-
-          year:
-            'numeric',
-
-          month:
-            '2-digit',
-
-          day:
-            '2-digit'
-
+          this.updateStationMarker(stationId);
         }
-      ).formatToParts(
-        new Date()
-      );
 
-
-    const year =
-      parts.find(
-        p =>
-          p.type === 'year'
-      )?.value ?? '----';
-
-
-    const month =
-      parts.find(
-        p =>
-          p.type === 'month'
-      )?.value ?? '--';
-
-
-    const day =
-      parts.find(
-        p =>
-          p.type === 'day'
-      )?.value ?? '--';
-
-
-    return `${year}-${month}-${day}`;
-
+      });
   }
 
+  private setStationLoading(
+    stationId: StationId
+  ): void {
 
-  // ==========================================================
-  // FORMATTED TIME
-  // ==========================================================
+    this.weather[stationId] = {
 
-  get formattedTime(): string {
+      ...this.weather[stationId],
 
-    return new Intl.DateTimeFormat(
-      'en-IN',
-      {
+      loading: true,
 
-        timeZone:
-          'Asia/Kolkata',
+      online: false
 
-        hour:
-          '2-digit',
-
-        minute:
-          '2-digit',
-
-        second:
-          '2-digit',
-
-        hour12:
-          false
-
-      }
-    ).format(
-      new Date()
-    );
-
+    };
   }
 
-
-  // ==========================================================
-  // LAST WEATHER UPDATE
-  // ==========================================================
-
-  get formattedLastUpdate(): string {
-
-    if (
-      !this.lastWeatherUpdate
-    ) {
-
-      return '--:--:-- IST';
-
-    }
-
-
-    const time =
-      new Intl.DateTimeFormat(
-        'en-IN',
-        {
-
-          timeZone:
-            'Asia/Kolkata',
-
-          hour:
-            '2-digit',
-
-          minute:
-            '2-digit',
-
-          second:
-            '2-digit',
-
-          hour12:
-            false
-
-        }
-      ).format(
-        this.lastWeatherUpdate
-      );
-
-
-    return `${time} IST`;
-
-  }
-
-
-  // ==========================================================
-  // WEATHER DESCRIPTION
-  // ==========================================================
+  // ============================================================
+  // WEATHER HELPERS
+  // ============================================================
 
   getWeatherDescription(
     code: number | null
   ): string {
 
-    if (
-      code === null
-    ) {
-
-      return 'NO DATA';
-
+    if (code === null) {
+      return 'DATA UNAVAILABLE';
     }
 
+    switch (code) {
 
-    if (code === 0) {
+      case 0:
+        return 'CLEAR SKY';
 
-      return 'CLEAR SKY';
+      case 1:
+      case 2:
+      case 3:
+        return 'PARTLY CLOUDY';
 
+      case 45:
+      case 48:
+        return 'FOG';
+
+      case 51:
+      case 53:
+      case 55:
+        return 'DRIZZLE';
+
+      case 56:
+      case 57:
+        return 'FREEZING DRIZZLE';
+
+      case 61:
+      case 63:
+      case 65:
+        return 'RAIN';
+
+      case 66:
+      case 67:
+        return 'FREEZING RAIN';
+
+      case 71:
+      case 73:
+      case 75:
+      case 77:
+        return 'SNOW';
+
+      case 80:
+      case 81:
+      case 82:
+        return 'RAIN SHOWERS';
+
+      case 85:
+      case 86:
+        return 'SNOW SHOWERS';
+
+      case 95:
+        return 'THUNDERSTORM';
+
+      case 96:
+      case 99:
+        return 'THUNDERSTORM / HAIL';
+
+      default:
+        return 'UNKNOWN';
     }
-
-
-    if (
-      [1, 2, 3].includes(code)
-    ) {
-
-      return 'CLOUDY';
-
-    }
-
-
-    if (
-      [45, 48].includes(code)
-    ) {
-
-      return 'FOG';
-
-    }
-
-
-    if (
-      [51, 53, 55, 56, 57]
-        .includes(code)
-    ) {
-
-      return 'DRIZZLE';
-
-    }
-
-
-    if (
-      [61, 63, 65, 66, 67]
-        .includes(code)
-    ) {
-
-      return 'RAIN';
-
-    }
-
-
-    if (
-      [71, 73, 75, 77, 85, 86]
-        .includes(code)
-    ) {
-
-      return 'SNOW';
-
-    }
-
-
-    if (
-      [80, 81, 82]
-        .includes(code)
-    ) {
-
-      return 'RAIN SHOWERS';
-
-    }
-
-
-    if (
-      [95, 96, 99]
-        .includes(code)
-    ) {
-
-      return 'THUNDERSTORM';
-
-    }
-
-
-    return 'UNKNOWN';
-
   }
-
-
-  // ==========================================================
-  // SHORT DESCRIPTION
-  // ==========================================================
-
-  getWeatherShortDescription(
-    code: number | null
-  ): string {
-
-    if (
-      code === null
-    ) {
-
-      return '--';
-
-    }
-
-
-    if (code === 0) {
-
-      return 'Clear';
-
-    }
-
-
-    if (
-      [1, 2, 3].includes(code)
-    ) {
-
-      return 'Cloudy';
-
-    }
-
-
-    if (
-      [45, 48].includes(code)
-    ) {
-
-      return 'Fog';
-
-    }
-
-
-    if (
-      [51, 53, 55, 56, 57]
-        .includes(code)
-    ) {
-
-      return 'Drizzle';
-
-    }
-
-
-    if (
-      [61, 63, 65, 66, 67]
-        .includes(code)
-    ) {
-
-      return 'Rain';
-
-    }
-
-
-    if (
-      [71, 73, 75, 77, 85, 86]
-        .includes(code)
-    ) {
-
-      return 'Snow';
-
-    }
-
-
-    if (
-      [80, 81, 82]
-        .includes(code)
-    ) {
-
-      return 'Showers';
-
-    }
-
-
-    if (
-      [95, 96, 99]
-        .includes(code)
-    ) {
-
-      return 'Storm';
-
-    }
-
-
-    return 'Unknown';
-
-  }
-
-
-  // ==========================================================
-  // WIND DIRECTION
-  // ==========================================================
 
   getWindDirection(
     degrees: number | null
   ): string {
 
-    if (
-      degrees === null
-    ) {
-
-      return '--';
-
+    if (degrees === null) {
+      return '—';
     }
 
-
     const directions = [
-
       'N',
       'NE',
       'E',
@@ -1154,236 +486,602 @@ export class Overview
       'SW',
       'W',
       'NW'
-
     ];
 
-
     const index =
-      Math.round(
-        degrees / 45
-      ) % 8;
-
+      Math.round(degrees / 45) % 8;
 
     return directions[index];
-
   }
 
+  // ============================================================
+  // KPI GETTERS
+  // ============================================================
 
-  // ==========================================================
-  // WIND DISPLAY
-  // ==========================================================
+  get activeStationCount(): number {
 
-  getWindDisplay(
-    station: Station
-  ): string {
+    return [
+      this.weather.BHARATI,
+      this.weather.MAITRI
+    ].filter(
+      station => station.online
+    ).length;
+  }
 
-    if (
-      station.windSpeed === null
-    ) {
+  get networkAvailability(): number {
 
-      return '--';
+    const total = 2;
 
-    }
+    const online =
+      this.activeStationCount;
 
+    return Math.round(
+      (online / total) * 100
+    );
+  }
 
-    return this.formatNumber(
-      station.windSpeed,
-      1
+  get meanTemperature(): number | null {
+
+    const temperatures = [
+      this.weather.BHARATI.temperature,
+      this.weather.MAITRI.temperature
+    ].filter(
+      (value): value is number =>
+        typeof value === 'number' &&
+        Number.isFinite(value)
     );
 
-  }
-
-
-  // ==========================================================
-  // TEMPERATURE DISPLAY
-  // ==========================================================
-
-  getTemperatureDisplay(
-    temperature: number | null
-  ): string {
-
-    if (
-      temperature === null
-    ) {
-
-      return '--';
-
+    if (!temperatures.length) {
+      return null;
     }
 
-
-    return this.formatNumber(
-      temperature,
-      1
-    );
-
-  }
-
-
-  // ==========================================================
-  // HUMIDITY DISPLAY
-  // ==========================================================
-
-  getHumidityDisplay(
-    humidity: number | null
-  ): string {
-
-    if (
-      humidity === null
-    ) {
-
-      return '--';
-
-    }
-
-
-    return this.formatNumber(
-      humidity,
+    return temperatures.reduce(
+      (sum, value) => sum + value,
       0
-    ) + '%';
-
+    ) / temperatures.length;
   }
 
+  get systemReadiness(): number {
 
-  // ==========================================================
-  // PRESSURE DISPLAY
-  // ==========================================================
+    const weatherAvailability =
+      this.networkAvailability;
 
-  getPressureDisplay(
-    pressure: number | null
-  ): string {
+    /*
+     * Digital twin infrastructure is still modelled.
+     * Weather availability contributes to overall readiness.
+     */
+
+    return Math.round(
+      0.65 * 95 +
+      0.35 * weatherAvailability
+    );
+  }
+
+  get apiStatus(): string {
 
     if (
-      pressure === null
+      this.weather.BHARATI.loading ||
+      this.weather.MAITRI.loading
     ) {
+      return 'LOADING';
+    }
 
-      return '--';
+    if (
+      this.weather.BHARATI.online ||
+      this.weather.MAITRI.online
+    ) {
+      return 'API';
+    }
+
+    return 'OFFLINE';
+  }
+
+  get apiStatusClass(): string {
+
+    if (
+      this.weather.BHARATI.loading ||
+      this.weather.MAITRI.loading
+    ) {
+      return 'loading';
+    }
+
+    if (
+      this.weather.BHARATI.online ||
+      this.weather.MAITRI.online
+    ) {
+      return 'online';
+    }
+
+    return 'offline';
+  }
+
+  get selectedStationData(): WeatherStation {
+
+    return this.stations[
+      this.selectedStation
+    ];
+  }
+
+  get selectedWeather(): WeatherData {
+
+    return this.weather[
+      this.selectedStation
+    ];
+  }
+
+  // ============================================================
+  // ALERTS
+  // ============================================================
+
+  get alertCount(): number {
+
+    let count = 0;
+
+    const stations: StationId[] = [
+      'BHARATI',
+      'MAITRI'
+    ];
+
+    for (const stationId of stations) {
+
+      const weather =
+        this.weather[stationId];
+
+      if (!weather.online) {
+        continue;
+      }
+
+      if (
+        weather.temperature !== null &&
+        weather.temperature < -30
+      ) {
+        count++;
+      }
+
+      if (
+        weather.windSpeed !== null &&
+        weather.windSpeed > 70
+      ) {
+        count++;
+      }
 
     }
 
+    return count;
+  }
 
-    return this.formatNumber(
-      pressure,
-      0
+  // ============================================================
+  // STATION SELECTOR
+  // ============================================================
+
+  selectStation(
+    stationId: StationId
+  ): void {
+
+    this.selectedStation = stationId;
+
+    if (this.mapMode === 'satellite') {
+
+      this.focusSatelliteStation(
+        stationId
+      );
+
+    }
+
+    this.cdr.detectChanges();
+  }
+
+  // ============================================================
+  // MAP MODE
+  // ============================================================
+
+  setMapMode(
+    mode: 'network' | 'satellite'
+  ): void {
+
+    this.mapMode = mode;
+
+    this.cdr.detectChanges();
+
+    if (mode === 'satellite') {
+
+      setTimeout(() => {
+
+        this.initializeSatelliteMap();
+
+        this.satelliteMap?.invalidateSize();
+
+        this.focusSatelliteStation(
+          this.selectedStation
+        );
+
+      }, 100);
+
+    }
+  }
+
+  // ============================================================
+  // LEAFLET SATELLITE MAP
+  // ============================================================
+
+  private initializeSatelliteMap(): void {
+
+    if (
+      this.satelliteInitialized ||
+      !this.satelliteMapElement
+    ) {
+      return;
+    }
+
+    const element =
+      this.satelliteMapElement.nativeElement;
+
+    this.satelliteMap =
+      L.map(element, {
+        zoomControl: true,
+        attributionControl: true
+      });
+
+    /*
+     * Real Esri World Imagery.
+     *
+     * This is satellite/aerial imagery.
+     */
+
+    this.satelliteLayer =
+      L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        {
+          maxZoom: 18,
+          attribution:
+            'Tiles © Esri'
+        }
+      );
+
+    this.satelliteLayer.addTo(
+      this.satelliteMap
     );
 
+    /*
+     * Add both research stations.
+     */
+
+    this.createStationMarker('BHARATI');
+    this.createStationMarker('MAITRI');
+
+    this.satelliteInitialized = true;
+
+    this.satelliteMap.invalidateSize();
+
+    this.cdr.detectChanges();
   }
 
+  private createStationMarker(
+    stationId: StationId
+  ): void {
 
-  // ==========================================================
-  // NUMBER FORMAT
-  // ==========================================================
-
-  formatNumber(
-
-    value:
-      number | null,
-
-    decimals = 1
-
-  ): string {
-
-    if (
-      value === null ||
-      value === undefined
-    ) {
-
-      return '--';
-
+    if (!this.satelliteMap) {
+      return;
     }
 
+    const station =
+      this.stations[stationId];
 
-    return Number(value)
-      .toFixed(decimals);
+    const marker =
+      L.circleMarker(
+        [
+          station.latitude,
+          station.longitude
+        ],
+        {
+          radius:
+            stationId === this.selectedStation
+              ? 9
+              : 7,
 
-  }
+          color: '#45d9ff',
 
+          fillColor:
+            this.weather[stationId].online
+              ? '#00ff9d'
+              : '#ff5d78',
 
-  // ==========================================================
-  // WIND DIRECTION TEXT
-  // ==========================================================
+          fillOpacity: 1,
 
-  getWindDirectionText(
-    station: Station
-  ): string {
+          weight: 2
+        }
+      );
 
-    return this.getWindDirection(
-      station.windDirection
+    marker.addTo(
+      this.satelliteMap
     );
 
+    marker.bindPopup(
+      this.createPopupContent(
+        stationId
+      )
+    );
+
+    marker.on(
+      'click',
+      () => {
+
+        this.selectedStation =
+          stationId;
+
+        this.cdr.detectChanges();
+
+        this.refreshMarkerStyles();
+      }
+    );
+
+    this.stationMarkers[
+      stationId
+    ] = marker;
   }
 
+  private updateStationMarker(
+    stationId: StationId
+  ): void {
 
-  // ==========================================================
-  // WIND DEGREES
-  // ==========================================================
+    const marker =
+      this.stationMarkers[stationId];
 
-  getWindDegreesDisplay(
-    station: Station
-  ): string {
-
-    if (
-      station.windDirection === null
-    ) {
-
-      return '--°';
-
+    if (!marker) {
+      return;
     }
 
+    const weather =
+      this.weather[stationId];
 
-    return `${this.formatNumber(
-      station.windDirection,
-      0
-    )}°`;
+    marker.setStyle({
 
+      fillColor:
+        weather.online
+          ? '#00ff9d'
+          : '#ff5d78'
+
+    });
+
+    marker.setPopupContent(
+      this.createPopupContent(
+        stationId
+      )
+    );
   }
 
+  private refreshMarkerStyles(): void {
 
-  // ==========================================================
-  // WEATHER STATUS
-  // ==========================================================
-
-  getStatusClass(
-    station: Station
-  ): string {
-
-    switch (
-      station.status
+    for (
+      const stationId of
+      ['BHARATI', 'MAITRI'] as StationId[]
     ) {
 
-      case 'LIVE':
-        return 'status-live';
+      const marker =
+        this.stationMarkers[stationId];
 
-      case 'UPDATING':
-        return 'status-updating';
+      if (!marker) {
+        continue;
+      }
 
-      case 'OFFLINE':
-        return 'status-offline';
+      marker.setStyle({
 
-      default:
-        return 'status-connecting';
+        radius:
+          stationId === this.selectedStation
+            ? 9
+            : 7,
+
+        fillColor:
+          this.weather[stationId].online
+            ? '#00ff9d'
+            : '#ff5d78'
+
+      });
 
     }
-
   }
 
+  private focusSatelliteStation(
+    stationId: StationId
+  ): void {
 
-  getStatusText(
-    station: Station
+    if (!this.satelliteMap) {
+      return;
+    }
+
+    const station =
+      this.stations[stationId];
+
+    this.satelliteMap.setView(
+      [
+        station.latitude,
+        station.longitude
+      ],
+      6,
+      {
+        animate: true
+      }
+    );
+
+    this.refreshMarkerStyles();
+  }
+
+  private createPopupContent(
+    stationId: StationId
   ): string {
 
-    return station.status;
+    const station =
+      this.stations[stationId];
 
+    const weather =
+      this.weather[stationId];
+
+    const temperature =
+      weather.temperature === null
+        ? '—'
+        : `${weather.temperature.toFixed(1)} °C`;
+
+    const wind =
+      weather.windSpeed === null
+        ? '—'
+        : `${weather.windSpeed.toFixed(0)} km/h`;
+
+    const humidity =
+      weather.humidity === null
+        ? '—'
+        : `${weather.humidity.toFixed(0)}%`;
+
+    const status =
+      weather.loading
+        ? 'LOADING'
+        : weather.online
+          ? 'ONLINE'
+          : 'OFFLINE';
+
+    return `
+      <div style="
+        min-width:220px;
+        font-family:Arial,sans-serif;
+      ">
+        <strong style="
+          font-size:16px;
+          letter-spacing:1px;
+        ">
+          ${station.name}
+        </strong>
+
+        <div style="
+          margin-top:8px;
+          font-size:12px;
+        ">
+          STATUS · ${status}
+        </div>
+
+        <div style="
+          margin-top:8px;
+        ">
+          TEMP · ${temperature}
+        </div>
+
+        <div>
+          WIND · ${wind}
+        </div>
+
+        <div>
+          HUMIDITY · ${humidity}
+        </div>
+
+        <div style="
+          margin-top:8px;
+          font-size:10px;
+          opacity:.65;
+        ">
+          OPEN-METEO · API WEATHER
+        </div>
+      </div>
+    `;
   }
 
+  // ============================================================
+  // TELEMETRY
+  // ============================================================
 
-  // ==========================================================
-  // RETRY
-  // ==========================================================
+  private updateTelemetry(): void {
 
-  retryWeather(): void {
+    this.telemetry.power =
+      this.randomAround(
+        this.telemetry.power,
+        0.8,
+        96
+      );
 
-    this.loadWeather();
+    this.telemetry.network =
+      this.randomAround(
+        this.telemetry.network,
+        0.5,
+        100
+      );
 
+    this.telemetry.cpu =
+      this.randomAround(
+        this.telemetry.cpu,
+        3,
+        85
+      );
+
+    this.telemetry.storage =
+      this.randomAround(
+        this.telemetry.storage,
+        0.3,
+        100
+      );
+
+    this.telemetry.battery =
+      this.randomAround(
+        this.telemetry.battery,
+        0.2,
+        100
+      );
+
+    this.cdr.detectChanges();
   }
 
+  private randomAround(
+    current: number,
+    variation: number,
+    max: number
+  ): number {
+
+    const value =
+      current +
+      (Math.random() - 0.5) *
+      variation;
+
+    return Math.max(
+      0,
+      Math.min(
+        max,
+        Math.round(value * 10) / 10
+      )
+    );
+  }
+
+  // ============================================================
+  // EMPTY WEATHER
+  // ============================================================
+
+  private createEmptyWeather(): WeatherData {
+
+    return {
+
+      loading: true,
+
+      online: false,
+
+      temperature: null,
+
+      apparentTemperature: null,
+
+      humidity: null,
+
+      windSpeed: null,
+
+      windDirection: null,
+
+      precipitation: null,
+
+      snowfall: null,
+
+      visibility: null,
+
+      cloudCover: null,
+
+      pressure: null,
+
+      weatherCode: null,
+
+      lastUpdated: null
+
+    };
+  }
 }
