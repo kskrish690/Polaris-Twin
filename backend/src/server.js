@@ -8,11 +8,6 @@ const authRoutes = require('./routes/auth.routes');
 
 const app = express();
 
-
-// ============================================================
-// CONFIGURATION
-// ============================================================
-
 const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [
@@ -21,27 +16,18 @@ const allowedOrigins = [
   'https://polaris-twin.netlify.app'
 ];
 
-
-// ============================================================
-// CORS
-// ============================================================
-
 app.use(
   cors({
     origin: function (origin, callback) {
-
-      // Allow requests with no origin
-      // Example: Postman, curl, server-to-server
       if (!origin) {
         return callback(null, true);
       }
 
-      // Allow known frontend origins
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
-      console.warn(`CORS blocked origin: ${origin}`);
+      console.warn('CORS blocked origin:', origin);
 
       return callback(
         new Error(`CORS blocked origin: ${origin}`)
@@ -65,21 +51,13 @@ app.use(
   })
 );
 
-
-// ============================================================
-// MIDDLEWARE
-// ============================================================
-
 app.use(express.json());
-
-app.use(express.urlencoded({
-  extended: true
-}));
+app.use(express.urlencoded({ extended: true }));
 
 
-// ============================================================
-// ROOT ROUTE
-// ============================================================
+// --------------------------------------------------
+// ROOT
+// --------------------------------------------------
 
 app.get('/', (req, res) => {
   res.status(200).json({
@@ -92,14 +70,12 @@ app.get('/', (req, res) => {
 });
 
 
-// ============================================================
-// HEALTH CHECK
-// ============================================================
+// --------------------------------------------------
+// HEALTH
+// --------------------------------------------------
 
 app.get('/api/health', async (req, res) => {
-
   try {
-
     const pool = require('./config/database');
 
     const connection = await pool.getConnection();
@@ -116,8 +92,7 @@ app.get('/api/health', async (req, res) => {
     });
 
   } catch (error) {
-
-    console.error('Health check error:', error);
+    console.error('HEALTH ERROR:', error);
 
     return res.status(500).json({
       success: false,
@@ -129,56 +104,65 @@ app.get('/api/health', async (req, res) => {
 });
 
 
-// ============================================================
-// AUTHENTICATION ROUTES
-// ============================================================
+// --------------------------------------------------
+// AUTH
+// --------------------------------------------------
 
 app.use('/api/auth', authRoutes);
 
 
-// ============================================================
-// API 404 HANDLER
-// ============================================================
+// --------------------------------------------------
+// UNKNOWN API ROUTE
+// --------------------------------------------------
 
 app.use('/api', (req, res) => {
-
-  res.status(404).json({
+  return res.status(404).json({
     success: false,
     message: 'API endpoint not found',
     path: req.originalUrl
   });
-
 });
 
 
-// ============================================================
-// GLOBAL ERROR HANDLER
-// ============================================================
+// --------------------------------------------------
+// INVALID JSON
+// --------------------------------------------------
 
 app.use((error, req, res, next) => {
 
-  console.error('Server error:', error);
+  if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
 
-  if (error.message && error.message.startsWith('CORS blocked')) {
+    console.error('INVALID JSON:', error.message);
+
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid JSON request body'
+    });
+  }
+
+  if (
+    error.message &&
+    error.message.startsWith('CORS blocked')
+  ) {
 
     return res.status(403).json({
       success: false,
       message: error.message
     });
-
   }
+
+  console.error('SERVER ERROR:', error);
 
   return res.status(500).json({
     success: false,
     message: 'Internal server error'
   });
-
 });
 
 
-// ============================================================
-// START SERVER
-// ============================================================
+// --------------------------------------------------
+// START
+// --------------------------------------------------
 
 app.listen(PORT, '0.0.0.0', () => {
 
@@ -187,10 +171,9 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log('        POLARIS-TWIN BACKEND API');
   console.log('==============================================');
   console.log(`Server: http://0.0.0.0:${PORT}`);
-  console.log(`Health: /api/health`);
-  console.log(`Auth:   /api/auth`);
+  console.log('Health: /api/health');
+  console.log('Auth:   /api/auth');
   console.log('Status: ONLINE');
   console.log('==============================================');
   console.log('');
-
 });
