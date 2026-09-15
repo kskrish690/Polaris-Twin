@@ -1,33 +1,69 @@
-require('dotenv').config();
-
 const express = require('express');
 const cors = require('cors');
-
-const pool = require('./config/database');
+const dotenv = require('dotenv');
 
 const authRoutes = require('./routes/auth.routes');
 
+dotenv.config();
+
 const app = express();
 
-/* =========================
-   MIDDLEWARE
-========================= */
+const PORT = process.env.PORT || 3000;
 
-app.use(
-  cors({
-    origin: 'http://localhost:4200'
-  })
-);
+const allowedOrigins = [
+  'http://localhost:4200',
+  'https://polaris-twin.netlify.app'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(
+      new Error(`CORS blocked origin: ${origin}`)
+    );
+  },
+
+  methods: [
+    'GET',
+    'POST',
+    'PUT',
+    'DELETE',
+    'OPTIONS'
+  ],
+
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization'
+  ]
+}));
 
 app.use(express.json());
 
-/* =========================
-   HEALTH CHECK
-========================= */
+/*
+|--------------------------------------------------------------------------
+| Health Check
+|--------------------------------------------------------------------------
+*/
 
 app.get('/api/health', async (req, res) => {
+
   try {
-    await pool.query('SELECT 1');
+
+    const pool = require('./config/database');
+
+    const connection = await pool.getConnection();
+
+    await connection.ping();
+
+    connection.release();
 
     res.json({
       success: true,
@@ -37,30 +73,34 @@ app.get('/api/health', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Database connection failed:', error);
+
+    console.error('Health check error:', error);
 
     res.status(500).json({
       success: false,
       system: 'POLARIS-TWIN',
       api: 'ONLINE',
-      database: 'DISCONNECTED',
-      error: error.message
+      database: 'DISCONNECTED'
     });
   }
 });
 
-/* =========================
-   AUTH ROUTES
-========================= */
+/*
+|--------------------------------------------------------------------------
+| Authentication
+|--------------------------------------------------------------------------
+*/
 
 app.use('/api/auth', authRoutes);
 
-/* =========================
-   START SERVER
-========================= */
+/*
+|--------------------------------------------------------------------------
+| Start Server
+|--------------------------------------------------------------------------
+*/
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`POLARIS-TWIN API running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(
+    `POLARIS-TWIN API running on port ${PORT}`
+  );
 });
