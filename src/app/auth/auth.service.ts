@@ -14,42 +14,24 @@ import { environment } from '../../environments/environment';
 })
 export class AuthService {
 
-  // ==========================================================
-  // API URL
-  // ==========================================================
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
 
-  private readonly apiUrl =
-    `${environment.apiUrl}/auth`;
-
-
-  // ==========================================================
-  // LOCAL STORAGE KEYS
-  // ==========================================================
-
-  private readonly tokenKey =
-    'polaris_twin_token';
-
-  private readonly userKey =
-    'polaris_twin_user';
-
-
-  // ==========================================================
-  // CONSTRUCTOR
-  // ==========================================================
+  private readonly tokenKey = 'polaris_twin_token';
+  private readonly userKey = 'polaris_twin_user';
 
   constructor(
     private readonly http: HttpClient
   ) {}
 
-
-  // ==========================================================
+  // ====================================================
   // CURRENT USER
-  // ==========================================================
+  // ====================================================
 
   get currentUser(): PolarisUser | null {
 
-    const user =
-      localStorage.getItem(this.userKey);
+    const user = localStorage.getItem(
+      this.userKey
+    );
 
     if (!user) {
       return null;
@@ -57,42 +39,45 @@ export class AuthService {
 
     try {
 
-      return JSON.parse(user) as PolarisUser;
+      return JSON.parse(user);
 
     } catch {
 
       return null;
 
     }
+
   }
 
 
-  // ==========================================================
-  // JWT TOKEN
-  // ==========================================================
+  // ====================================================
+  // TOKEN
+  // ====================================================
 
   get token(): string | null {
 
     return localStorage.getItem(
       this.tokenKey
     );
+
   }
 
 
-  // ==========================================================
+  // ====================================================
   // LOGIN STATUS
-  // ==========================================================
+  // ====================================================
 
   get isLoggedIn(): boolean {
 
     return !!this.token &&
            !!this.currentUser;
+
   }
 
 
-  // ==========================================================
+  // ====================================================
   // SIGNUP
-  // ==========================================================
+  // ====================================================
 
   signup(
     name: string,
@@ -114,20 +99,19 @@ export class AuthService {
         tap(response => {
 
           if (response.success) {
-
             this.storeSession(response);
-
           }
 
         })
 
       );
+
   }
 
 
-  // ==========================================================
+  // ====================================================
   // LOGIN
-  // ==========================================================
+  // ====================================================
 
   login(
     email: string,
@@ -147,20 +131,19 @@ export class AuthService {
         tap(response => {
 
           if (response.success) {
-
             this.storeSession(response);
-
           }
 
         })
 
       );
+
   }
 
 
-  // ==========================================================
+  // ====================================================
   // LOGOUT
-  // ==========================================================
+  // ====================================================
 
   logout(): void {
 
@@ -171,12 +154,13 @@ export class AuthService {
     localStorage.removeItem(
       this.userKey
     );
+
   }
 
 
-  // ==========================================================
-  // STORE LOGIN SESSION
-  // ==========================================================
+  // ====================================================
+  // STORE SESSION
+  // ====================================================
 
   private storeSession(
     response: AuthResponse
@@ -191,6 +175,7 @@ export class AuthService {
       this.userKey,
       JSON.stringify(response.user)
     );
+
   }
 
 }
