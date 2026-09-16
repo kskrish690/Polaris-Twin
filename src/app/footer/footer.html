@@ -1,1 +1,526 @@
-<p>footer works!</p>
+<footer class="polaris-footer">
+
+  <!-- =====================================================
+       BACKGROUND TECHNICAL ELEMENTS
+  ====================================================== -->
+
+  <div class="footer-grid"></div>
+
+  <div class="footer-glow footer-glow-left"></div>
+
+  <div class="footer-glow footer-glow-right"></div>
+
+
+  <!-- =====================================================
+       TOP ACCENT
+  ====================================================== -->
+
+  <div class="footer-accent">
+    <span></span>
+  </div>
+
+
+  <!-- =====================================================
+       MAIN FOOTER
+  ====================================================== -->
+
+  <div class="footer-main">
+
+
+    <!-- ===================================================
+         BRAND
+    ==================================================== -->
+
+    <div class="footer-brand">
+
+      <button
+        type="button"
+        class="brand-orbit"
+        aria-label="Open system information"
+        (click)="toggleSystemPanel()"
+      >
+
+        <span class="orbit-ring ring-one"></span>
+
+        <span class="orbit-ring ring-two"></span>
+
+        <span class="orbit-core"></span>
+
+      </button>
+
+
+      <div class="brand-content">
+
+        <div class="brand-title">
+          POLARIS<span>-TWIN</span>
+        </div>
+
+        <div class="brand-description">
+          ANTARCTIC DIGITAL TWIN
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         CENTER STATUS
+    ==================================================== -->
+
+    <div class="footer-status">
+
+      <!-- Network -->
+
+      <button
+        type="button"
+        class="status-chip"
+        [class.offline]="!isOnline"
+        (click)="checkApiStatus()"
+        title="Refresh network status"
+      >
+
+        <span
+          class="status-light"
+          [class.red]="!isOnline"
+        ></span>
+
+        <span class="status-label">
+          {{ isOnline ? 'NETWORK ONLINE' : 'NETWORK OFFLINE' }}
+        </span>
+
+      </button>
+
+
+      <!-- API -->
+
+      <button
+        type="button"
+        class="status-chip api-chip"
+        [class.api-offline]="apiStatus === 'OFFLINE'"
+        [class.api-checking]="apiStatus === 'CHECKING'"
+        (click)="openApiInfo()"
+        title="Open API diagnostics"
+      >
+
+        <span
+          class="status-light"
+          [class.yellow]="apiStatus === 'CHECKING'"
+          [class.red]="apiStatus === 'OFFLINE'"
+        ></span>
+
+        <span class="status-label">
+          {{ apiLabel }}
+        </span>
+
+      </button>
+
+
+      <!-- Divider -->
+
+      <div class="status-divider"></div>
+
+
+      <!-- Live Clock -->
+
+      <div class="clock-block">
+
+        <span class="clock-label">
+          UTC+05:30
+        </span>
+
+        <span class="clock-value">
+          {{ formattedTime }}
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         SYSTEM STATUS
+    ==================================================== -->
+
+    <div class="footer-system">
+
+      <div class="system-info">
+
+        <span class="system-caption">
+          SYSTEM STATUS
+        </span>
+
+        <span
+          class="system-value"
+          [class.warning]="
+            !isOnline ||
+            apiStatus === 'OFFLINE'
+          "
+        >
+          {{ systemStatus }}
+        </span>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="system-button"
+        [class.active]="systemPanelOpen"
+        (click)="toggleSystemPanel()"
+      >
+
+        <span class="system-button-icon">
+
+          <span></span>
+          <span></span>
+          <span></span>
+
+        </span>
+
+        <span>
+          DIAGNOSTICS
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SECONDARY NAVIGATION BAR
+  ====================================================== -->
+
+  <div class="footer-navigation">
+
+
+    <!-- LEFT -->
+
+    <div class="navigation-left">
+
+      <span class="navigation-title">
+        QUICK ACCESS
+      </span>
+
+
+      <a
+        *ngFor="let item of navigationItems"
+        [routerLink]="item.route"
+        class="footer-nav-button"
+        [class.active]="currentRoute.startsWith(item.route)"
+      >
+
+        <span class="nav-dot"></span>
+
+        {{ item.label }}
+
+      </a>
+
+
+      <!-- Station -->
+
+      <button
+        type="button"
+        class="footer-nav-button"
+        [class.active]="selectedStation === 'BHARATI'"
+        (click)="selectStation('BHARATI')"
+      >
+
+        <span class="nav-dot"></span>
+
+        BHARATI
+
+      </button>
+
+
+      <button
+        type="button"
+        class="footer-nav-button"
+        [class.active]="selectedStation === 'MAITRI'"
+        (click)="selectStation('MAITRI')"
+      >
+
+        <span class="nav-dot"></span>
+
+        MAITRI
+
+      </button>
+
+    </div>
+
+
+    <!-- RIGHT -->
+
+    <div class="navigation-right">
+
+
+      <!-- Coordinates -->
+
+      <button
+        type="button"
+        class="coordinate-button"
+        (click)="copyCoordinates()"
+        title="Copy station coordinates"
+      >
+
+        <span class="coordinate-icon">
+          +
+        </span>
+
+        <span>
+          {{ stationCoordinates }}
+        </span>
+
+        <span class="copy-state">
+
+          {{ copied ? 'COPIED' : 'COPY' }}
+
+        </span>
+
+      </button>
+
+
+      <!-- Top -->
+
+      <button
+        type="button"
+        class="top-button"
+        (click)="scrollToTop()"
+        aria-label="Back to top"
+      >
+
+        <span>↑</span>
+
+        TOP
+
+      </button>
+
+
+      <!-- Page -->
+
+      <div class="page-number">
+
+        <span>
+          SIH
+        </span>
+
+        <strong>
+          2026
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SYSTEM DRAWER
+  ====================================================== -->
+
+  <div
+    class="diagnostic-panel"
+    [class.open]="systemPanelOpen"
+  >
+
+    <div class="diagnostic-inner">
+
+
+      <!-- Header -->
+
+      <div class="diagnostic-header">
+
+        <div>
+
+          <div class="diagnostic-kicker">
+            POLARIS-TWIN / SYSTEM DIAGNOSTICS
+          </div>
+
+          <div class="diagnostic-title">
+            Network Control Interface
+          </div>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="close-button"
+          (click)="closeSystemPanel()"
+          aria-label="Close diagnostics"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- Diagnostic cards -->
+
+      <div class="diagnostic-grid">
+
+
+        <!-- Network -->
+
+        <div class="diagnostic-card">
+
+          <div class="diagnostic-card-top">
+
+            <span>
+              NETWORK
+            </span>
+
+            <span
+              class="diagnostic-indicator"
+              [class.red]="!isOnline"
+            ></span>
+
+          </div>
+
+          <strong>
+            {{ isOnline ? 'CONNECTED' : 'DISCONNECTED' }}
+          </strong>
+
+          <small>
+            Browser network interface
+          </small>
+
+        </div>
+
+
+        <!-- API -->
+
+        <div class="diagnostic-card">
+
+          <div class="diagnostic-card-top">
+
+            <span>
+              WEATHER API
+            </span>
+
+            <span
+              class="diagnostic-indicator"
+              [class.yellow]="apiStatus === 'CHECKING'"
+              [class.red]="apiStatus === 'OFFLINE'"
+            ></span>
+
+          </div>
+
+          <strong>
+            {{ apiStatus }}
+          </strong>
+
+          <small>
+            Open-Meteo integration
+          </small>
+
+        </div>
+
+
+        <!-- Station -->
+
+        <div class="diagnostic-card">
+
+          <div class="diagnostic-card-top">
+
+            <span>
+              ACTIVE STATION
+            </span>
+
+            <span class="diagnostic-indicator"></span>
+
+          </div>
+
+          <strong>
+            {{ selectedStation }}
+          </strong>
+
+          <small>
+            {{ stationCoordinates }}
+          </small>
+
+        </div>
+
+
+        <!-- Clock -->
+
+        <div class="diagnostic-card">
+
+          <div class="diagnostic-card-top">
+
+            <span>
+              SYSTEM TIME
+            </span>
+
+            <span class="diagnostic-indicator"></span>
+
+          </div>
+
+          <strong>
+            {{ formattedTime }}
+          </strong>
+
+          <small>
+            {{ formattedDate }} · India Standard Time
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- Diagnostic footer -->
+
+      <div class="diagnostic-footer">
+
+        <span>
+          DATA CHANNEL
+          <strong>API</strong>
+        </span>
+
+        <span>
+          AUTHENTICATION
+          <strong>JWT</strong>
+        </span>
+
+        <span>
+          DATABASE
+          <strong>MYSQL</strong>
+        </span>
+
+        <span>
+          DIGITAL TWIN
+          <strong>ACTIVE</strong>
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       VERY BOTTOM
+  ====================================================== -->
+
+  <div class="footer-copyright">
+
+    <span>
+      © 2026 POLARIS-TWIN
+    </span>
+
+    <span class="copyright-center">
+      DIGITAL TWIN FOR INDIA'S ANTARCTIC RESEARCH STATIONS
+    </span>
+
+    <span>
+      SECURE RESEARCH NETWORK
+    </span>
+
+  </div>
+
+</footer>
