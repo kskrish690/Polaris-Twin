@@ -1,671 +1,1075 @@
 <section class="reports-page">
 
-  <!-- =====================================================
+  <!-- ======================================================
        PAGE HEADER
-       ===================================================== -->
+  ======================================================= -->
 
-  <header class="page-header">
+  <header class="reports-header">
 
-    <div class="header-content">
+    <div class="header-copy">
 
-      <div class="header-title">
-
-        <div class="title-icon">
-          ▤
-        </div>
-
-        <div>
-          <h1>REPORTS</h1>
-
-          <p>
-            Operational intelligence &amp; station analytics
-          </p>
-        </div>
-
+      <div class="eyebrow">
+        <span class="eyebrow-line"></span>
+        POLARIS-TWIN / REPORTING
       </div>
 
-      <div class="header-actions">
+      <h1>
+        Operational
+        <span>Reports</span>
+      </h1>
 
-        <div class="live-indicator">
-          <span class="live-dot"></span>
-          SYSTEM ONLINE
-        </div>
-
-        <button
-          type="button"
-          class="generate-button"
-          (click)="generateReport()"
-        >
-          <span>＋</span>
-          GENERATE REPORT
-        </button>
-
-      </div>
+      <p>
+        Generate structured intelligence reports for Antarctic
+        research operations, station health, environmental
+        conditions and risk monitoring.
+      </p>
 
     </div>
+
+    <button
+      class="generate-button"
+      type="button"
+      (click)="openReportBuilder()"
+      [disabled]="isGenerating"
+    >
+
+      <span class="button-icon">＋</span>
+
+      <span>
+        Generate Report
+      </span>
+
+      <span class="button-arrow">
+        →
+      </span>
+
+    </button>
 
   </header>
 
 
-  <!-- =====================================================
+  <!-- ======================================================
        SUMMARY CARDS
-       ===================================================== -->
+  ======================================================= -->
 
   <section class="summary-grid">
 
     <article class="summary-card">
 
       <div class="summary-icon">
-        ▤
+        ◈
       </div>
-
-      <div class="summary-content">
-
-        <span class="summary-label">
-          TOTAL REPORTS
-        </span>
-
-        <strong>
-          {{ totalReports }}
-        </strong>
-
-        <small>
-          REPORT LIBRARY
-        </small>
-
-      </div>
-
-    </article>
-
-
-    <article class="summary-card">
-
-      <div class="summary-icon">
-        ✓
-      </div>
-
-      <div class="summary-content">
-
-        <span class="summary-label">
-          READY
-        </span>
-
-        <strong>
-          {{ readyReports }}
-        </strong>
-
-        <small>
-          AVAILABLE REPORTS
-        </small>
-
-      </div>
-
-    </article>
-
-
-    <article class="summary-card">
-
-      <div class="summary-icon">
-        ◷
-      </div>
-
-      <div class="summary-content">
-
-        <span class="summary-label">
-          GENERATING
-        </span>
-
-        <strong>
-          {{ generatingReports }}
-        </strong>
-
-        <small>
-          ACTIVE JOBS
-        </small>
-
-      </div>
-
-    </article>
-
-
-    <article class="summary-card">
-
-      <div class="summary-icon">
-        #
-      </div>
-
-      <div class="summary-content">
-
-        <span class="summary-label">
-          DATA RECORDS
-        </span>
-
-        <strong>
-          {{ totalRecords | number }}
-        </strong>
-
-        <small>
-          PROCESSED RECORDS
-        </small>
-
-      </div>
-
-    </article>
-
-  </section>
-
-
-  <!-- =====================================================
-       FILTER PANEL
-       ===================================================== -->
-
-  <section class="filter-panel">
-
-    <div class="filter-header">
 
       <div>
-        <span class="section-kicker">
-          REPORT LIBRARY
+        <span class="summary-label">
+          Available Reports
         </span>
 
-        <h2>
-          Intelligence Reports
-        </h2>
+        <strong>
+          {{ recentReports.length | number:'2.0-0' }}
+        </strong>
+
+        <small>
+          Report history
+        </small>
       </div>
 
-      <span class="result-count">
-        {{ filteredReports.length }}
-        RESULTS
-      </span>
-
-    </div>
+    </article>
 
 
-    <div class="filter-controls">
+    <article class="summary-card">
 
-      <!-- SEARCH -->
+      <div class="summary-icon cyan">
+        ◌
+      </div>
 
-      <div class="search-box">
-
-        <span class="search-icon">
-          ⌕
+      <div>
+        <span class="summary-label">
+          Report Types
         </span>
 
-        <input
-          type="text"
-          [(ngModel)]="searchTerm"
-          placeholder="Search reports..."
-          aria-label="Search reports"
-        />
+        <strong>
+          04
+        </strong>
 
+        <small>
+          Operational categories
+        </small>
       </div>
 
+    </article>
 
-      <!-- TYPE -->
 
-      <div class="select-box">
+    <article class="summary-card">
 
-        <label for="reportType">
-          TYPE
-        </label>
-
-        <select
-          id="reportType"
-          [(ngModel)]="selectedType"
-        >
-
-          <option value="ALL">
-            All Types
-          </option>
-
-          <option value="DAILY">
-            Daily
-          </option>
-
-          <option value="WEATHER">
-            Weather
-          </option>
-
-          <option value="ENVIRONMENT">
-            Environment
-          </option>
-
-          <option value="ENERGY">
-            Energy
-          </option>
-
-          <option value="INFRASTRUCTURE">
-            Infrastructure
-          </option>
-
-          <option value="LOGISTICS">
-            Logistics
-          </option>
-
-          <option value="INCIDENT">
-            Incident
-          </option>
-
-        </select>
-
+      <div class="summary-icon blue">
+        ⌁
       </div>
 
+      <div>
+        <span class="summary-label">
+          Stations
+        </span>
 
-      <!-- STATION -->
+        <strong>
+          02
+        </strong>
 
-      <div class="select-box">
-
-        <label for="reportStation">
-          STATION
-        </label>
-
-        <select
-          id="reportStation"
-          [(ngModel)]="selectedStation"
-        >
-
-          <option value="ALL">
-            All Stations
-          </option>
-
-          <option value="MAITRI">
-            Maitri
-          </option>
-
-          <option value="BHARATI">
-            Bharati
-          </option>
-
-          <option value="NETWORK">
-            Network
-          </option>
-
-        </select>
-
+        <small>
+          Bharati + Maitri
+        </small>
       </div>
 
+    </article>
 
-      <!-- RESET -->
 
-      <button
-        type="button"
-        class="reset-button"
-        (click)="resetFilters()"
-      >
-        RESET
-      </button>
+    <article class="summary-card">
 
-    </div>
+      <div class="summary-icon green">
+        ↓
+      </div>
+
+      <div>
+        <span class="summary-label">
+          Export Formats
+        </span>
+
+        <strong>
+          02
+        </strong>
+
+        <small>
+          PDF + PNG
+        </small>
+      </div>
+
+    </article>
 
   </section>
 
 
-  <!-- =====================================================
-       REPORT LIST
-       ===================================================== -->
-
-  <section class="report-library">
-
-    <div
-      class="report-row"
-      *ngFor="
-        let report of filteredReports;
-        trackBy: trackByReportId
-      "
-    >
-
-      <!-- REPORT TYPE ICON -->
-
-      <div class="report-type-icon">
-        {{ getTypeIcon(report.type) }}
-      </div>
-
-
-      <!-- MAIN INFORMATION -->
-
-      <div class="report-main">
-
-        <div class="report-title-line">
-
-          <h3>
-            {{ report.title }}
-          </h3>
-
-          <span
-            class="status-badge"
-            [ngClass]="getStatusClass(report.status)"
-          >
-            {{ getStatusLabel(report.status) }}
-          </span>
-
-        </div>
-
-
-        <div class="report-meta">
-
-          <span>
-            {{ report.reportId }}
-          </span>
-
-          <span class="meta-divider">
-            •
-          </span>
-
-          <span>
-            {{ getTypeLabel(report.type) }}
-          </span>
-
-          <span class="meta-divider">
-            •
-          </span>
-
-          <span>
-            {{ report.station }}
-          </span>
-
-        </div>
-
-
-        <div class="report-period">
-          {{ report.period }}
-        </div>
-
-      </div>
-
-
-      <!-- REPORT DATA -->
-
-      <div class="report-data">
-
-        <div class="data-item">
-
-          <span>
-            RECORDS
-          </span>
-
-          <strong>
-            {{
-              report.records > 0
-                ? (report.records | number)
-                : '—'
-            }}
-          </strong>
-
-        </div>
-
-
-        <div class="data-item">
-
-          <span>
-            SIZE
-          </span>
-
-          <strong>
-            {{ report.size }}
-          </strong>
-
-        </div>
-
-
-        <div class="data-item">
-
-          <span>
-            GENERATED
-          </span>
-
-          <strong>
-            {{ getTimeAgo(report.generatedAt) }}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <!-- ACTIONS -->
-
-      <div class="report-actions">
-
-        <button
-          type="button"
-          class="action-button view"
-          [disabled]="report.status === 'GENERATING'"
-          (click)="viewReport(report)"
-        >
-          VIEW
-        </button>
-
-
-        <button
-          type="button"
-          class="action-button download"
-          [disabled]="report.status !== 'READY'"
-          (click)="downloadReport(report)"
-        >
-          DOWNLOAD
-        </button>
-
-
-        <button
-          *ngIf="report.status !== 'ARCHIVED'"
-          type="button"
-          class="action-button archive"
-          [disabled]="report.status === 'GENERATING'"
-          (click)="archiveReport(report)"
-        >
-          ARCHIVE
-        </button>
-
-
-        <button
-          *ngIf="report.status === 'ARCHIVED'"
-          type="button"
-          class="action-button restore"
-          (click)="restoreReport(report)"
-        >
-          RESTORE
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- ===================================================
-         EMPTY STATE
-         =================================================== -->
-
-    <div
-      class="empty-state"
-      *ngIf="filteredReports.length === 0"
-    >
-
-      <div class="empty-icon">
-        ⌕
-      </div>
-
-      <h3>
-        NO REPORTS FOUND
-      </h3>
-
-      <p>
-        No reports match the current search and filter criteria.
-      </p>
-
-      <button
-        type="button"
-        class="reset-button"
-        (click)="resetFilters()"
-      >
-        CLEAR FILTERS
-      </button>
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       REPORT PIPELINE
-       ===================================================== -->
-
-  <section class="pipeline-section">
+  <!-- ======================================================
+       REPORT HISTORY
+  ======================================================= -->
+
+  <section class="history-section">
 
     <div class="section-heading">
 
       <div>
-        <span class="section-kicker">
-          REPORT PIPELINE
-        </span>
+
+        <div class="section-eyebrow">
+          REPORT LIBRARY
+        </div>
 
         <h2>
-          Generation Status
+          Recent Reports
         </h2>
+
       </div>
 
-      <span class="pipeline-status">
-        {{ generatingReports }} ACTIVE
+      <span class="section-count">
+        {{ recentReports.length }} reports
       </span>
 
     </div>
 
 
-    <div class="pipeline-track">
+    <div class="reports-list">
 
-      <div class="pipeline-step active">
+      <article
+        class="history-card"
+        *ngFor="
+          let report of recentReports;
+          trackBy: trackByReport
+        "
+      >
 
-        <div class="pipeline-node">
-          01
+        <div
+          class="history-icon"
+          [attr.data-type]="report.type"
+        >
+          {{ getReportIcon(report.type) }}
         </div>
 
-        <div class="pipeline-info">
 
-          <strong>
-            DATA COLLECTION
-          </strong>
+        <div class="history-content">
 
-          <span>
-            Station telemetry aggregation
-          </span>
+          <div class="history-title-row">
 
-        </div>
+            <h3>
+              {{ report.title }}
+            </h3>
 
-      </div>
+            <span class="history-status">
+              READY
+            </span>
 
+          </div>
 
-      <div class="pipeline-line"></div>
+          <p>
+            {{ report.subtitle }}
+          </p>
 
+          <div class="history-meta">
 
-      <div class="pipeline-step active">
+            <span>
+              <b>●</b>
+              {{ report.createdAt }}
+            </span>
 
-        <div class="pipeline-node">
-          02
-        </div>
+            <span>
+              POLARIS-TWIN
+            </span>
 
-        <div class="pipeline-info">
-
-          <strong>
-            ANALYSIS
-          </strong>
-
-          <span>
-            Digital twin processing
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <div class="pipeline-line"></div>
-
-
-      <div class="pipeline-step active">
-
-        <div class="pipeline-node">
-          03
-        </div>
-
-        <div class="pipeline-info">
-
-          <strong>
-            REPORT BUILD
-          </strong>
-
-          <span>
-            Intelligence document generation
-          </span>
+          </div>
 
         </div>
 
-      </div>
 
+        <div class="history-actions">
 
-      <div class="pipeline-line"></div>
+          <button
+            class="secondary-button"
+            type="button"
+            (click)="viewReport(report.type)"
+          >
+            <span>View</span>
+            <span>↗</span>
+          </button>
 
-
-      <div class="pipeline-step">
-
-        <div class="pipeline-node">
-          04
-        </div>
-
-        <div class="pipeline-info">
-
-          <strong>
-            DISTRIBUTION
-          </strong>
-
-          <span>
-            Ready for authorized users
-          </span>
+          <button
+            class="primary-small-button"
+            type="button"
+            (click)="viewReport(report.type)"
+          >
+            Open Report
+          </button>
 
         </div>
 
-      </div>
+      </article>
 
     </div>
 
   </section>
 
 
-  <!-- =====================================================
-       FOOTER
-       ===================================================== -->
+  <!-- ======================================================
+       REPORT TYPE MODAL
+  ======================================================= -->
 
-  <footer class="reports-footer">
+  <div
+    class="modal-backdrop"
+    *ngIf="reportTypeModalOpen"
+    (click)="onBuilderBackdrop($event)"
+  >
 
-    <div class="footer-left">
+    <section
+      class="builder-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="reportBuilderTitle"
+    >
 
-      <span class="footer-status-dot"></span>
-
-      <span>
-        POLARIS-TWIN SYSTEM
-      </span>
-
-      <span class="footer-divider">
-        |
-      </span>
-
-      <span>
-        SIMULATED REPORT TELEMETRY
-      </span>
-
-    </div>
+      <div class="modal-top-line"></div>
 
 
-    <div class="footer-right">
+      <header class="modal-header">
 
-      <span>
-        {{ formattedDate }}
-      </span>
+        <div>
 
-      <span>
-        {{ formattedTime }} IST
-      </span>
+          <span class="modal-eyebrow">
+            POLARIS-TWIN / REPORT BUILDER
+          </span>
 
-    </div>
+          <h2 id="reportBuilderTitle">
+            Select Report Type
+          </h2>
 
-  </footer>
+          <p>
+            Choose the operational intelligence report
+            you want to generate.
+          </p>
+
+        </div>
+
+        <button
+          class="close-button"
+          type="button"
+          (click)="closeReportBuilder()"
+          [disabled]="isGenerating"
+          aria-label="Close report builder"
+        >
+          ×
+        </button>
+
+      </header>
+
+
+      <div class="report-type-grid">
+
+        <button
+          class="report-type-card"
+          type="button"
+          *ngFor="let option of reportOptions"
+          [class.selected]="
+            selectedReportType === option.id
+          "
+          [disabled]="isGenerating"
+          (click)="selectReportType(option.id)"
+        >
+
+          <div class="type-icon">
+            {{ option.icon }}
+          </div>
+
+          <div class="type-copy">
+
+            <h3>
+              {{ option.title }}
+            </h3>
+
+            <p>
+              {{ option.subtitle }}
+            </p>
+
+          </div>
+
+          <span class="type-check">
+            {{
+              selectedReportType === option.id
+                ? '✓'
+                : '→'
+            }}
+          </span>
+
+        </button>
+
+      </div>
+
+
+      <div
+        class="generation-error"
+        *ngIf="generationError"
+      >
+        {{ generationError }}
+      </div>
+
+
+      <footer class="builder-footer">
+
+        <div class="builder-info">
+
+          <span class="secure-dot"></span>
+
+          <span>
+            Structured operational document
+          </span>
+
+        </div>
+
+        <button
+          class="build-button"
+          type="button"
+          [disabled]="isGenerating"
+          (click)="generateReport(selectedReportType)"
+        >
+
+          <span
+            class="spinner"
+            *ngIf="isGenerating"
+          ></span>
+
+          <span>
+            {{
+              isGenerating
+                ? 'Building report...'
+                : 'Build Report'
+            }}
+          </span>
+
+          <span
+            *ngIf="!isGenerating"
+          >
+            →
+          </span>
+
+        </button>
+
+      </footer>
+
+    </section>
+
+  </div>
+
+
+  <!-- ======================================================
+       REPORT PREVIEW MODAL
+  ======================================================= -->
+
+  <div
+    class="modal-backdrop preview-backdrop"
+    *ngIf="previewModalOpen"
+    (click)="onPreviewBackdrop($event)"
+  >
+
+    <section
+      class="preview-shell"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Report preview"
+    >
+
+      <!-- TOOLBAR -->
+
+      <header class="preview-toolbar">
+
+        <div class="preview-title">
+
+          <span class="preview-status-dot"></span>
+
+          <div>
+
+            <strong>
+              Report Preview
+            </strong>
+
+            <small>
+              {{ currentReport.title }}
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div class="preview-actions">
+
+          <button
+            class="export-button"
+            type="button"
+            [disabled]="isDownloading"
+            (click)="downloadPng()"
+          >
+
+            <span>▣</span>
+            PNG
+
+          </button>
+
+
+          <button
+            class="export-button pdf"
+            type="button"
+            [disabled]="isDownloading"
+            (click)="downloadPdf()"
+          >
+
+            <span>↓</span>
+            PDF
+
+          </button>
+
+
+          <button
+            class="preview-close"
+            type="button"
+            [disabled]="isDownloading"
+            (click)="closePreview()"
+            aria-label="Close report preview"
+          >
+            ×
+          </button>
+
+        </div>
+
+      </header>
+
+
+      <!-- DOWNLOAD STATUS -->
+
+      <div
+        class="download-status"
+        *ngIf="isDownloading"
+      >
+
+        <span class="spinner dark"></span>
+
+        Preparing document...
+
+      </div>
+
+
+      <div
+        class="download-error"
+        *ngIf="downloadError"
+      >
+        {{ downloadError }}
+      </div>
+
+
+      <!-- DOCUMENT SCROLL -->
+
+      <div class="report-scroll">
+
+        <!-- ==================================================
+             ACTUAL DOCUMENT
+        =================================================== -->
+
+        <article
+          #reportDocument
+          id="reportDocument"
+          class="report-paper"
+        >
+
+          <!-- DOCUMENT HEADER -->
+
+          <header class="document-header">
+
+            <div class="document-brand">
+
+              <div class="brand-mark">
+                P
+              </div>
+
+              <div>
+
+                <strong>
+                  POLARIS-TWIN
+                </strong>
+
+                <span>
+                  ANTARCTIC DIGITAL TWIN
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="document-class">
+
+              <span>
+                OPERATIONAL INTELLIGENCE
+              </span>
+
+              <strong>
+                {{ currentReport.status }}
+              </strong>
+
+            </div>
+
+          </header>
+
+
+          <!-- TITLE -->
+
+          <section class="document-title">
+
+            <div class="document-eyebrow">
+              {{ currentReport.type | uppercase }}
+            </div>
+
+            <h1>
+              {{ currentReport.title }}
+            </h1>
+
+            <p>
+              {{ currentReport.subtitle }}
+            </p>
+
+          </section>
+
+
+          <!-- META -->
+
+          <section class="document-meta">
+
+            <div class="meta-item">
+
+              <span>
+                REPORT PERIOD
+              </span>
+
+              <strong>
+                {{ currentReport.period }}
+              </strong>
+
+            </div>
+
+
+            <div class="meta-item">
+
+              <span>
+                STATIONS
+              </span>
+
+              <strong>
+                {{ currentReport.station }}
+              </strong>
+
+            </div>
+
+
+            <div class="meta-item">
+
+              <span>
+                GENERATED
+              </span>
+
+              <strong>
+                {{ currentReport.generatedAt }}
+              </strong>
+
+            </div>
+
+          </section>
+
+
+          <!-- KPI GRID -->
+
+          <section class="document-section">
+
+            <div class="document-section-heading">
+
+              <div>
+
+                <span>
+                  01
+                </span>
+
+                <h2>
+                  Key Indicators
+                </h2>
+
+              </div>
+
+              <p>
+                Current operational indicators
+              </p>
+
+            </div>
+
+
+            <div class="kpi-grid">
+
+              <article
+                class="kpi-card"
+                *ngFor="
+                  let kpi of currentReport.kpis;
+                  trackBy: trackByKpi
+                "
+                [ngClass]="'tone-' + kpi.tone"
+              >
+
+                <div class="kpi-top">
+
+                  <span>
+                    {{ kpi.label }}
+                  </span>
+
+                  <i>
+                    ●
+                  </i>
+
+                </div>
+
+                <strong>
+                  {{ kpi.value }}
+                </strong>
+
+                <small>
+                  {{ kpi.note }}
+                </small>
+
+              </article>
+
+            </div>
+
+          </section>
+
+
+          <!-- PERFORMANCE BARS -->
+
+          <section class="document-section">
+
+            <div class="document-section-heading">
+
+              <div>
+
+                <span>
+                  02
+                </span>
+
+                <h2>
+                  Performance Indicators
+                </h2>
+
+              </div>
+
+              <p>
+                Comparative operational metrics
+              </p>
+
+            </div>
+
+
+            <div class="bars-layout">
+
+              <div
+                class="metric-row"
+                *ngFor="
+                  let bar of currentReport.bars;
+                  trackBy: trackByBar
+                "
+              >
+
+                <div class="metric-label">
+
+                  <span>
+                    {{ bar.label }}
+                  </span>
+
+                  <strong>
+                    {{ bar.displayValue }}
+                  </strong>
+
+                </div>
+
+
+                <div class="metric-track">
+
+                  <div
+                    class="metric-fill"
+                    [style.width.%]="bar.value"
+                  ></div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- TREND CHART -->
+
+          <section class="document-section">
+
+            <div class="document-section-heading">
+
+              <div>
+
+                <span>
+                  03
+                </span>
+
+                <h2>
+                  Trend Overview
+                </h2>
+
+              </div>
+
+              <p>
+                Seven-point operational trend
+              </p>
+
+            </div>
+
+
+            <div class="trend-chart">
+
+              <svg
+                viewBox="0 0 560 180"
+                preserveAspectRatio="none"
+                aria-label="Operational trend chart"
+              >
+
+                <line
+                  x1="20"
+                  y1="25"
+                  x2="560"
+                  y2="25"
+                  class="chart-grid-line"
+                />
+
+                <line
+                  x1="20"
+                  y1="90"
+                  x2="560"
+                  y2="90"
+                  class="chart-grid-line"
+                />
+
+                <line
+                  x1="20"
+                  y1="154"
+                  x2="560"
+                  y2="154"
+                  class="chart-grid-line"
+                />
+
+
+                <polygon
+                  [attr.points]="trendAreaPoints"
+                  class="chart-area"
+                ></polygon>
+
+
+                <polyline
+                  [attr.points]="trendPoints"
+                  class="chart-line"
+                  fill="none"
+                ></polyline>
+
+
+                <circle
+                  *ngFor="
+                    let dot of trendDots
+                  "
+                  [attr.cx]="dot.x"
+                  [attr.cy]="dot.y"
+                  r="4"
+                  class="chart-dot"
+                ></circle>
+
+              </svg>
+
+
+              <div class="chart-labels">
+
+                <span
+                  *ngFor="
+                    let label of currentReport.trendLabels
+                  "
+                >
+                  {{ label }}
+                </span>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- STATION COMPARISON -->
+
+          <section class="document-section">
+
+            <div class="document-section-heading">
+
+              <div>
+
+                <span>
+                  04
+                </span>
+
+                <h2>
+                  Station Comparison
+                </h2>
+
+              </div>
+
+              <p>
+                Bharati vs Maitri
+              </p>
+
+            </div>
+
+
+            <div class="data-table-wrapper">
+
+              <table class="data-table">
+
+                <thead>
+
+                  <tr>
+
+                    <th>
+                      METRIC
+                    </th>
+
+                    <th>
+                      BHARATI
+                    </th>
+
+                    <th>
+                      MAITRI
+                    </th>
+
+                    <th>
+                      STATUS
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                  <tr
+                    *ngFor="
+                      let row of currentReport.table;
+                      trackBy: trackByRow
+                    "
+                  >
+
+                    <td>
+                      {{ row.metric }}
+                    </td>
+
+                    <td>
+                      {{ row.bharati }}
+                    </td>
+
+                    <td>
+                      {{ row.maitri }}
+                    </td>
+
+                    <td>
+
+                      <span
+                        class="status-pill"
+                        [ngClass]="
+                          statusClass(row.status)
+                        "
+                      >
+                        <i></i>
+                        {{ row.status }}
+                      </span>
+
+                    </td>
+
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </section>
+
+
+          <!-- INSIGHTS -->
+
+          <section class="document-section">
+
+            <div class="document-section-heading">
+
+              <div>
+
+                <span>
+                  05
+                </span>
+
+                <h2>
+                  Operational Insights
+                </h2>
+
+              </div>
+
+              <p>
+                Key observations
+              </p>
+
+            </div>
+
+
+            <div class="insights-grid">
+
+              <article
+                class="insight-card"
+                *ngFor="
+                  let insight of currentReport.insights;
+                  trackBy: trackByInsight
+                "
+              >
+
+                <div class="insight-icon">
+                  {{ insight.icon }}
+                </div>
+
+                <div>
+
+                  <h3>
+                    {{ insight.title }}
+                  </h3>
+
+                  <p>
+                    {{ insight.text }}
+                  </p>
+
+                </div>
+
+              </article>
+
+            </div>
+
+          </section>
+
+
+          <!-- METHODOLOGY -->
+
+          <section class="methodology-box">
+
+            <div class="methodology-icon">
+              i
+            </div>
+
+            <div>
+
+              <strong>
+                Data & Analytical Context
+              </strong>
+
+              <p>
+                {{ currentReport.methodology }}
+              </p>
+
+            </div>
+
+          </section>
+
+
+          <!-- DOCUMENT FOOTER -->
+
+          <footer class="document-footer">
+
+            <div>
+
+              <strong>
+                POLARIS-TWIN
+              </strong>
+
+              <span>
+                Antarctic Digital Twin
+              </span>
+
+            </div>
+
+
+            <div class="footer-center">
+              Operational Intelligence
+            </div>
+
+
+            <div class="footer-right">
+              {{ currentReport.generatedAt }}
+            </div>
+
+          </footer>
+
+        </article>
+
+      </div>
+
+    </section>
+
+  </div>
 
 </section>
