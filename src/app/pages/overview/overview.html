@@ -1198,6 +1198,173 @@
   </section>
 
 
+
+
+  <!-- ======================================================
+       WASTE MANAGEMENT — BOTTOM OVERVIEW SECTION
+  ======================================================= -->
+
+  <section class="waste-overview-section">
+
+    <div class="waste-overview-header">
+
+      <div>
+        <div class="waste-eyebrow">STATION OPERATIONS</div>
+        <h2>WASTE MANAGEMENT</h2>
+        <p>Current waste processing and storage overview</p>
+      </div>
+
+      <div class="waste-station-selector">
+        <button
+          type="button"
+          [class.active]="wasteStation === 'MAITRI'"
+          (click)="selectWasteStation('MAITRI')"
+        >MAITRI</button>
+
+        <button
+          type="button"
+          [class.active]="wasteStation === 'BHARATI'"
+          (click)="selectWasteStation('BHARATI')"
+        >BHARATI</button>
+      </div>
+
+    </div>
+
+    <div class="waste-current-bar">
+      <div class="waste-current-station">
+        <span class="waste-live-dot"></span>
+        <strong>{{ wasteStation }}</strong>
+        <span>WASTE MONITORING</span>
+      </div>
+
+      <div class="waste-refresh">
+        DATA UPDATED
+        <strong>{{ wasteUpdatedTime }}</strong>
+      </div>
+    </div>
+
+    <div class="waste-kpi-grid">
+
+      <article class="waste-kpi-card">
+        <div class="waste-kpi-label">
+          <span>TOTAL WASTE</span>
+          <i>Σ</i>
+        </div>
+        <strong>{{ selectedWaste.total }}</strong>
+        <small>KG GENERATED</small>
+      </article>
+
+      <article class="waste-kpi-card green">
+        <div class="waste-kpi-label">
+          <span>RECYCLABLE</span>
+          <i>♻</i>
+        </div>
+        <strong>{{ selectedWaste.recyclable }}</strong>
+        <small>KG RECOVERED</small>
+      </article>
+
+      <article class="waste-kpi-card cyan">
+        <div class="waste-kpi-label">
+          <span>ORGANIC</span>
+          <i>◌</i>
+        </div>
+        <strong>{{ selectedWaste.organic }}</strong>
+        <small>KG ORGANIC WASTE</small>
+      </article>
+
+      <article class="waste-kpi-card amber">
+        <div class="waste-kpi-label">
+          <span>HAZARDOUS</span>
+          <i>△</i>
+        </div>
+        <strong>{{ selectedWaste.hazardous }}</strong>
+        <small>KG CONTROLLED WASTE</small>
+      </article>
+
+    </div>
+
+    <div class="waste-detail-grid">
+
+      <article class="waste-detail-card">
+        <div class="waste-detail-heading">
+          <div>
+            <span>WM-01</span>
+            <h3>PROCESSING STATUS</h3>
+          </div>
+          <strong>OPERATIONAL</strong>
+        </div>
+
+        <div class="waste-processing-value">
+          <b>{{ selectedWaste.processed }}%</b>
+          <span>PROCESSED</span>
+        </div>
+
+        <div class="waste-progress">
+          <div [style.width.%]="selectedWaste.processed"></div>
+        </div>
+
+        <div class="waste-detail-footer">
+          <span>Processing efficiency</span>
+          <b>{{ selectedWaste.processed }}%</b>
+        </div>
+      </article>
+
+      <article class="waste-detail-card">
+        <div class="waste-detail-heading">
+          <div>
+            <span>WM-02</span>
+            <h3>STORAGE CAPACITY</h3>
+          </div>
+          <strong class="storage-status">{{ wasteStoragePercentage }}%</strong>
+        </div>
+
+        <div class="waste-storage-value">
+          <b>{{ selectedWaste.storageUsed }} <small>KG</small></b>
+          <span>/ {{ selectedWaste.storageCapacity }} KG</span>
+        </div>
+
+        <div class="waste-storage-bar">
+          <div [style.width.%]="wasteStoragePercentage"></div>
+        </div>
+
+        <div class="waste-detail-footer">
+          <span>Available capacity</span>
+          <b>{{ selectedWaste.storageCapacity - selectedWaste.storageUsed }} KG</b>
+        </div>
+      </article>
+
+      <article class="waste-detail-card trend-card">
+        <div class="waste-detail-heading">
+          <div>
+            <span>WM-03</span>
+            <h3>WASTE GENERATION TREND</h3>
+          </div>
+          <strong>7 DAYS</strong>
+        </div>
+
+        <div class="waste-trend">
+          <div
+            class="waste-trend-column"
+            *ngFor="let value of selectedWaste.trend; let i = index"
+          >
+            <span>{{ value }}</span>
+            <div class="waste-trend-track">
+              <div [style.height.%]="getWasteBarHeight(value)"></div>
+            </div>
+            <small>D{{ i + 1 }}</small>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="waste-bottom-line">
+      <span>ENVIRONMENTAL OPERATIONS MONITORING</span>
+      <span>HARDCODED OPERATIONAL DATA · AUTO REFRESH 60 SEC</span>
+    </div>
+
+  </section>
+
   <!-- ======================================================
        FOOTER
   ======================================================= -->

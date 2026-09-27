@@ -1,7 +1,7 @@
 <section class="reports-page">
 
   <!-- ======================================================
-       PAGE HEADER
+       HEADER
   ======================================================= -->
 
   <header class="reports-header">
@@ -21,7 +21,7 @@
       <p>
         Generate structured intelligence reports for Antarctic
         research operations, station health, environmental
-        conditions and risk monitoring.
+        conditions, risk monitoring and resource intelligence.
       </p>
 
     </div>
@@ -49,7 +49,7 @@
 
 
   <!-- ======================================================
-       SUMMARY CARDS
+       SUMMARY
   ======================================================= -->
 
   <section class="summary-grid">
@@ -89,11 +89,11 @@
         </span>
 
         <strong>
-          04
+          10
         </strong>
 
         <small>
-          Operational categories
+          Operational + audit
         </small>
       </div>
 
@@ -149,7 +149,415 @@
 
 
   <!-- ======================================================
-       REPORT HISTORY
+       AUDIT & RESOURCE INTELLIGENCE
+  ======================================================= -->
+
+  <section class="audit-intelligence">
+
+    <div class="audit-heading">
+
+      <div>
+
+        <div class="section-eyebrow">
+          AUDIT & RESOURCE INTELLIGENCE
+        </div>
+
+        <h2>
+          Station Resource Register
+        </h2>
+
+        <p>
+          Supply movements, resource usage, inventory,
+          assets and resupply activity across the station network.
+        </p>
+
+      </div>
+
+      <button
+        class="audit-generate-button"
+        type="button"
+        (click)="selectReportType('audit-complete'); openReportBuilder()"
+      >
+
+        <span>▣</span>
+
+        Generate Audit Report
+
+        <strong>→</strong>
+
+      </button>
+
+    </div>
+
+
+    <!-- RESOURCE CARDS -->
+
+    <div class="resource-overview-grid">
+
+      <article class="resource-card fuel">
+
+        <div class="resource-card-top">
+
+          <span>
+            DIESEL FUEL
+          </span>
+
+          <i>
+            FUEL
+          </i>
+
+        </div>
+
+        <strong>
+          34,280 L
+        </strong>
+
+        <small>
+          Combined remaining inventory
+        </small>
+
+        <div class="resource-progress">
+
+          <span style="width: 72%"></span>
+
+        </div>
+
+        <div class="resource-meta">
+          <span>
+            BHARATI 18,420 L
+          </span>
+
+          <span>
+            MAITRI 15,860 L
+          </span>
+        </div>
+
+      </article>
+
+
+      <article class="resource-card water">
+
+        <div class="resource-card-top">
+
+          <span>
+            POTABLE WATER
+          </span>
+
+          <i>
+            WATER
+          </i>
+
+        </div>
+
+        <strong>
+          15,560 L
+        </strong>
+
+        <small>
+          Current station inventory
+        </small>
+
+        <div class="resource-progress">
+
+          <span style="width: 66%"></span>
+
+        </div>
+
+        <div class="resource-meta">
+          <span>
+            BHARATI 8,640 L
+          </span>
+
+          <span>
+            MAITRI 6,920 L
+          </span>
+        </div>
+
+      </article>
+
+
+      <article class="resource-card food">
+
+        <div class="resource-card-top">
+
+          <span>
+            FOOD SUPPLIES
+          </span>
+
+          <i>
+            FOOD
+          </i>
+
+        </div>
+
+        <strong>
+          4,120 KG
+        </strong>
+
+        <small>
+          Current stored provisions
+        </small>
+
+        <div class="resource-progress">
+
+          <span style="width: 79%"></span>
+
+        </div>
+
+        <div class="resource-meta">
+          <span>
+            BHARATI 2,180 KG
+          </span>
+
+          <span>
+            MAITRI 1,940 KG
+          </span>
+        </div>
+
+      </article>
+
+
+      <article class="resource-card assets">
+
+        <div class="resource-card-top">
+
+          <span>
+            REGISTERED ASSETS
+          </span>
+
+          <i>
+            ASSETS
+          </i>
+
+        </div>
+
+        <strong>
+          14
+        </strong>
+
+        <small>
+          Active tracked equipment
+        </small>
+
+        <div class="resource-progress">
+
+          <span style="width: 96%"></span>
+
+        </div>
+
+        <div class="resource-meta">
+          <span>
+            13 OPERATIONAL
+          </span>
+
+          <span>
+            1 SERVICE
+          </span>
+        </div>
+
+      </article>
+
+    </div>
+
+
+    <!-- RESOURCE STATUS -->
+
+    <div class="audit-status-grid">
+
+      <div class="audit-status-panel">
+
+        <div class="panel-heading">
+
+          <div>
+            <span>
+              CURRENT INVENTORY
+            </span>
+
+            <h3>
+              Resource Position
+            </h3>
+          </div>
+
+          <b>
+            22 SEP 2026
+          </b>
+
+        </div>
+
+
+        <div class="mini-inventory">
+
+          <div class="mini-row">
+
+            <div>
+              <strong>
+                Diesel Fuel
+              </strong>
+
+              <small>
+                27 day coverage
+              </small>
+            </div>
+
+            <span>
+              34,280 L
+            </span>
+
+          </div>
+
+
+          <div class="mini-row">
+
+            <div>
+              <strong>
+                Potable Water
+              </strong>
+
+              <small>
+                24 day coverage
+              </small>
+            </div>
+
+            <span>
+              15,560 L
+            </span>
+
+          </div>
+
+
+          <div class="mini-row">
+
+            <div>
+              <strong>
+                Food Supplies
+              </strong>
+
+              <small>
+                31 day coverage
+              </small>
+            </div>
+
+            <span>
+              4,120 KG
+            </span>
+
+          </div>
+
+
+          <div class="mini-row">
+
+            <div>
+              <strong>
+                Technical Supplies
+              </strong>
+
+              <small>
+                22 day coverage
+              </small>
+            </div>
+
+            <span class="watch">
+              612 KG
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="audit-status-panel">
+
+        <div class="panel-heading">
+
+          <div>
+            <span>
+              NEXT EXPECTED RESUPPLY
+            </span>
+
+            <h3>
+              Logistics Schedule
+            </h3>
+          </div>
+
+          <b>
+            PLANNED
+          </b>
+
+        </div>
+
+
+        <div class="resupply-preview">
+
+          <div class="resupply-preview-item">
+
+            <div class="resupply-station">
+              <strong>
+                BHARATI
+              </strong>
+
+              <span>
+                17 OCT 2026
+              </span>
+            </div>
+
+            <div class="resupply-detail">
+              <strong>
+                Diesel Fuel
+              </strong>
+
+              <span>
+                12,000 L
+              </span>
+            </div>
+
+            <b>
+              25 DAYS
+            </b>
+
+          </div>
+
+
+          <div class="resupply-preview-item">
+
+            <div class="resupply-station">
+              <strong>
+                MAITRI
+              </strong>
+
+              <span>
+                24 OCT 2026
+              </span>
+            </div>
+
+            <div class="resupply-detail">
+              <strong>
+                Potable Water
+              </strong>
+
+              <span>
+                8,000 L
+              </span>
+            </div>
+
+            <b>
+              32 DAYS
+            </b>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ======================================================
+       REPORT LIBRARY
   ======================================================= -->
 
   <section class="history-section">
@@ -219,7 +627,7 @@
             </span>
 
             <span>
-              POLARIS-TWIN
+              {{ getReportLabel(report.type) }}
             </span>
 
           </div>
@@ -288,7 +696,7 @@
           </h2>
 
           <p>
-            Choose the operational intelligence report
+            Choose the operational intelligence document
             you want to generate.
           </p>
 
@@ -307,44 +715,125 @@
       </header>
 
 
-      <div class="report-type-grid">
+      <!-- OPERATIONS -->
 
-        <button
-          class="report-type-card"
-          type="button"
-          *ngFor="let option of reportOptions"
-          [class.selected]="
-            selectedReportType === option.id
-          "
-          [disabled]="isGenerating"
-          (click)="selectReportType(option.id)"
-        >
+      <div class="builder-group">
 
-          <div class="type-icon">
-            {{ option.icon }}
-          </div>
+        <div class="builder-group-title">
+          OPERATIONAL REPORTS
+        </div>
 
-          <div class="type-copy">
+<div class="report-type-grid">
 
-            <h3>
-              {{ option.title }}
-            </h3>
+  <ng-container
+    *ngFor="let option of reportOptions"
+  >
 
-            <p>
-              {{ option.subtitle }}
-            </p>
+    <button
+      class="report-type-card"
+      type="button"
+      *ngIf="option.group === 'operations'"
+      [class.selected]="
+        selectedReportType === option.id
+      "
+      [disabled]="isGenerating"
+      (click)="selectReportType(option.id)"
+    >
 
-          </div>
+      <div class="type-icon">
+        {{ option.icon }}
+      </div>
 
-          <span class="type-check">
-            {{
-              selectedReportType === option.id
-                ? '✓'
-                : '→'
-            }}
-          </span>
+      <div class="type-copy">
 
-        </button>
+        <h3>
+          {{ option.title }}
+        </h3>
+
+        <p>
+          {{ option.subtitle }}
+        </p>
+
+      </div>
+
+      <span class="type-check">
+        {{
+          selectedReportType === option.id
+            ? '✓'
+            : '→'
+        }}
+      </span>
+
+    </button>
+
+  </ng-container>
+
+</div>
+
+      </div>
+
+
+      <!-- AUDIT -->
+
+      <div class="builder-group audit-builder-group">
+
+        <div class="builder-group-title">
+          AUDIT & RESOURCE REPORTS
+        </div>
+
+
+        <div class="report-type-grid">
+
+          <ng-container
+            *ngFor="
+              let option of reportOptions
+            "
+          >
+
+            <button
+              class="report-type-card audit-option"
+              type="button"
+              *ngIf="
+                option.group === 'audit'
+              "
+              [class.selected]="
+                selectedReportType === option.id
+              "
+              [disabled]="isGenerating"
+              (click)="selectReportType(option.id)"
+            >
+
+              <div class="type-icon">
+                {{ option.icon }}
+              </div>
+
+              <div class="type-copy">
+
+                <h3>
+                  {{ option.title }}
+                </h3>
+
+                <p>
+                  {{ option.subtitle }}
+                </p>
+
+              </div>
+
+              <span class="type-check">
+
+                {{
+                  selectedReportType === option.id
+                    ? '✓'
+                    : '→'
+                }}
+
+              </span>
+
+            </button>
+
+          </ng-container>
+
+        </div>
 
       </div>
 
@@ -373,7 +862,9 @@
           class="build-button"
           type="button"
           [disabled]="isGenerating"
-          (click)="generateReport(selectedReportType)"
+          (click)="
+            generateReport(selectedReportType)
+          "
         >
 
           <span
@@ -405,7 +896,7 @@
 
 
   <!-- ======================================================
-       REPORT PREVIEW MODAL
+       REPORT PREVIEW
   ======================================================= -->
 
   <div
@@ -487,8 +978,6 @@
       </header>
 
 
-      <!-- DOWNLOAD STATUS -->
-
       <div
         class="download-status"
         *ngIf="isDownloading"
@@ -509,13 +998,9 @@
       </div>
 
 
-      <!-- DOCUMENT SCROLL -->
+      <!-- DOCUMENT -->
 
       <div class="report-scroll">
-
-        <!-- ==================================================
-             ACTUAL DOCUMENT
-        =================================================== -->
 
         <article
           #reportDocument
@@ -627,416 +1112,1313 @@
           </section>
 
 
-          <!-- KPI GRID -->
+          <!-- ==================================================
+               GENERIC REPORT SECTIONS
+          =================================================== -->
 
-          <section class="document-section">
+          <ng-container
+            *ngIf="
+              !currentReport.audit
+            "
+          >
 
-            <div class="document-section-heading">
+            <!-- KPI -->
 
-              <div>
+            <section class="document-section">
 
-                <span>
-                  01
-                </span>
-
-                <h2>
-                  Key Indicators
-                </h2>
-
-              </div>
-
-              <p>
-                Current operational indicators
-              </p>
-
-            </div>
-
-
-            <div class="kpi-grid">
-
-              <article
-                class="kpi-card"
-                *ngFor="
-                  let kpi of currentReport.kpis;
-                  trackBy: trackByKpi
-                "
-                [ngClass]="'tone-' + kpi.tone"
-              >
-
-                <div class="kpi-top">
-
-                  <span>
-                    {{ kpi.label }}
-                  </span>
-
-                  <i>
-                    ●
-                  </i>
-
-                </div>
-
-                <strong>
-                  {{ kpi.value }}
-                </strong>
-
-                <small>
-                  {{ kpi.note }}
-                </small>
-
-              </article>
-
-            </div>
-
-          </section>
-
-
-          <!-- PERFORMANCE BARS -->
-
-          <section class="document-section">
-
-            <div class="document-section-heading">
-
-              <div>
-
-                <span>
-                  02
-                </span>
-
-                <h2>
-                  Performance Indicators
-                </h2>
-
-              </div>
-
-              <p>
-                Comparative operational metrics
-              </p>
-
-            </div>
-
-
-            <div class="bars-layout">
-
-              <div
-                class="metric-row"
-                *ngFor="
-                  let bar of currentReport.bars;
-                  trackBy: trackByBar
-                "
-              >
-
-                <div class="metric-label">
-
-                  <span>
-                    {{ bar.label }}
-                  </span>
-
-                  <strong>
-                    {{ bar.displayValue }}
-                  </strong>
-
-                </div>
-
-
-                <div class="metric-track">
-
-                  <div
-                    class="metric-fill"
-                    [style.width.%]="bar.value"
-                  ></div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </section>
-
-
-          <!-- TREND CHART -->
-
-          <section class="document-section">
-
-            <div class="document-section-heading">
-
-              <div>
-
-                <span>
-                  03
-                </span>
-
-                <h2>
-                  Trend Overview
-                </h2>
-
-              </div>
-
-              <p>
-                Seven-point operational trend
-              </p>
-
-            </div>
-
-
-            <div class="trend-chart">
-
-              <svg
-                viewBox="0 0 560 180"
-                preserveAspectRatio="none"
-                aria-label="Operational trend chart"
-              >
-
-                <line
-                  x1="20"
-                  y1="25"
-                  x2="560"
-                  y2="25"
-                  class="chart-grid-line"
-                />
-
-                <line
-                  x1="20"
-                  y1="90"
-                  x2="560"
-                  y2="90"
-                  class="chart-grid-line"
-                />
-
-                <line
-                  x1="20"
-                  y1="154"
-                  x2="560"
-                  y2="154"
-                  class="chart-grid-line"
-                />
-
-
-                <polygon
-                  [attr.points]="trendAreaPoints"
-                  class="chart-area"
-                ></polygon>
-
-
-                <polyline
-                  [attr.points]="trendPoints"
-                  class="chart-line"
-                  fill="none"
-                ></polyline>
-
-
-                <circle
-                  *ngFor="
-                    let dot of trendDots
-                  "
-                  [attr.cx]="dot.x"
-                  [attr.cy]="dot.y"
-                  r="4"
-                  class="chart-dot"
-                ></circle>
-
-              </svg>
-
-
-              <div class="chart-labels">
-
-                <span
-                  *ngFor="
-                    let label of currentReport.trendLabels
-                  "
-                >
-                  {{ label }}
-                </span>
-
-              </div>
-
-            </div>
-
-          </section>
-
-
-          <!-- STATION COMPARISON -->
-
-          <section class="document-section">
-
-            <div class="document-section-heading">
-
-              <div>
-
-                <span>
-                  04
-                </span>
-
-                <h2>
-                  Station Comparison
-                </h2>
-
-              </div>
-
-              <p>
-                Bharati vs Maitri
-              </p>
-
-            </div>
-
-
-            <div class="data-table-wrapper">
-
-              <table class="data-table">
-
-                <thead>
-
-                  <tr>
-
-                    <th>
-                      METRIC
-                    </th>
-
-                    <th>
-                      BHARATI
-                    </th>
-
-                    <th>
-                      MAITRI
-                    </th>
-
-                    <th>
-                      STATUS
-                    </th>
-
-                  </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                  <tr
-                    *ngFor="
-                      let row of currentReport.table;
-                      trackBy: trackByRow
-                    "
-                  >
-
-                    <td>
-                      {{ row.metric }}
-                    </td>
-
-                    <td>
-                      {{ row.bharati }}
-                    </td>
-
-                    <td>
-                      {{ row.maitri }}
-                    </td>
-
-                    <td>
-
-                      <span
-                        class="status-pill"
-                        [ngClass]="
-                          statusClass(row.status)
-                        "
-                      >
-                        <i></i>
-                        {{ row.status }}
-                      </span>
-
-                    </td>
-
-                  </tr>
-
-                </tbody>
-
-              </table>
-
-            </div>
-
-          </section>
-
-
-          <!-- INSIGHTS -->
-
-          <section class="document-section">
-
-            <div class="document-section-heading">
-
-              <div>
-
-                <span>
-                  05
-                </span>
-
-                <h2>
-                  Operational Insights
-                </h2>
-
-              </div>
-
-              <p>
-                Key observations
-              </p>
-
-            </div>
-
-
-            <div class="insights-grid">
-
-              <article
-                class="insight-card"
-                *ngFor="
-                  let insight of currentReport.insights;
-                  trackBy: trackByInsight
-                "
-              >
-
-                <div class="insight-icon">
-                  {{ insight.icon }}
-                </div>
+              <div class="document-section-heading">
 
                 <div>
 
-                  <h3>
-                    {{ insight.title }}
-                  </h3>
+                  <span>
+                    01
+                  </span>
 
-                  <p>
-                    {{ insight.text }}
-                  </p>
+                  <h2>
+                    Key Indicators
+                  </h2>
 
                 </div>
 
-              </article>
+                <p>
+                  Current operational indicators
+                </p>
 
-            </div>
-
-          </section>
-
-
-          <!-- METHODOLOGY -->
-
-          <section class="methodology-box">
-
-            <div class="methodology-icon">
-              i
-            </div>
-
-            <div>
-
-              <strong>
-                Data & Analytical Context
-              </strong>
-
-              <p>
-                {{ currentReport.methodology }}
-              </p>
-
-            </div>
-
-          </section>
+              </div>
 
 
-          <!-- DOCUMENT FOOTER -->
+              <div class="kpi-grid">
+
+                <article
+                  class="kpi-card"
+                  *ngFor="
+                    let kpi of currentReport.kpis;
+                    trackBy: trackByKpi
+                  "
+                  [ngClass]="
+                    'tone-' + kpi.tone
+                  "
+                >
+
+                  <div class="kpi-top">
+
+                    <span>
+                      {{ kpi.label }}
+                    </span>
+
+                    <i>
+                      ●
+                    </i>
+
+                  </div>
+
+                  <strong>
+                    {{ kpi.value }}
+                  </strong>
+
+                  <small>
+                    {{ kpi.note }}
+                  </small>
+
+                </article>
+
+              </div>
+
+            </section>
+
+
+            <!-- BARS -->
+
+            <section class="document-section">
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    02
+                  </span>
+
+                  <h2>
+                    Performance Indicators
+                  </h2>
+
+                </div>
+
+                <p>
+                  Comparative operational metrics
+                </p>
+
+              </div>
+
+
+              <div class="bars-layout">
+
+                <div
+                  class="metric-row"
+                  *ngFor="
+                    let bar of currentReport.bars;
+                    trackBy: trackByBar
+                  "
+                >
+
+                  <div class="metric-label">
+
+                    <span>
+                      {{ bar.label }}
+                    </span>
+
+                    <strong>
+                      {{ bar.displayValue }}
+                    </strong>
+
+                  </div>
+
+
+                  <div class="metric-track">
+
+                    <div
+                      class="metric-fill"
+                      [style.width.%]="bar.value"
+                    ></div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- TREND -->
+
+            <section class="document-section">
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    03
+                  </span>
+
+                  <h2>
+                    Trend Overview
+                  </h2>
+
+                </div>
+
+                <p>
+                  Seven-point operational trend
+                </p>
+
+              </div>
+
+
+              <div class="trend-chart">
+
+                <svg
+                  viewBox="0 0 560 180"
+                  preserveAspectRatio="none"
+                  aria-label="Operational trend chart"
+                >
+
+                  <line
+                    x1="20"
+                    y1="25"
+                    x2="560"
+                    y2="25"
+                    class="chart-grid-line"
+                  />
+
+                  <line
+                    x1="20"
+                    y1="90"
+                    x2="560"
+                    y2="90"
+                    class="chart-grid-line"
+                  />
+
+                  <line
+                    x1="20"
+                    y1="154"
+                    x2="560"
+                    y2="154"
+                    class="chart-grid-line"
+                  />
+
+                  <polygon
+                    [attr.points]="trendAreaPoints"
+                    class="chart-area"
+                  ></polygon>
+
+                  <polyline
+                    [attr.points]="trendPoints"
+                    class="chart-line"
+                    fill="none"
+                  ></polyline>
+
+                  <circle
+                    *ngFor="
+                      let dot of trendDots
+                    "
+                    [attr.cx]="dot.x"
+                    [attr.cy]="dot.y"
+                    r="4"
+                    class="chart-dot"
+                  ></circle>
+
+                </svg>
+
+
+                <div class="chart-labels">
+
+                  <span
+                    *ngFor="
+                      let label of currentReport.trendLabels
+                    "
+                  >
+                    {{ label }}
+                  </span>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- TABLE -->
+
+            <section class="document-section">
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    04
+                  </span>
+
+                  <h2>
+                    Station Comparison
+                  </h2>
+
+                </div>
+
+                <p>
+                  Bharati vs Maitri
+                </p>
+
+              </div>
+
+
+              <div class="data-table-wrapper">
+
+                <table class="data-table">
+
+                  <thead>
+
+                    <tr>
+
+                      <th>
+                        METRIC
+                      </th>
+
+                      <th>
+                        BHARATI
+                      </th>
+
+                      <th>
+                        MAITRI
+                      </th>
+
+                      <th>
+                        STATUS
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+
+                  <tbody>
+
+                    <tr
+                      *ngFor="
+                        let row of currentReport.table;
+                        trackBy: trackByRow
+                      "
+                    >
+
+                      <td>
+                        {{ row.metric }}
+                      </td>
+
+                      <td>
+                        {{ row.bharati }}
+                      </td>
+
+                      <td>
+                        {{ row.maitri }}
+                      </td>
+
+                      <td>
+
+                        <span
+                          class="status-pill"
+                          [ngClass]="
+                            statusClass(row.status)
+                          "
+                        >
+
+                          <i></i>
+
+                          {{ row.status }}
+
+                        </span>
+
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </section>
+
+
+            <!-- INSIGHTS -->
+
+            <section class="document-section">
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    05
+                  </span>
+
+                  <h2>
+                    Operational Insights
+                  </h2>
+
+                </div>
+
+                <p>
+                  Key observations
+                </p>
+
+              </div>
+
+
+              <div class="insights-grid">
+
+                <article
+                  class="insight-card"
+                  *ngFor="
+                    let insight of currentReport.insights;
+                    trackBy: trackByInsight
+                  "
+                >
+
+                  <div class="insight-icon">
+                    {{ insight.icon }}
+                  </div>
+
+                  <div>
+
+                    <h3>
+                      {{ insight.title }}
+                    </h3>
+
+                    <p>
+                      {{ insight.text }}
+                    </p>
+
+                  </div>
+
+                </article>
+
+              </div>
+
+            </section>
+
+          </ng-container>
+
+
+          <!-- ==================================================
+               AUDIT DOCUMENT
+          =================================================== -->
+
+          <ng-container
+            *ngIf="
+              currentReport.audit as audit
+            "
+          >
+
+            <!-- AUDIT KPIS -->
+
+            <section class="document-section">
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    01
+                  </span>
+
+                  <h2>
+                    Resource Summary
+                  </h2>
+
+                </div>
+
+                <p>
+                  Current operational inventory
+                </p>
+
+              </div>
+
+
+              <div class="kpi-grid">
+
+                <article
+                  class="kpi-card"
+                  *ngFor="
+                    let kpi of currentReport.kpis;
+                    trackBy: trackByKpi
+                  "
+                  [ngClass]="
+                    'tone-' + kpi.tone
+                  "
+                >
+
+                  <div class="kpi-top">
+
+                    <span>
+                      {{ kpi.label }}
+                    </span>
+
+                    <i>
+                      ●
+                    </i>
+
+                  </div>
+
+                  <strong>
+                    {{ kpi.value }}
+                  </strong>
+
+                  <small>
+                    {{ kpi.note }}
+                  </small>
+
+                </article>
+
+              </div>
+
+            </section>
+
+
+            <!-- INVENTORY TABLE -->
+
+            <section class="document-section">
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    02
+                  </span>
+
+                  <h2>
+                    Remaining Supplies
+                  </h2>
+
+                </div>
+
+                <p>
+                  Current station inventory
+                </p>
+
+              </div>
+
+
+              <div class="data-table-wrapper">
+
+                <table class="data-table">
+
+                  <thead>
+
+                    <tr>
+
+                      <th>
+                        RESOURCE
+                      </th>
+
+                      <th>
+                        BHARATI
+                      </th>
+
+                      <th>
+                        MAITRI
+                      </th>
+
+                      <th>
+                        COVERAGE
+                      </th>
+
+                      <th>
+                        STATUS
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    <tr
+                      *ngFor="
+                        let item of audit.inventory;
+                        trackBy: trackByInventory
+                      "
+                    >
+
+                      <td>
+                        <strong>
+                          {{ item.resource }}
+                        </strong>
+                      </td>
+
+                      <td>
+                        {{ item.bharati }}
+                        {{ item.unit }}
+                      </td>
+
+                      <td>
+                        {{ item.maitri }}
+                        {{ item.unit }}
+                      </td>
+
+                      <td>
+                        {{ item.coverage }}
+                      </td>
+
+                      <td>
+
+                        <span
+                          class="status-pill"
+                          [ngClass]="
+                            statusClass(item.status)
+                          "
+                        >
+                          <i></i>
+                          {{ item.status }}
+                        </span>
+
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </section>
+
+
+            <!-- SUPPLY HISTORY -->
+
+            <section
+              class="document-section"
+              *ngIf="
+                currentReport.type === 'audit-complete' ||
+                currentReport.type === 'audit-supply'
+              "
+            >
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    03
+                  </span>
+
+                  <h2>
+                    Previous Supplies
+                  </h2>
+
+                </div>
+
+                <p>
+                  Supply receiving history
+                </p>
+
+              </div>
+
+
+              <div class="data-table-wrapper">
+
+                <table class="data-table">
+
+                  <thead>
+
+                    <tr>
+
+                      <th>
+                        DATE
+                      </th>
+
+                      <th>
+                        STATION
+                      </th>
+
+                      <th>
+                        RESOURCE
+                      </th>
+
+                      <th>
+                        QUANTITY
+                      </th>
+
+                      <th>
+                        SOURCE
+                      </th>
+
+                      <th>
+                        STATUS
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    <tr
+                      *ngFor="
+                        let item of audit.supplies;
+                        trackBy: trackBySupply
+                      "
+                    >
+
+                      <td>
+                        {{ item.date }}
+                      </td>
+
+                      <td>
+                        <strong>
+                          {{ item.station }}
+                        </strong>
+                      </td>
+
+                      <td>
+                        {{ item.resource }}
+                      </td>
+
+                      <td>
+                        <strong>
+                          {{ item.quantity }}
+                        </strong>
+                      </td>
+
+                      <td>
+                        {{ item.source }}
+                      </td>
+
+                      <td>
+
+                        <span
+                          class="status-pill status-good"
+                        >
+                          <i></i>
+                          {{ item.status }}
+                        </span>
+
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </section>
+
+
+            <!-- RESOURCE USAGE -->
+
+            <section
+              class="document-section"
+              *ngIf="
+                currentReport.type === 'audit-complete' ||
+                currentReport.type === 'audit-usage'
+              "
+            >
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    04
+                  </span>
+
+                  <h2>
+                    Resource Usage
+                  </h2>
+
+                </div>
+
+                <p>
+                  Recorded consumption activity
+                </p>
+
+              </div>
+
+
+              <div class="data-table-wrapper">
+
+                <table class="data-table">
+
+                  <thead>
+
+                    <tr>
+
+                      <th>
+                        DATE / TIME
+                      </th>
+
+                      <th>
+                        STATION
+                      </th>
+
+                      <th>
+                        RESOURCE
+                      </th>
+
+                      <th>
+                        USED
+                      </th>
+
+                      <th>
+                        PURPOSE
+                      </th>
+
+                      <th>
+                        REMAINING
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    <tr
+                      *ngFor="
+                        let item of audit.usage;
+                        trackBy: trackByUsage
+                      "
+                    >
+
+                      <td>
+                        {{ item.date }}
+                        <small>
+                          {{ item.time }}
+                        </small>
+                      </td>
+
+                      <td>
+                        <strong>
+                          {{ item.station }}
+                        </strong>
+                      </td>
+
+                      <td>
+                        {{ item.resource }}
+                      </td>
+
+                      <td>
+                        <strong>
+                          {{ item.used }}
+                        </strong>
+                      </td>
+
+                      <td>
+                        {{ item.purpose }}
+                      </td>
+
+                      <td>
+                        {{ item.remaining }}
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </section>
+
+
+            <!-- ASSETS -->
+
+            <section
+              class="document-section"
+              *ngIf="
+                currentReport.type === 'audit-complete' ||
+                currentReport.type === 'audit-assets'
+              "
+            >
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    05
+                  </span>
+
+                  <h2>
+                    Asset Register
+                  </h2>
+
+                </div>
+
+                <p>
+                  Equipment and inspection records
+                </p>
+
+              </div>
+
+
+              <div class="data-table-wrapper">
+
+                <table class="data-table">
+
+                  <thead>
+
+                    <tr>
+
+                      <th>
+                        ASSET
+                      </th>
+
+                      <th>
+                        STATION
+                      </th>
+
+                      <th>
+                        CATEGORY
+                      </th>
+
+                      <th>
+                        QTY
+                      </th>
+
+                      <th>
+                        CONDITION
+                      </th>
+
+                      <th>
+                        INSPECTION
+                      </th>
+
+                      <th>
+                        STATUS
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    <tr
+                      *ngFor="
+                        let item of audit.assets;
+                        trackBy: trackByAsset
+                      "
+                    >
+
+                      <td>
+                        <strong>
+                          {{ item.asset }}
+                        </strong>
+                      </td>
+
+                      <td>
+                        {{ item.station }}
+                      </td>
+
+                      <td>
+                        {{ item.category }}
+                      </td>
+
+                      <td>
+                        {{ item.quantity }}
+                      </td>
+
+                      <td>
+                        {{ item.condition }}
+                      </td>
+
+                      <td>
+                        {{ item.inspection }}
+                      </td>
+
+                      <td>
+
+                        <span
+                          class="status-pill"
+                          [ngClass]="
+                            statusClass(item.status)
+                          "
+                        >
+                          <i></i>
+                          {{ item.status }}
+                        </span>
+
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </section>
+
+
+            <!-- RESUPPLY -->
+
+            <section
+              class="document-section"
+              *ngIf="
+                currentReport.type === 'audit-complete' ||
+                currentReport.type === 'audit-resupply'
+              "
+            >
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    06
+                  </span>
+
+                  <h2>
+                    Resupply History
+                  </h2>
+
+                </div>
+
+                <p>
+                  Previous deliveries
+                </p>
+
+              </div>
+
+
+              <div class="data-table-wrapper">
+
+                <table class="data-table">
+
+                  <thead>
+
+                    <tr>
+
+                      <th>
+                        DATE
+                      </th>
+
+                      <th>
+                        STATION
+                      </th>
+
+                      <th>
+                        ITEMS
+                      </th>
+
+                      <th>
+                        QUANTITY
+                      </th>
+
+                      <th>
+                        RECEIVED BY
+                      </th>
+
+                      <th>
+                        STATUS
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    <tr
+                      *ngFor="
+                        let item of audit.resupply;
+                        trackBy: trackByResupply
+                      "
+                    >
+
+                      <td>
+                        {{ item.date }}
+                      </td>
+
+                      <td>
+                        <strong>
+                          {{ item.station }}
+                        </strong>
+                      </td>
+
+                      <td>
+                        {{ item.items }}
+                      </td>
+
+                      <td>
+                        {{ item.quantity }}
+                      </td>
+
+                      <td>
+                        {{ item.receivedBy }}
+                      </td>
+
+                      <td>
+
+                        <span
+                          class="status-pill status-good"
+                        >
+                          <i></i>
+                          {{ item.status }}
+                        </span>
+
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </section>
+
+
+            <!-- NEXT RESUPPLY -->
+
+            <section class="document-section">
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    07
+                  </span>
+
+                  <h2>
+                    Next Expected Resupply
+                  </h2>
+
+                </div>
+
+                <p>
+                  Planned logistics windows
+                </p>
+
+              </div>
+
+
+              <div class="forecast-grid">
+
+                <article
+                  class="forecast-card"
+                  *ngFor="
+                    let item of audit.forecast;
+                    trackBy: trackByForecast
+                  "
+                >
+
+                  <div class="forecast-top">
+
+                    <span>
+                      {{ item.station }}
+                    </span>
+
+                    <b>
+                      {{ item.priority }}
+                    </b>
+
+                  </div>
+
+                  <strong>
+                    {{ item.date }}
+                  </strong>
+
+                  <div class="forecast-resource">
+
+                    <span>
+                      Primary requirement
+                    </span>
+
+                    <strong>
+                      {{ item.primaryResource }}
+                    </strong>
+
+                  </div>
+
+                  <div class="forecast-bottom">
+
+                    <span>
+                      {{ item.estimatedQuantity }}
+                    </span>
+
+                    <strong>
+                      {{ item.daysRemaining }} DAYS
+                    </strong>
+
+                  </div>
+
+                </article>
+
+              </div>
+
+            </section>
+
+
+            <!-- AUDIT ACTIVITY -->
+
+            <section
+              class="document-section"
+              *ngIf="
+                currentReport.type === 'audit-complete'
+              "
+            >
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    08
+                  </span>
+
+                  <h2>
+                    Audit Activity
+                  </h2>
+
+                </div>
+
+                <p>
+                  Recent operational records
+                </p>
+
+              </div>
+
+
+              <div class="audit-timeline">
+
+                <article
+                  class="audit-event"
+                  *ngFor="
+                    let item of audit.activity;
+                    trackBy: trackByActivity
+                  "
+                >
+
+                  <div class="audit-event-marker">
+                    <span></span>
+                  </div>
+
+                  <div class="audit-event-time">
+
+                    <strong>
+                      {{ item.time }}
+                    </strong>
+
+                    <span>
+                      {{ item.date }}
+                    </span>
+
+                  </div>
+
+                  <div class="audit-event-content">
+
+                    <strong>
+                      {{ item.action }}
+                    </strong>
+
+                    <span>
+                      {{ item.station }}
+                      ·
+                      {{ item.operator }}
+                    </span>
+
+                  </div>
+
+                  <span
+                    class="status-pill"
+                    [ngClass]="
+                      statusClass(item.status)
+                    "
+                  >
+                    <i></i>
+                    {{ item.status }}
+                  </span>
+
+                </article>
+
+              </div>
+
+            </section>
+
+
+            <!-- AUDIT INSIGHTS -->
+
+            <section class="document-section">
+
+              <div class="document-section-heading">
+
+                <div>
+
+                  <span>
+                    09
+                  </span>
+
+                  <h2>
+                    Audit Observations
+                  </h2>
+
+                </div>
+
+                <p>
+                  Resource intelligence
+                </p>
+
+              </div>
+
+
+              <div class="insights-grid">
+
+                <article
+                  class="insight-card"
+                  *ngFor="
+                    let insight of currentReport.insights;
+                    trackBy: trackByInsight
+                  "
+                >
+
+                  <div class="insight-icon">
+                    {{ insight.icon }}
+                  </div>
+
+                  <div>
+
+                    <h3>
+                      {{ insight.title }}
+                    </h3>
+
+                    <p>
+                      {{ insight.text }}
+                    </p>
+
+                  </div>
+
+                </article>
+
+              </div>
+
+            </section>
+
+          </ng-container>
+
+
+          <!-- FOOTER -->
 
           <footer class="document-footer">
 
@@ -1052,14 +2434,8 @@
 
             </div>
 
-
-            <div class="footer-center">
+            <div>
               Operational Intelligence
-            </div>
-
-
-            <div class="footer-right">
-              {{ currentReport.generatedAt }}
             </div>
 
           </footer>

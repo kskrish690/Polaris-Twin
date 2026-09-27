@@ -13,6 +13,46 @@ import {
 } from '../../services/weather';
 
 
+interface HistoricalEvent {
+
+  year: string;
+
+  title: string;
+
+  description: string;
+
+  category: string;
+
+  source: string;
+
+}
+
+
+interface PersonnelOverview {
+
+  activePersonnel: number;
+
+  security: number;
+
+  scientists: number;
+
+  researchers: number;
+
+  administration: number;
+
+  engineering: number;
+
+  medical: number;
+
+  logistics: number;
+
+  communications: number;
+
+  support: number;
+
+}
+
+
 @Component({
 
   selector: 'app-maitri',
@@ -75,10 +115,231 @@ export class Maitri
 
 
   // ==========================================================
+  // PERSONNEL OVERVIEW
+  // ==========================================================
+
+  readonly personnelOverview: PersonnelOverview = {
+
+    activePersonnel: 42,
+
+    security: 4,
+
+    scientists: 10,
+
+    researchers: 8,
+
+    administration: 3,
+
+    engineering: 6,
+
+    medical: 2,
+
+    logistics: 4,
+
+    communications: 2,
+
+    support: 3
+
+  };
+
+
+  // ==========================================================
+  // TOTAL PERSONNEL
+  // ==========================================================
+
+  get totalPersonnel(): number {
+
+    return this.personnelOverview.activePersonnel;
+
+  }
+
+
+  // ==========================================================
+  // HISTORICAL EVENTS
+  // ==========================================================
+
+  readonly historicalEvents:
+    HistoricalEvent[] = [
+
+    {
+
+      year: '1988',
+
+      title:
+        'Schirmacher Oasis Site Selected',
+
+      description:
+        'An ice-free rocky area of the Schirmacher Oasis was selected for India’s second Antarctic research station.',
+
+      category:
+        'ESTABLISHMENT',
+
+      source:
+        'NCPOR'
+
+    },
+
+
+    {
+
+      year: '1989',
+
+      title:
+        'MAITRI Research Station Established',
+
+      description:
+        'Maitri was established at the Schirmacher Oasis as India’s second permanent Antarctic research station.',
+
+      category:
+        'STATION MILESTONE',
+
+      source:
+        'NCPOR · MoES'
+
+    },
+
+
+    {
+
+      year: '1990',
+
+      title:
+        'Dakshin Gangotri Decommissioned',
+
+      description:
+        'India’s first Antarctic station, Dakshin Gangotri, was decommissioned after being affected by accumulating ice. Maitri became the continuing permanent research base.',
+
+      category:
+        'OPERATIONAL TRANSITION',
+
+      source:
+        'NCPOR'
+
+    },
+
+
+    {
+
+      year: '1999–2000',
+
+      title:
+        'Expanded Scientific Operations',
+
+      description:
+        'Maitri supported multidisciplinary Antarctic research including atmospheric, geological, biological, environmental, medical, engineering and communication sciences.',
+
+      category:
+        'SCIENTIFIC RESEARCH',
+
+      source:
+        'MoES'
+
+    },
+
+
+    {
+
+      year: '2008',
+
+      title:
+        'Dedicated Satellite Communication Facility',
+
+      description:
+        'A dedicated satellite communication facility was established to provide continuous voice, video and data connectivity between Maitri and mainland India.',
+
+      category:
+        'COMMUNICATIONS',
+
+      source:
+        'NCPOR'
+
+    },
+
+
+    {
+
+      year: '2010',
+
+      title:
+        'South Pole Expedition',
+
+      description:
+        'An eight-member Indian team departed from Maitri for the South Pole. The expedition covered approximately 2,300 km and reached the South Pole on 21 November 2010.',
+
+      category:
+        'POLAR EXPEDITION',
+
+      source:
+        'NCPOR'
+
+    },
+
+
+    {
+
+      year: '2010',
+
+      title:
+        'Return From South Pole',
+
+      description:
+        'The expedition team returned to Maitri on 1 December 2010 with scientific observations and operational experience for future inland Antarctic traverses.',
+
+      category:
+        'EXPEDITION MILESTONE',
+
+      source:
+        'NCPOR'
+
+    },
+
+
+    {
+
+      year: '2011–12',
+
+      title:
+        'Indian Antarctic Research Network Expanded',
+
+      description:
+        'India expanded its permanent Antarctic research infrastructure with Bharati, complementing the long-running scientific operations at Maitri.',
+
+      category:
+        'NATIONAL NETWORK',
+
+      source:
+        'NCPOR'
+
+    },
+
+
+    {
+
+      year: 'PRESENT',
+
+      title:
+        'Continuing Year-Round Research',
+
+      description:
+        'Maitri continues to support Indian Antarctic research and station operations across multiple scientific and technical disciplines.',
+
+      category:
+        'ONGOING OPERATIONS',
+
+      source:
+        'NCPOR'
+
+    }
+
+  ];
+
+
+  // ==========================================================
   // WEATHER
   // ==========================================================
 
-  weather: WeatherData['current'] = {
+  weather:
+    WeatherData['current'] = {
 
     time: '',
 
@@ -156,10 +417,6 @@ export class Maitri
     this.loadWeather();
 
 
-    // --------------------------------------------------------
-    // LIVE CLOCK
-    // --------------------------------------------------------
-
     this.clockTimer =
       setInterval(
 
@@ -175,11 +432,6 @@ export class Maitri
 
       );
 
-
-    // --------------------------------------------------------
-    // WEATHER REFRESH
-    // Open-Meteo data refreshed every 5 minutes
-    // --------------------------------------------------------
 
     this.weatherTimer =
       setInterval(
@@ -246,16 +498,15 @@ export class Maitri
 
       .subscribe({
 
-        // ----------------------------------------------------
-        // SUCCESS
-        // ----------------------------------------------------
-
         next:
           (
             data: WeatherData
           ) => {
 
-            if (data && data.current) {
+            if (
+              data &&
+              data.current
+            ) {
 
               this.weather =
                 data.current;
@@ -266,19 +517,13 @@ export class Maitri
             this.loading =
               false;
 
-
             this.lastWeatherUpdate =
               new Date();
-
 
             this.cdr.detectChanges();
 
           },
 
-
-        // ----------------------------------------------------
-        // ERROR
-        // ----------------------------------------------------
 
         error:
           (
@@ -294,10 +539,8 @@ export class Maitri
             this.loading =
               false;
 
-
             this.error =
               'Unable to retrieve live MAITRI weather data from Open-Meteo.';
-
 
             this.cdr.detectChanges();
 
@@ -309,7 +552,7 @@ export class Maitri
 
 
   // ==========================================================
-  // RETRY WEATHER
+  // RETRY
   // ==========================================================
 
   retryWeather(): void {
@@ -325,12 +568,7 @@ export class Maitri
 
   private updateClock(): void {
 
-    /*
-     * Clock intentionally uses the browser clock.
-     *
-     * Display methods below convert the current time
-     * into Indian Standard Time.
-     */
+    // Display values are generated by the getters.
 
   }
 
@@ -409,7 +647,7 @@ export class Maitri
 
 
   // ==========================================================
-  // WEATHER STATUS CLASS
+  // WEATHER STATUS
   // ==========================================================
 
   get weatherStatusClass(): string {
@@ -432,10 +670,6 @@ export class Maitri
 
   }
 
-
-  // ==========================================================
-  // WEATHER STATUS TEXT
-  // ==========================================================
 
   get weatherStatusText(): string {
 
@@ -474,10 +708,7 @@ export class Maitri
 
 
   getWeatherDescription(
-
-    code:
-      number | null
-
+    code: number | null
   ): string {
 
     if (code === null) {
@@ -487,10 +718,6 @@ export class Maitri
     }
 
 
-    // --------------------------------------------------------
-    // Clear
-    // --------------------------------------------------------
-
     if (code === 0) {
 
       return 'CLEAR SKY';
@@ -498,52 +725,22 @@ export class Maitri
     }
 
 
-    // --------------------------------------------------------
-    // Cloudy
-    // --------------------------------------------------------
-
-    if (
-
-      [1, 2, 3].includes(code)
-
-    ) {
+    if ([1, 2, 3].includes(code)) {
 
       return 'CLOUDY';
 
     }
 
 
-    // --------------------------------------------------------
-    // Fog
-    // --------------------------------------------------------
-
-    if (
-
-      [45, 48].includes(code)
-
-    ) {
+    if ([45, 48].includes(code)) {
 
       return 'FOG';
 
     }
 
 
-    // --------------------------------------------------------
-    // Drizzle
-    // --------------------------------------------------------
-
     if (
-
-      [
-
-        51,
-        53,
-        55,
-        56,
-        57
-
-      ].includes(code)
-
+      [51, 53, 55, 56, 57].includes(code)
     ) {
 
       return 'DRIZZLE';
@@ -551,22 +748,8 @@ export class Maitri
     }
 
 
-    // --------------------------------------------------------
-    // Rain
-    // --------------------------------------------------------
-
     if (
-
-      [
-
-        61,
-        63,
-        65,
-        66,
-        67
-
-      ].includes(code)
-
+      [61, 63, 65, 66, 67].includes(code)
     ) {
 
       return 'RAIN';
@@ -574,23 +757,8 @@ export class Maitri
     }
 
 
-    // --------------------------------------------------------
-    // Snow
-    // --------------------------------------------------------
-
     if (
-
-      [
-
-        71,
-        73,
-        75,
-        77,
-        85,
-        86
-
-      ].includes(code)
-
+      [71, 73, 75, 77, 85, 86].includes(code)
     ) {
 
       return 'SNOW';
@@ -598,20 +766,8 @@ export class Maitri
     }
 
 
-    // --------------------------------------------------------
-    // Rain showers
-    // --------------------------------------------------------
-
     if (
-
-      [
-
-        80,
-        81,
-        82
-
-      ].includes(code)
-
+      [80, 81, 82].includes(code)
     ) {
 
       return 'RAIN SHOWERS';
@@ -619,20 +775,8 @@ export class Maitri
     }
 
 
-    // --------------------------------------------------------
-    // Thunderstorm
-    // --------------------------------------------------------
-
     if (
-
-      [
-
-        95,
-        96,
-        99
-
-      ].includes(code)
-
+      [95, 96, 99].includes(code)
     ) {
 
       return 'THUNDERSTORM';
@@ -662,8 +806,6 @@ export class Maitri
     }
 
 
-    // Clear
-
     if (code === 0) {
 
       return '☼';
@@ -671,56 +813,26 @@ export class Maitri
     }
 
 
-    // Cloud
-
-    if (
-
-      [1, 2, 3].includes(code)
-
-    ) {
+    if ([1, 2, 3].includes(code)) {
 
       return '☁';
 
     }
 
 
-    // Fog
-
-    if (
-
-      [45, 48].includes(code)
-
-    ) {
+    if ([45, 48].includes(code)) {
 
       return '≋';
 
     }
 
 
-    // Rain / drizzle / showers
-
     if (
-
       [
-
-        51,
-        53,
-        55,
-        56,
-        57,
-
-        61,
-        63,
-        65,
-        66,
-        67,
-
-        80,
-        81,
-        82
-
+        51, 53, 55, 56, 57,
+        61, 63, 65, 66, 67,
+        80, 81, 82
       ].includes(code)
-
     ) {
 
       return '雨';
@@ -728,21 +840,8 @@ export class Maitri
     }
 
 
-    // Snow
-
     if (
-
-      [
-
-        71,
-        73,
-        75,
-        77,
-        85,
-        86
-
-      ].includes(code)
-
+      [71, 73, 75, 77, 85, 86].includes(code)
     ) {
 
       return '❄';
@@ -750,18 +849,8 @@ export class Maitri
     }
 
 
-    // Thunderstorm
-
     if (
-
-      [
-
-        95,
-        96,
-        99
-
-      ].includes(code)
-
+      [95, 96, 99].includes(code)
     ) {
 
       return 'ϟ';
@@ -781,36 +870,22 @@ export class Maitri
   get temperatureDisplay(): string {
 
     return this.format(
-
       this.weather.temperature_2m,
-
       1
-
     ) + '°C';
 
   }
 
-
-  // ==========================================================
-  // FEELS LIKE
-  // ==========================================================
 
   get feelsLikeDisplay(): string {
 
     return this.format(
-
       this.weather.apparent_temperature,
-
       1
-
     ) + '°C';
 
   }
 
-
-  // ==========================================================
-  // TEMPERATURE BAR
-  // ==========================================================
 
   getTemperatureWidth(): number {
 
@@ -824,13 +899,6 @@ export class Maitri
 
     }
 
-
-    /*
-     * Visual Antarctic temperature scale:
-     *
-     * -50°C = 0%
-     * +10°C = 100%
-     */
 
     return Math.max(
 
@@ -856,19 +924,12 @@ export class Maitri
   get windDisplay(): string {
 
     return this.format(
-
       this.weather.wind_speed_10m,
-
       1
-
     );
 
   }
 
-
-  // ==========================================================
-  // WIND DIRECTION
-  // ==========================================================
 
   get windDirectionText(): string {
 
@@ -881,16 +942,10 @@ export class Maitri
   }
 
 
-  // ==========================================================
-  // WIND DEGREES
-  // ==========================================================
-
   get windDegreesDisplay(): string {
 
     if (
-
       this.weather.wind_direction_10m === null
-
     ) {
 
       return '--°';
@@ -899,40 +954,24 @@ export class Maitri
 
 
     return this.format(
-
       this.weather.wind_direction_10m,
-
       0
-
     ) + '°';
 
   }
 
 
-  // ==========================================================
-  // WIND ROTATION
-  // ==========================================================
-
   get windRotation(): number {
 
     return (
-
       this.weather.wind_direction_10m ?? 0
-
     );
 
   }
 
 
-  // ==========================================================
-  // WIND DIRECTION CONVERTER
-  // ==========================================================
-
   getWindDirection(
-
-    degrees:
-      number | null
-
+    degrees: number | null
   ): string {
 
     if (degrees === null) {
@@ -943,7 +982,6 @@ export class Maitri
 
 
     const directions = [
-
       'N',
       'NE',
       'E',
@@ -952,24 +990,15 @@ export class Maitri
       'SW',
       'W',
       'NW'
-
     ];
 
 
     return directions[
-
-      Math.round(
-        degrees / 45
-      ) % 8
-
+      Math.round(degrees / 45) % 8
     ];
 
   }
 
-
-  // ==========================================================
-  // WIND BAR
-  // ==========================================================
 
   getWindWidth(): number {
 
@@ -983,10 +1012,6 @@ export class Maitri
 
     }
 
-
-    /*
-     * 0–80 km/h visual scale
-     */
 
     return Math.max(
 
@@ -1012,19 +1037,12 @@ export class Maitri
   get humidityDisplay(): string {
 
     return this.format(
-
       this.weather.relative_humidity_2m,
-
       0
-
     ) + '%';
 
   }
 
-
-  // ==========================================================
-  // HUMIDITY BAR
-  // ==========================================================
 
   getHumidityWidth(): number {
 
@@ -1040,17 +1058,8 @@ export class Maitri
 
 
     return Math.max(
-
       0,
-
-      Math.min(
-
-        100,
-
-        value
-
-      )
-
+      Math.min(100, value)
     );
 
   }
@@ -1063,36 +1072,26 @@ export class Maitri
   get pressureDisplay(): string {
 
     return this.format(
-
       this.weather.surface_pressure,
-
       0
-
     );
 
   }
 
 
   // ==========================================================
-  // CLOUD COVER
+  // CLOUD
   // ==========================================================
 
   get cloudCoverDisplay(): string {
 
     return this.format(
-
       this.weather.cloud_cover,
-
       0
-
     ) + '%';
 
   }
 
-
-  // ==========================================================
-  // CLOUD COVER BAR
-  // ==========================================================
 
   getCloudWidth(): number {
 
@@ -1108,17 +1107,8 @@ export class Maitri
 
 
     return Math.max(
-
       0,
-
-      Math.min(
-
-        100,
-
-        value
-
-      )
-
+      Math.min(100, value)
     );
 
   }
@@ -1131,19 +1121,12 @@ export class Maitri
   get precipitationDisplay(): string {
 
     return this.format(
-
       this.weather.precipitation,
-
       2
-
     );
 
   }
 
-
-  // ==========================================================
-  // PRECIPITATION BAR
-  // ==========================================================
 
   getPrecipitationWidth(): number {
 
@@ -1157,10 +1140,6 @@ export class Maitri
 
     }
 
-
-    /*
-     * 0–10 mm visual scale.
-     */
 
     return Math.max(
 
@@ -1186,11 +1165,8 @@ export class Maitri
   formatSnowfall(): string {
 
     return this.format(
-
       this.weather.snowfall,
-
       2
-
     );
 
   }
@@ -1203,11 +1179,8 @@ export class Maitri
   get visibilityDisplay(): string {
 
     return this.format(
-
       this.weather.visibility,
-
       0
-
     );
 
   }
@@ -1237,11 +1210,7 @@ export class Maitri
 
   get lastUpdateDisplay(): string {
 
-    if (
-
-      !this.lastWeatherUpdate
-
-    ) {
+    if (!this.lastWeatherUpdate) {
 
       return '--:--:-- IST';
 
@@ -1249,7 +1218,6 @@ export class Maitri
 
 
     const time =
-
       new Intl.DateTimeFormat(
 
         'en-IN',
@@ -1274,9 +1242,7 @@ export class Maitri
         }
 
       ).format(
-
         this.lastWeatherUpdate
-
       );
 
 
@@ -1290,23 +1256,14 @@ export class Maitri
   // ==========================================================
 
   private format(
-
-    value:
-      number | null,
-
-    decimals =
-      1
-
+    value: number | null,
+    decimals = 1
   ): string {
 
     if (
-
       value === null ||
-
       value === undefined ||
-
       Number.isNaN(value)
-
     ) {
 
       return '--';
@@ -1315,7 +1272,6 @@ export class Maitri
 
 
     return Number(value)
-
       .toFixed(decimals);
 
   }

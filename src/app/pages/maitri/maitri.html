@@ -28,7 +28,6 @@
 
     </div>
 
-
     <div class="header-right">
 
       <div class="live-status">
@@ -113,8 +112,6 @@
 
     <div class="profile-grid">
 
-      <!-- LOCATION -->
-
       <div class="profile-item">
 
         <span class="profile-label">
@@ -127,8 +124,6 @@
 
       </div>
 
-
-      <!-- REGION -->
 
       <div class="profile-item">
 
@@ -143,8 +138,6 @@
       </div>
 
 
-      <!-- LATITUDE -->
-
       <div class="profile-item">
 
         <span class="profile-label">
@@ -157,8 +150,6 @@
 
       </div>
 
-
-      <!-- LONGITUDE -->
 
       <div class="profile-item">
 
@@ -173,8 +164,6 @@
       </div>
 
 
-      <!-- ELEVATION -->
-
       <div class="profile-item">
 
         <span class="profile-label">
@@ -187,8 +176,6 @@
 
       </div>
 
-
-      <!-- COORDINATES -->
 
       <div class="profile-item">
 
@@ -248,8 +235,6 @@
 
     <div class="weather-main-card">
 
-      <!-- LOADING -->
-
       <div
         class="weather-loading"
         *ngIf="loading">
@@ -263,13 +248,9 @@
       </div>
 
 
-      <!-- WEATHER CONTENT -->
-
       <div
         class="weather-content"
         *ngIf="!loading">
-
-        <!-- TEMPERATURE -->
 
         <div class="temperature-block">
 
@@ -298,11 +279,7 @@
         </div>
 
 
-        <!-- WEATHER METRICS -->
-
         <div class="weather-metrics">
-
-          <!-- HUMIDITY -->
 
           <div class="weather-metric">
 
@@ -326,8 +303,6 @@
           </div>
 
 
-          <!-- PRESSURE -->
-
           <div class="weather-metric">
 
             <span class="metric-label">
@@ -335,14 +310,17 @@
             </span>
 
             <strong class="metric-value">
+
               {{ pressureDisplay }}
-              <small>hPa</small>
+
+              <small>
+                hPa
+              </small>
+
             </strong>
 
           </div>
 
-
-          <!-- CLOUD COVER -->
 
           <div class="weather-metric">
 
@@ -366,8 +344,6 @@
           </div>
 
 
-          <!-- PRECIPITATION -->
-
           <div class="weather-metric">
 
             <span class="metric-label">
@@ -375,8 +351,13 @@
             </span>
 
             <strong class="metric-value">
+
               {{ precipitationDisplay }}
-              <small>mm</small>
+
+              <small>
+                mm
+              </small>
+
             </strong>
 
             <div class="metric-bar">
@@ -418,8 +399,6 @@
 
       <div class="wind-content">
 
-        <!-- COMPASS -->
-
         <div class="wind-compass">
 
           <div class="compass-ring">
@@ -441,8 +420,6 @@
 
         </div>
 
-
-        <!-- WIND VALUE -->
 
         <div class="wind-value-block">
 
@@ -472,8 +449,6 @@
 
         </div>
 
-
-        <!-- WIND BAR -->
 
         <div class="wind-scale">
 
@@ -516,12 +491,10 @@
 
 
     <!-- ======================================================= -->
-    <!-- WEATHER DATA GRID -->
+    <!-- WEATHER DATA -->
     <!-- ======================================================= -->
 
     <div class="weather-data-grid">
-
-      <!-- TEMPERATURE -->
 
       <div class="data-card">
 
@@ -540,8 +513,6 @@
       </div>
 
 
-      <!-- APPARENT -->
-
       <div class="data-card">
 
         <span class="data-label">
@@ -559,8 +530,6 @@
       </div>
 
 
-      <!-- WIND -->
-
       <div class="data-card">
 
         <span class="data-label">
@@ -568,20 +537,27 @@
         </span>
 
         <strong>
+
           {{ windDisplay }}
-          <small>km/h</small>
+
+          <small>
+            km/h
+          </small>
+
         </strong>
 
         <span class="data-sub">
+
           {{ windDirectionText }}
+
           ·
+
           {{ windDegreesDisplay }}
+
         </span>
 
       </div>
 
-
-      <!-- HUMIDITY -->
 
       <div class="data-card">
 
@@ -600,8 +576,6 @@
       </div>
 
 
-      <!-- PRESSURE -->
-
       <div class="data-card">
 
         <span class="data-label">
@@ -609,8 +583,13 @@
         </span>
 
         <strong>
+
           {{ pressureDisplay }}
-          <small>hPa</small>
+
+          <small>
+            hPa
+          </small>
+
         </strong>
 
         <span class="data-sub">
@@ -619,8 +598,6 @@
 
       </div>
 
-
-      <!-- CLOUD -->
 
       <div class="data-card">
 
@@ -639,8 +616,6 @@
       </div>
 
 
-      <!-- PRECIPITATION -->
-
       <div class="data-card">
 
         <span class="data-label">
@@ -648,8 +623,13 @@
         </span>
 
         <strong>
+
           {{ precipitationDisplay }}
-          <small>mm</small>
+
+          <small>
+            mm
+          </small>
+
         </strong>
 
         <span class="data-sub">
@@ -659,8 +639,6 @@
       </div>
 
 
-      <!-- SNOWFALL -->
-
       <div class="data-card">
 
         <span class="data-label">
@@ -668,8 +646,13 @@
         </span>
 
         <strong>
+
           {{ formatSnowfall() }}
-          <small>cm</small>
+
+          <small>
+            cm
+          </small>
+
         </strong>
 
         <span class="data-sub">
@@ -682,7 +665,7 @@
 
 
     <!-- ======================================================= -->
-    <!-- UPDATE INFORMATION -->
+    <!-- WEATHER FOOTER -->
     <!-- ======================================================= -->
 
     <div class="weather-footer">
@@ -721,6 +704,329 @@
         </strong>
 
       </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================= -->
+  <!-- PERSONNEL OVERVIEW -->
+  <!-- ========================================================= -->
+
+  <section class="personnel-section">
+
+    <div class="section-header personnel-header">
+
+      <div>
+
+        <span class="section-label">
+          STATION OPERATIONS
+        </span>
+
+        <h2>
+          PERSONNEL OVERVIEW
+        </h2>
+
+      </div>
+
+      <div class="personnel-total">
+
+        <span class="personnel-total-label">
+          TOTAL ACTIVE
+        </span>
+
+        <strong>
+          {{ totalPersonnel }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="personnel-intro">
+
+      <div class="personnel-intro-line"></div>
+
+      <p>
+        CURRENT MAITRI PERSONNEL DISTRIBUTION
+        · OPERATIONS · SCIENCE · ENGINEERING · SUPPORT
+      </p>
+
+    </div>
+
+
+    <div class="personnel-grid">
+
+      <article
+        class="personnel-card personnel-card-primary">
+
+        <div class="personnel-card-icon">
+          ◉
+        </div>
+
+        <div class="personnel-card-content">
+
+          <span class="personnel-label">
+            ACTIVE PERSONNEL
+          </span>
+
+          <strong class="personnel-value">
+            {{ personnelOverview.activePersonnel }}
+          </strong>
+
+          <span class="personnel-sub">
+            CURRENT STATION STRENGTH
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <article class="personnel-card">
+
+        <div class="personnel-card-icon">
+          ◈
+        </div>
+
+        <div class="personnel-card-content">
+
+          <span class="personnel-label">
+            SECURITY
+          </span>
+
+          <strong class="personnel-value">
+            {{ personnelOverview.security }}
+          </strong>
+
+          <span class="personnel-sub">
+            STATION SECURITY
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <article class="personnel-card">
+
+        <div class="personnel-card-icon">
+          ◇
+        </div>
+
+        <div class="personnel-card-content">
+
+          <span class="personnel-label">
+            SCIENTISTS
+          </span>
+
+          <strong class="personnel-value">
+            {{ personnelOverview.scientists }}
+          </strong>
+
+          <span class="personnel-sub">
+            SCIENTIFIC STAFF
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <article class="personnel-card">
+
+        <div class="personnel-card-icon">
+          △
+        </div>
+
+        <div class="personnel-card-content">
+
+          <span class="personnel-label">
+            RESEARCHERS
+          </span>
+
+          <strong class="personnel-value">
+            {{ personnelOverview.researchers }}
+          </strong>
+
+          <span class="personnel-sub">
+            RESEARCH OPERATIONS
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <article class="personnel-card">
+
+        <div class="personnel-card-icon">
+          ▣
+        </div>
+
+        <div class="personnel-card-content">
+
+          <span class="personnel-label">
+            ADMINISTRATION
+          </span>
+
+          <strong class="personnel-value">
+            {{ personnelOverview.administration }}
+          </strong>
+
+          <span class="personnel-sub">
+            ADMINISTRATIVE SERVICES
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <article class="personnel-card">
+
+        <div class="personnel-card-icon">
+          ⚙
+        </div>
+
+        <div class="personnel-card-content">
+
+          <span class="personnel-label">
+            ENGINEERING
+          </span>
+
+          <strong class="personnel-value">
+            {{ personnelOverview.engineering }}
+          </strong>
+
+          <span class="personnel-sub">
+            TECHNICAL OPERATIONS
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <article class="personnel-card">
+
+        <div class="personnel-card-icon">
+          +
+        </div>
+
+        <div class="personnel-card-content">
+
+          <span class="personnel-label">
+            MEDICAL
+          </span>
+
+          <strong class="personnel-value">
+            {{ personnelOverview.medical }}
+          </strong>
+
+          <span class="personnel-sub">
+            MEDICAL SERVICES
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <article class="personnel-card">
+
+        <div class="personnel-card-icon">
+          ◫
+        </div>
+
+        <div class="personnel-card-content">
+
+          <span class="personnel-label">
+            LOGISTICS
+          </span>
+
+          <strong class="personnel-value">
+            {{ personnelOverview.logistics }}
+          </strong>
+
+          <span class="personnel-sub">
+            SUPPLY OPERATIONS
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <article class="personnel-card">
+
+        <div class="personnel-card-icon">
+          ⌁
+        </div>
+
+        <div class="personnel-card-content">
+
+          <span class="personnel-label">
+            COMMUNICATIONS
+          </span>
+
+          <strong class="personnel-value">
+            {{ personnelOverview.communications }}
+          </strong>
+
+          <span class="personnel-sub">
+            COMMUNICATION SERVICES
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <article class="personnel-card">
+
+        <div class="personnel-card-icon">
+          +
+        </div>
+
+        <div class="personnel-card-content">
+
+          <span class="personnel-label">
+            SUPPORT
+          </span>
+
+          <strong class="personnel-value">
+            {{ personnelOverview.support }}
+          </strong>
+
+          <span class="personnel-sub">
+            GENERAL SUPPORT
+          </span>
+
+        </div>
+
+      </article>
+
+    </div>
+
+
+    <div class="personnel-footer">
+
+      <div class="personnel-footer-status">
+
+        <span class="status-dot status-live"></span>
+
+        <span>
+          PERSONNEL REGISTER
+        </span>
+
+      </div>
+
+      <span>
+        MAITRI · MAI-01
+      </span>
 
     </div>
 
@@ -833,6 +1139,149 @@
         </div>
 
       </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ========================================================= -->
+  <!-- HISTORICAL EVENTS -->
+  <!-- ========================================================= -->
+
+  <section class="history-section">
+
+    <div class="section-header history-header">
+
+      <div>
+
+        <span class="section-label">
+          STATION ARCHIVE
+        </span>
+
+        <h2>
+          HISTORICAL EVENTS
+        </h2>
+
+      </div>
+
+
+      <div class="history-summary">
+
+        <span class="history-count">
+          {{ historicalEvents.length }}
+        </span>
+
+        <span>
+          RECORDED MILESTONES
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="history-intro">
+
+      <div class="history-intro-line"></div>
+
+      <p>
+        MAITRI · ESTABLISHMENT · RESEARCH · EXPEDITIONS · OPERATIONS
+      </p>
+
+    </div>
+
+
+    <div class="history-timeline">
+
+      <article
+        class="history-event"
+        *ngFor="
+          let event of historicalEvents;
+          let last = last
+        ">
+
+        <div class="timeline-column">
+
+          <div
+            class="timeline-dot"
+            [class.current]="last">
+          </div>
+
+          <div
+            class="timeline-line"
+            *ngIf="!last">
+          </div>
+
+        </div>
+
+
+        <div class="history-event-card">
+
+          <div class="history-event-top">
+
+            <div class="history-year">
+
+              <span>
+                {{ event.year }}
+              </span>
+
+            </div>
+
+
+            <span class="history-category">
+              {{ event.category }}
+            </span>
+
+          </div>
+
+
+          <h3>
+            {{ event.title }}
+          </h3>
+
+
+          <p class="history-description">
+            {{ event.description }}
+          </p>
+
+
+          <div class="history-event-footer">
+
+            <span class="history-source-label">
+              SOURCE
+            </span>
+
+            <strong>
+              {{ event.source }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+
+    <div class="history-footer">
+
+      <div class="history-footer-status">
+
+        <span
+          class="status-dot status-live">
+        </span>
+
+        <span>
+          HISTORICAL ARCHIVE
+        </span>
+
+      </div>
+
+      <span>
+        MAITRI · MAI-01
+      </span>
 
     </div>
 

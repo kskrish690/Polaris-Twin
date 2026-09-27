@@ -77,6 +77,18 @@ interface OpenMeteoResponse {
   };
 }
 
+
+interface WasteData {
+  total: number;
+  recyclable: number;
+  organic: number;
+  hazardous: number;
+  processed: number;
+  storageUsed: number;
+  storageCapacity: number;
+  trend: number[];
+}
+
 @Component({
   selector: 'app-overview',
   standalone: true,
@@ -173,6 +185,108 @@ export class Overview
 
   private satelliteInitialized = false;
 
+
+  // ============================================================
+  // WASTE MANAGEMENT — BOTTOM OVERVIEW SECTION
+  // ============================================================
+
+  wasteStation: StationId = 'MAITRI';
+
+  wasteUpdatedTime = '--:--:--';
+
+  private wasteTimer?: ReturnType<typeof setInterval>;
+
+  private wasteIndex = 0;
+
+  private readonly wasteDatasets: Record<StationId, WasteData[]> = {
+
+    MAITRI: [
+      {
+        total: 286,
+        recyclable: 112,
+        organic: 74,
+        hazardous: 18,
+        processed: 72,
+        storageUsed: 642,
+        storageCapacity: 1000,
+        trend: [39, 44, 41, 48, 45, 51, 46]
+      },
+      {
+        total: 294,
+        recyclable: 119,
+        organic: 77,
+        hazardous: 17,
+        processed: 74,
+        storageUsed: 651,
+        storageCapacity: 1000,
+        trend: [43, 41, 47, 45, 52, 49, 54]
+      },
+      {
+        total: 301,
+        recyclable: 124,
+        organic: 79,
+        hazardous: 19,
+        processed: 76,
+        storageUsed: 663,
+        storageCapacity: 1000,
+        trend: [45, 48, 44, 51, 53, 50, 57]
+      },
+      {
+        total: 279,
+        recyclable: 108,
+        organic: 72,
+        hazardous: 16,
+        processed: 78,
+        storageUsed: 670,
+        storageCapacity: 1000,
+        trend: [41, 46, 43, 49, 47, 55, 52]
+      }
+    ],
+
+    BHARATI: [
+      {
+        total: 318,
+        recyclable: 136,
+        organic: 82,
+        hazardous: 21,
+        processed: 79,
+        storageUsed: 718,
+        storageCapacity: 1100,
+        trend: [48, 51, 47, 56, 52, 59, 55]
+      },
+      {
+        total: 326,
+        recyclable: 141,
+        organic: 85,
+        hazardous: 20,
+        processed: 81,
+        storageUsed: 727,
+        storageCapacity: 1100,
+        trend: [51, 49, 55, 53, 58, 61, 57]
+      },
+      {
+        total: 309,
+        recyclable: 132,
+        organic: 80,
+        hazardous: 18,
+        processed: 83,
+        storageUsed: 739,
+        storageCapacity: 1100,
+        trend: [47, 53, 50, 58, 55, 62, 60]
+      },
+      {
+        total: 334,
+        recyclable: 145,
+        organic: 88,
+        hazardous: 22,
+        processed: 80,
+        storageUsed: 751,
+        storageCapacity: 1100,
+        trend: [52, 55, 51, 60, 58, 64, 61]
+      }
+    ]
+  };
+
   // ============================================================
   // CONSTRUCTOR
   // ============================================================
@@ -218,6 +332,13 @@ export class Overview
      * Make initial LOADING state visible immediately.
      */
 
+    this.updateWasteTime();
+
+    this.wasteTimer = setInterval(() => {
+      this.rotateWasteData();
+      this.cdr.detectChanges();
+    }, 60 * 1000);
+
     this.cdr.detectChanges();
   }
 
@@ -240,6 +361,10 @@ export class Overview
     this.weatherRefreshSubscription?.unsubscribe();
 
     this.telemetrySubscription?.unsubscribe();
+
+    if (this.wasteTimer) {
+      clearInterval(this.wasteTimer);
+    }
 
     if (this.satelliteMap) {
       this.satelliteMap.remove();
@@ -1044,6 +1169,66 @@ export class Overview
         Math.round(value * 10) / 10
       )
     );
+  }
+
+
+  // ============================================================
+  // WASTE MANAGEMENT METHODS
+  // ============================================================
+
+  get selectedWaste(): WasteData {
+    const data = this.wasteDatasets[this.wasteStation];
+    return data[this.wasteIndex % data.length];
+  }
+
+  get wasteStoragePercentage(): number {
+    const data = this.selectedWaste;
+
+    if (data.storageCapacity <= 0) {
+      return 0;
+    }
+
+    return Math.min(
+      100,
+      Math.round((data.storageUsed / data.storageCapacity) * 100)
+    );
+  }
+
+  selectWasteStation(station: StationId): void {
+    this.wasteStation = station;
+    this.wasteIndex = 0;
+    this.updateWasteTime();
+    this.cdr.detectChanges();
+  }
+
+  private rotateWasteData(): void {
+    const data = this.wasteDatasets[this.wasteStation];
+    this.wasteIndex = (this.wasteIndex + 1) % data.length;
+    this.updateWasteTime();
+  }
+
+  private updateWasteTime(): void {
+    this.wasteUpdatedTime = new Intl.DateTimeFormat(
+      'en-IN',
+      {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }
+    ).format(new Date());
+  }
+
+  getWasteBarHeight(value: number): number {
+    const trend = this.selectedWaste.trend;
+    const max = Math.max(...trend);
+
+    if (max <= 0) {
+      return 0;
+    }
+
+    return Math.max(8, Math.round((value / max) * 100));
   }
 
   // ============================================================

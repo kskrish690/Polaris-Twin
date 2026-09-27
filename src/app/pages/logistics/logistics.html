@@ -1,50 +1,62 @@
 <div class="logistics-page">
 
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
+  <!-- ========================================================= -->
+  <!-- HEADER -->
+  <!-- ========================================================= -->
 
-  <header class="page-header">
+  <header class="logistics-header">
 
     <div class="header-left">
 
-      <div class="page-chip">
-
-        <span class="chip-dot"></span>
-
-        DIGITAL TWIN / LOGISTICS
-
+      <div class="module-mark">
+        <span class="mark-ring"></span>
+        <span class="mark-core"></span>
       </div>
 
-      <h1>LOGISTICS</h1>
+      <div class="header-copy">
 
-      <p>
-        Antarctic Supply Chain & Mission Logistics Intelligence
-      </p>
+        <div class="eyebrow">
+          POLARIS-TWIN
+          <span></span>
+          LOGISTICS COMMAND
+        </div>
+
+        <h1>LOGISTICS & RESOURCE CONTROL</h1>
+
+        <p>
+          Station resources, assets, supply continuity and operational readiness
+        </p>
+
+      </div>
 
     </div>
 
-
     <div class="header-right">
 
-      <div class="network-status">
+      <div class="header-time">
 
-        <span class="network-dot"></span>
-
-        LOGISTICS NETWORK ONLINE
-
-      </div>
-
-
-      <div class="time-block">
-
-        <span>
+        <span class="time-label">
           INDIA STANDARD TIME
         </span>
 
         <strong>
-          {{ formattedTime }} IST
+          {{ currentTime }}
         </strong>
+
+        <small>
+          {{ currentDate }}
+        </small>
+
+      </div>
+
+      <div class="header-status">
+
+        <span class="status-pulse"></span>
+
+        <div>
+          <strong>OPERATIONS LINK</strong>
+          <small>CONNECTED</small>
+        </div>
 
       </div>
 
@@ -53,747 +65,1020 @@
   </header>
 
 
-  <!-- =====================================================
-       LOGISTICS OVERVIEW
-       ===================================================== -->
+  <!-- ========================================================= -->
+  <!-- STATION SWITCHER -->
+  <!-- ========================================================= -->
 
-  <section class="logistics-overview">
+  <section class="station-control">
 
+    <div class="station-control-copy">
 
-    <div class="readiness-card">
-
-      <div class="card-label">
-        LOGISTICS READINESS
-      </div>
-
-      <div class="readiness-value">
-
-        <strong>
-          {{ logisticsReadiness }}
-        </strong>
-
-        <span>%</span>
-
-      </div>
-
-      <div class="readiness-subtitle">
-        STATION SUPPLY READINESS
-      </div>
-
-
-      <div class="readiness-bar">
-
-        <div
-          class="readiness-fill"
-          [style.width.%]="logisticsReadiness"
-        ></div>
-
-      </div>
-
-
-      <div class="readiness-footer">
-
-        <span>
-          INVENTORY HEALTH
-        </span>
-
-        <strong>
-          {{ averageInventory }}%
-        </strong>
-
-      </div>
-
-    </div>
-
-
-    <div class="overview-stat">
-
-      <span>
-        ACTIVE ASSETS
+      <span class="section-kicker">
+        ACTIVE STATION
       </span>
 
       <strong>
-        {{ activeCount }}
+        {{ station.stationName }}
       </strong>
-
-      <p>
-        OPERATIONAL
-      </p>
-
-    </div>
-
-
-    <div class="overview-stat">
 
       <span>
-        IN TRANSIT
+        {{ station.stationCode }}
       </span>
 
-      <strong>
-        {{ transitCount }}
-      </strong>
-
-      <p>
-        ACTIVE MISSIONS
-      </p>
-
     </div>
 
-
-    <div class="overview-stat">
-
-      <span>
-        STANDBY
-      </span>
-
-      <strong>
-        {{ standbyCount }}
-      </strong>
-
-      <p>
-        RESERVE ASSETS
-      </p>
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       STATUS SUMMARY
-       ===================================================== -->
-
-  <section class="status-summary">
-
-    <div class="summary-card active">
-
-      <div class="summary-icon">
-        ●
-      </div>
-
-      <div>
-
-        <span>
-          ACTIVE
-        </span>
-
-        <strong>
-          {{ activeCount }}
-        </strong>
-
-      </div>
-
-    </div>
-
-
-    <div class="summary-card transit">
-
-      <div class="summary-icon">
-        →
-      </div>
-
-      <div>
-
-        <span>
-          IN TRANSIT
-        </span>
-
-        <strong>
-          {{ transitCount }}
-        </strong>
-
-      </div>
-
-    </div>
-
-
-    <div class="summary-card standby">
-
-      <div class="summary-icon">
-        ◌
-      </div>
-
-      <div>
-
-        <span>
-          STANDBY
-        </span>
-
-        <strong>
-          {{ standbyCount }}
-        </strong>
-
-      </div>
-
-    </div>
-
-
-    <div class="summary-card maintenance">
-
-      <div class="summary-icon">
-        ⚙
-      </div>
-
-      <div>
-
-        <span>
-          MAINTENANCE
-        </span>
-
-        <strong>
-          {{ maintenanceCount }}
-        </strong>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       CATEGORY FILTER
-       ===================================================== -->
-
-  <section class="filter-section">
-
-    <div class="filter-heading">
-
-      <div>
-
-        <span>
-          LOGISTICS / 01
-        </span>
-
-        <h2>
-          ASSET & SUPPLY NETWORK
-        </h2>
-
-      </div>
-
-
-      <div class="telemetry-status">
-
-        <span></span>
-
-        SIMULATED TELEMETRY
-
-      </div>
-
-    </div>
-
-
-    <div class="category-filter">
+    <div class="station-buttons">
 
       <button
-        *ngFor="let category of categories"
-        [class.active]="
-          selectedCategory === category
-        "
-        (click)="selectCategory(category)"
+        *ngFor="let stationId of stationIds"
+        type="button"
+        class="station-button"
+        [class.active]="selectedStation === stationId"
+        (click)="selectStation(stationId)"
       >
-        {{ category }}
+
+        <span class="station-button-dot"></span>
+
+        <span>
+          {{ stationId }}
+        </span>
+
+        <small>
+          {{ stationId === 'BHARATI' ? 'BHA-01' : 'MAI-01' }}
+        </small>
+
       </button>
 
     </div>
 
-  </section>
+    <div class="station-location">
 
-
-  <!-- =====================================================
-       ASSETS
-       ===================================================== -->
-
-  <section class="assets-section">
-
-    <div class="section-title">
+      <span class="location-icon">⌖</span>
 
       <div>
-
-        <span>
-          ASSET REGISTRY
-        </span>
-
-        <h2>
-          LOGISTICS ASSETS
-        </h2>
-
-      </div>
-
-      <div class="asset-count">
-
-        {{ filteredAssets.length }}
-
-        ASSETS
-
+        <strong>{{ station.location }}</strong>
+        <small>{{ station.region }}</small>
       </div>
 
     </div>
 
+  </section>
 
-    <div class="asset-grid">
 
-      <article
-        class="asset-card"
-        *ngFor="let asset of filteredAssets"
-      >
+  <!-- ========================================================= -->
+  <!-- COMMAND OVERVIEW -->
+  <!-- ========================================================= -->
 
-        <div class="asset-top">
+  <main class="logistics-content">
 
-          <span class="asset-category">
-            {{ asset.category }}
-          </span>
+    <section class="command-grid">
 
-          <span
-            class="asset-priority"
-            [ngClass]="
-              getPriorityClass(
-                asset.priority
-              )
-            "
-          >
-            {{ asset.priority }}
+      <!-- READINESS -->
+
+      <article class="command-card readiness-card">
+
+        <div class="card-heading">
+
+          <div>
+            <span class="card-label">
+              LOGISTICS READINESS
+            </span>
+
+            <h2>Station Readiness</h2>
+          </div>
+
+          <span class="card-index">
+            01
           </span>
 
         </div>
 
+        <div class="readiness-body">
 
-        <div class="asset-main">
+          <div class="readiness-ring">
 
-          <div class="asset-icon">
+            <svg
+              viewBox="0 0 160 160"
+              class="ring-svg"
+            >
 
-            <span>
-              ◈
+              <circle
+                cx="80"
+                cy="80"
+                r="67"
+                class="ring-track"
+              ></circle>
+
+              <circle
+                cx="80"
+                cy="80"
+                r="67"
+                class="ring-progress"
+                [style.strokeDashoffset]="
+                  421 - (421 * station.readiness / 100)
+                "
+              ></circle>
+
+            </svg>
+
+            <div class="ring-value">
+
+              <strong>
+                {{ station.readiness }}
+              </strong>
+
+              <span>%</span>
+
+            </div>
+
+          </div>
+
+          <div class="readiness-copy">
+
+            <strong>
+              OPERATIONAL
+            </strong>
+
+            <p>
+              Current resource and asset readiness
+              across {{ station.stationName }}.
+            </p>
+
+            <div class="mini-status">
+
+              <span class="status-dot green"></span>
+
+              <span>
+                SYSTEMS AVAILABLE
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- RISK -->
+
+      <article class="command-card risk-card">
+
+        <div class="card-heading">
+
+          <div>
+            <span class="card-label">
+              LOGISTICS RISK
+            </span>
+
+            <h2>Supply Exposure</h2>
+          </div>
+
+          <span class="card-index">
+            02
+          </span>
+
+        </div>
+
+        <div class="risk-value">
+
+          <strong>
+            {{ station.logisticsRisk | number:'1.0-0' }}
+          </strong>
+
+          <span>%</span>
+
+        </div>
+
+        <div class="risk-bar">
+
+          <span
+            [style.width.%]="station.logisticsRisk"
+          ></span>
+
+        </div>
+
+        <div class="risk-footer">
+
+          <span>LOW EXPOSURE</span>
+
+          <span>
+            CONTINUITY MONITORED
+          </span>
+
+        </div>
+
+      </article>
+
+
+      <!-- NEXT RESUPPLY -->
+
+      <article class="command-card resupply-card">
+
+        <div class="card-heading">
+
+          <div>
+            <span class="card-label">
+              NEXT EXPECTED RESUPPLY
+            </span>
+
+            <h2>
+              {{ getNextResupply().name }}
+            </h2>
+          </div>
+
+          <span class="card-index">
+            03
+          </span>
+
+        </div>
+
+        <div class="resupply-date">
+
+          <strong>
+            {{ getNextResupply().exhaustionDate }}
+          </strong>
+
+          <span>
+            RESOURCE WINDOW
+          </span>
+
+        </div>
+
+        <div class="resupply-line">
+
+          <div>
+            <span>RESOURCE</span>
+            <strong>{{ getNextResupply().shortName }}</strong>
+          </div>
+
+          <div>
+            <span>WINDOW</span>
+            <strong>
+              {{ getNextResupply().nextResupplyDays }} DAYS
+            </strong>
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- ========================================================= -->
+    <!-- RESOURCE CONTROL -->
+    <!-- ========================================================= -->
+
+    <section class="resource-section">
+
+      <div class="section-heading">
+
+        <div>
+
+          <span class="section-kicker">
+            RESOURCE CONTROL
+          </span>
+
+          <h2>
+            SUPPLY RESERVES
+          </h2>
+
+          <p>
+            Current station reserves and projected consumption horizon
+          </p>
+
+        </div>
+
+        <div class="section-meta">
+
+          <span class="live-dot"></span>
+
+          <span>
+            LAST UPDATE {{ lastUpdate }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="resource-grid">
+
+        <article
+          *ngFor="
+            let resource of resources;
+            trackBy: trackByResource
+          "
+          class="resource-card"
+          [ngClass]="getResourceClass(resource)"
+        >
+
+          <div class="resource-card-top">
+
+            <div class="resource-icon">
+              {{ resource.icon }}
+            </div>
+
+            <div class="resource-title">
+
+              <span>
+                {{ resource.shortName }}
+              </span>
+
+              <strong>
+                {{ resource.name }}
+              </strong>
+
+            </div>
+
+            <span class="resource-status">
+              {{ resource.status }}
             </span>
 
           </div>
 
 
-          <div class="asset-name">
+          <div class="resource-main">
+
+            <div class="resource-percentage">
+
+              <strong>
+                {{ resource.percentage | number:'1.0-0' }}
+              </strong>
+
+              <span>%</span>
+
+            </div>
+
+            <div class="resource-quantity">
+
+              <strong>
+                {{ resource.quantity | number:'1.0-0' }}
+              </strong>
+
+              <span>
+                {{ resource.unit }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="resource-bar">
+
+            <span
+              [style.width.%]="resource.percentage"
+            ></span>
+
+          </div>
+
+
+          <div class="resource-details">
+
+            <div>
+
+              <span>
+                CAPACITY
+              </span>
+
+              <strong>
+                {{ resource.capacity | number:'1.0-0' }}
+                {{ resource.unit }}
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                DAILY USE
+              </span>
+
+              <strong>
+                {{ resource.dailyConsumption | number:'1.0-1' }}
+                {{ resource.unit }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <div class="resource-exhaustion">
+
+            <div>
+
+              <span>
+                EXPECTED EXHAUSTION
+              </span>
+
+              <strong>
+                {{ resource.exhaustionDate }}
+              </strong>
+
+            </div>
+
+            <div class="days-remaining">
+
+              <strong>
+                {{ resource.exhaustionDays }}
+              </strong>
+
+              <span>
+                DAYS
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="resource-description">
+            {{ resource.description }}
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================================= -->
+    <!-- ASSET REGISTRY -->
+    <!-- ========================================================= -->
+
+    <section class="assets-section">
+
+      <div class="section-heading assets-heading">
+
+        <div>
+
+          <span class="section-kicker">
+            ASSET REGISTRY
+          </span>
+
+          <h2>
+            OPERATIONAL ASSETS
+          </h2>
+
+          <p>
+            Station equipment, transport systems and critical infrastructure
+          </p>
+
+        </div>
+
+        <div class="asset-count">
+
+          <strong>
+            {{ filteredAssets.length }}
+          </strong>
+
+          <span>
+            ASSETS
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- FILTERS -->
+
+      <div class="filter-bar">
+
+        <button
+          *ngFor="
+            let category of categories;
+            trackBy: trackByCategory
+          "
+          type="button"
+          class="filter-button"
+          [class.active]="activeFilter === category"
+          (click)="setFilter(category)"
+        >
+
+          {{ category }}
+
+        </button>
+
+      </div>
+
+
+      <!-- ASSET GRID -->
+
+      <div class="asset-grid">
+
+        <article
+          *ngFor="
+            let asset of filteredAssets;
+            trackBy: trackByAsset
+          "
+          class="asset-card"
+        >
+
+          <div class="asset-card-header">
+
+            <div class="asset-code">
+              {{ asset.code }}
+            </div>
+
+            <span
+              class="asset-status"
+              [ngClass]="getStatusClass(asset.status)"
+            >
+              {{ asset.status }}
+            </span>
+
+          </div>
+
+
+          <div class="asset-icon-box">
+
+            <svg
+              viewBox="0 0 64 64"
+              aria-hidden="true"
+            >
+
+              <rect
+                x="13"
+                y="13"
+                width="38"
+                height="38"
+                rx="7"
+              ></rect>
+
+              <path
+                d="M21 32h22M32 21v22"
+              ></path>
+
+              <circle
+                cx="32"
+                cy="32"
+                r="5"
+              ></circle>
+
+            </svg>
+
+          </div>
+
+
+          <div class="asset-info">
+
+            <span class="asset-category">
+              {{ asset.category }}
+            </span>
 
             <h3>
               {{ asset.name }}
             </h3>
 
-            <span>
-              {{ asset.code }}
-            </span>
+            <p>
+              {{ asset.description }}
+            </p>
 
           </div>
 
 
-          <div
-            class="asset-status"
-            [ngClass]="
-              getStatusClass(
-                asset.status
-              )
-            "
-          >
+          <div class="asset-location">
 
-            <span></span>
-
-            {{ asset.status }}
-
-          </div>
-
-        </div>
-
-
-        <div class="asset-location">
-
-          <span>
-            LOCATION
-          </span>
-
-          <strong>
-            {{ asset.location }}
-          </strong>
-
-        </div>
-
-
-        <p class="asset-description">
-          {{ asset.description }}
-        </p>
-
-
-        <div class="inventory-metric">
-
-          <div class="metric-row">
-
-            <span>
-              INVENTORY / READINESS
-            </span>
+            <span>⌖</span>
 
             <strong>
-              {{ asset.quantity }}%
+              {{ asset.location }}
             </strong>
 
           </div>
 
 
-          <div class="inventory-bar">
+          <div class="asset-capacity">
 
-            <div
-              class="inventory-fill"
-              [ngClass]="
-                getSupplyClass(
-                  asset.quantity
-                )
-              "
-              [style.width.%]="
-                getInventoryWidth(
-                  asset.quantity,
-                  asset.capacity
-                )
-              "
-            ></div>
+            <div class="capacity-header">
+
+              <span>
+                AVAILABILITY
+              </span>
+
+              <strong>
+                {{ getAvailability(asset) }}%
+              </strong>
+
+            </div>
+
+            <div class="capacity-bar">
+
+              <span
+                [style.width.%]="getAvailability(asset)"
+              ></span>
+
+            </div>
+
+          </div>
+
+
+          <div class="asset-footer">
+
+            <div>
+
+              <span>
+                QUANTITY
+              </span>
+
+              <strong>
+                {{ asset.quantity }} /
+                {{ asset.capacity }}
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                PRIORITY
+              </span>
+
+              <strong
+                [ngClass]="getPriorityClass(asset.priority)"
+              >
+                {{ asset.priority }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================================= -->
+    <!-- PERFORMANCE -->
+    <!-- ========================================================= -->
+
+    <section class="metrics-section">
+
+      <div class="section-heading">
+
+        <div>
+
+          <span class="section-kicker">
+            SYSTEM PERFORMANCE
+          </span>
+
+          <h2>
+            LOGISTICS METRICS
+          </h2>
+
+          <p>
+            Operational availability across the station logistics network
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="metrics-grid">
+
+        <article
+          *ngFor="
+            let metric of metrics;
+            trackBy: trackByMetric
+          "
+          class="metric-card"
+          [ngClass]="getMetricClass(metric.status)"
+        >
+
+          <div class="metric-icon">
+            {{ metric.icon }}
+          </div>
+
+          <div class="metric-copy">
+
+            <span>
+              {{ metric.label }}
+            </span>
+
+            <strong>
+              {{ metric.value }}
+              <small>{{ metric.unit }}</small>
+            </strong>
+
+          </div>
+
+          <div class="metric-status">
+            {{ metric.status }}
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================================= -->
+    <!-- LOGISTICS FLOW -->
+    <!-- ========================================================= -->
+
+    <section class="flow-section">
+
+      <div class="section-heading">
+
+        <div>
+
+          <span class="section-kicker">
+            SUPPLY CONTINUITY
+          </span>
+
+          <h2>
+            LOGISTICS FLOW
+          </h2>
+
+          <p>
+            Resource movement through the station operational chain
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="flow-panel">
+
+        <div class="flow-grid">
+
+          <div class="flow-node">
+
+            <span class="node-number">
+              01
+            </span>
+
+            <div class="node-symbol">
+              ↓
+            </div>
+
+            <strong>
+              RESUPPLY
+            </strong>
+
+            <small>
+              Incoming resources
+            </small>
+
+          </div>
+
+
+          <div class="flow-connector">
+
+            <span></span>
+
+          </div>
+
+
+          <div class="flow-node active">
+
+            <span class="node-number">
+              02
+            </span>
+
+            <div class="node-symbol">
+              ◈
+            </div>
+
+            <strong>
+              STORAGE
+            </strong>
+
+            <small>
+              Station reserves
+            </small>
+
+          </div>
+
+
+          <div class="flow-connector">
+
+            <span></span>
+
+          </div>
+
+
+          <div class="flow-node">
+
+            <span class="node-number">
+              03
+            </span>
+
+            <div class="node-symbol">
+              ⟡
+            </div>
+
+            <strong>
+              DISTRIBUTION
+            </strong>
+
+            <small>
+              Resource allocation
+            </small>
+
+          </div>
+
+
+          <div class="flow-connector">
+
+            <span></span>
+
+          </div>
+
+
+          <div class="flow-node">
+
+            <span class="node-number">
+              04
+            </span>
+
+            <div class="node-symbol">
+              ◎
+            </div>
+
+            <strong>
+              OPERATIONS
+            </strong>
+
+            <small>
+              Station consumption
+            </small>
 
           </div>
 
         </div>
 
 
-        <div class="asset-footer">
+        <div class="flow-footer">
+
+          <div>
+
+            <span class="flow-indicator"></span>
+
+            <strong>
+              LOGISTICS CHAIN OPERATIONAL
+            </strong>
+
+          </div>
 
           <span>
-            CAPACITY
+            {{ station.stationCode }}
           </span>
-
-          <strong>
-            {{ asset.capacity }}%
-          </strong>
 
         </div>
 
-      </article>
+      </div>
 
-    </div>
-
-  </section>
+    </section>
 
 
-  <!-- =====================================================
-       SUPPLY STATUS
-       ===================================================== -->
+    <!-- ========================================================= -->
+    <!-- RESOURCE OUTLOOK -->
+    <!-- ========================================================= -->
 
-  <section class="supply-section">
+    <section class="outlook-section">
 
-    <div class="section-title">
+      <div class="outlook-main">
 
-      <div>
+        <div class="outlook-heading">
+
+          <span class="section-kicker">
+            RESOURCE OUTLOOK
+          </span>
+
+          <h2>
+            LOWEST CURRENT RESERVE
+          </h2>
+
+        </div>
+
+        <div class="outlook-resource">
+
+          <div class="outlook-icon">
+            {{ getCriticalResource().icon }}
+          </div>
+
+          <div>
+
+            <strong>
+              {{ getCriticalResource().name }}
+            </strong>
+
+            <span>
+              {{ getCriticalResource().percentage }}%
+              remaining
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="outlook-date">
 
         <span>
-          INVENTORY / 02
+          EXPECTED EXHAUSTION
         </span>
-
-        <h2>
-          CRITICAL SUPPLY RESERVES
-        </h2>
-
-      </div>
-
-    </div>
-
-
-    <div class="supply-panel">
-
-      <div
-        class="supply-item"
-        *ngFor="let supply of supplyCategories"
-      >
-
-        <div class="supply-header">
-
-          <span>
-            {{ supply.name }}
-          </span>
-
-          <strong>
-            {{ supply.value }}{{ supply.unit }}
-          </strong>
-
-        </div>
-
-
-        <div class="supply-bar">
-
-          <div
-            class="supply-fill"
-            [ngClass]="
-              getSupplyClass(
-                supply.value
-              )
-            "
-            [style.width.%]="supply.value"
-          ></div>
-
-        </div>
-
-
-        <div class="supply-footer">
-
-          <span>
-            RESERVE LEVEL
-          </span>
-
-          <span>
-            {{ supply.value >= 70
-              ? 'NOMINAL'
-              : 'MONITOR'
-            }}
-          </span>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       LOGISTICS METRICS
-       ===================================================== -->
-
-  <section class="metrics-section">
-
-    <div class="section-title">
-
-      <div>
-
-        <span>
-          TELEMETRY / 03
-        </span>
-
-        <h2>
-          LOGISTICS PERFORMANCE
-        </h2>
-
-      </div>
-
-      <div class="refresh-status">
-
-        <span></span>
-
-        8 SEC REFRESH
-
-      </div>
-
-    </div>
-
-
-    <div class="metrics-grid">
-
-      <article
-        class="metric-card"
-        *ngFor="let metric of logisticsMetrics"
-      >
-
-        <div class="metric-header">
-
-          <span>
-            {{ metric.label }}
-          </span>
-
-          <strong
-            [ngClass]="
-              getMetricClass(
-                metric.status
-              )
-            "
-          >
-            {{ metric.status }}
-          </strong>
-
-        </div>
-
-
-        <div class="metric-value">
-
-          <strong>
-            {{ metric.value }}
-          </strong>
-
-          <span>
-            {{ metric.unit }}
-          </span>
-
-        </div>
-
-
-        <div class="metric-progress">
-
-          <div
-            class="metric-progress-fill"
-            [style.width.%]="metric.value"
-          ></div>
-
-        </div>
-
-      </article>
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       LOGISTICS DIGITAL TWIN
-       ===================================================== -->
-
-  <section class="digital-twin">
-
-    <div class="twin-visual">
-
-      <div class="twin-grid"></div>
-
-
-      <div class="route route-one"></div>
-      <div class="route route-two"></div>
-      <div class="route route-three"></div>
-
-
-      <div class="twin-core">
-
-        <div class="core-ring"></div>
 
         <strong>
-          SUPPLY
+          {{ getCriticalResource().exhaustionDate }}
+        </strong>
+
+        <small>
+          {{ getCriticalResource().exhaustionDays }}
+          days remaining
+        </small>
+
+      </div>
+
+
+      <div class="outlook-action">
+
+        <span>
+          NEXT RESOURCE WINDOW
+        </span>
+
+        <strong>
+          {{ getNextResupply().nextResupplyDays }}
+          DAYS
+        </strong>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ========================================================= -->
+  <!-- FOOTER -->
+  <!-- ========================================================= -->
+
+  <footer class="logistics-footer">
+
+    <div class="footer-brand">
+
+      <div class="footer-mark">
+        <span></span>
+      </div>
+
+      <div>
+
+        <strong>
+          POLARIS-TWIN
         </strong>
 
         <span>
-          NETWORK
+          ANTARCTIC DIGITAL TWIN
         </span>
 
       </div>
 
-
-      <div class="logistics-node node-one">
-        <span>SEA</span>
-      </div>
-
-      <div class="logistics-node node-two">
-        <span>AIR</span>
-      </div>
-
-      <div class="logistics-node node-three">
-        <span>STA</span>
-      </div>
-
-
-      <div class="moving-particle particle-one"></div>
-      <div class="moving-particle particle-two"></div>
-
     </div>
 
 
-    <div class="twin-information">
-
-      <span class="section-code">
-        DIGITAL TWIN / 04
-      </span>
-
-      <h2>
-        LOGISTICS NETWORK SYNCHRONIZATION
-      </h2>
-
-      <p>
-        The logistics digital twin provides a unified
-        operational view of station supplies, cargo,
-        transportation assets, inventory reserves and
-        mission readiness. It enables operators to
-        visualize the movement and availability of
-        critical resources.
-      </p>
-
-
-      <div class="sync-grid">
-
-        <div>
-
-          <span>
-            NETWORK STATUS
-          </span>
-
-          <strong>
-            SYNCHRONIZED
-          </strong>
-
-        </div>
-
-
-        <div>
-
-          <span>
-            SUPPLY CHAIN
-          </span>
-
-          <strong>
-            ACTIVE
-          </strong>
-
-        </div>
-
-
-        <div>
-
-          <span>
-            MISSION READINESS
-          </span>
-
-          <strong>
-            {{ logisticsReadiness }}%
-          </strong>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       FOOTER
-       ===================================================== -->
-
-  <footer class="page-footer">
-
-    <div>
-
-      <strong>
-        POLARIS-TWIN
-      </strong>
+    <div class="footer-center">
 
       <span>
-        LOGISTICS INTELLIGENCE MODULE
+        {{ station.stationName }}
+      </span>
+
+      <i></i>
+
+      <span>
+        {{ station.stationCode }}
+      </span>
+
+      <i></i>
+
+      <span>
+        LOGISTICS CONTROL
       </span>
 
     </div>
 
 
-    <div class="footer-live">
+    <div class="footer-right">
 
-      <span></span>
+      <span class="footer-online"></span>
 
-      SIMULATED LOGISTICS TELEMETRY ACTIVE
-
-    </div>
-
-
-    <div>
-
-      {{ formattedDate }}
-
-      ·
-
-      {{ formattedTime }}
-
-      IST
+      <span>
+        SYSTEM ONLINE
+      </span>
 
     </div>
 

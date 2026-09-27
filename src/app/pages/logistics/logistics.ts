@@ -1,22 +1,70 @@
 import {
+  ChangeDetectorRef,
   Component,
   OnDestroy,
-  OnInit,
-  ChangeDetectorRef
+  OnInit
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+
+type StationId = 'BHARATI' | 'MAITRI';
+
+type AssetStatus =
+  | 'ACTIVE'
+  | 'IN TRANSIT'
+  | 'STANDBY'
+  | 'MAINTENANCE'
+  | 'OFFLINE';
+
+type Priority = 'HIGH' | 'MEDIUM' | 'LOW';
+
+type ResourceKey =
+  | 'FUEL'
+  | 'WATER'
+  | 'FOOD'
+  | 'MEDICAL'
+  | 'TECHNICAL'
+  | 'EMERGENCY';
 
 interface LogisticsAsset {
   name: string;
   code: string;
   category: string;
   location: string;
-  status: 'ACTIVE' | 'IN TRANSIT' | 'STANDBY' | 'MAINTENANCE' | 'OFFLINE';
-  priority: 'HIGH' | 'MEDIUM' | 'LOW';
+  status: AssetStatus;
+  priority: Priority;
   quantity: number;
   capacity: number;
   description: string;
+}
+
+interface ResourceState {
+  key: ResourceKey;
+  name: string;
+  shortName: string;
+  icon: string;
+  percentage: number;
+  quantity: number;
+  capacity: number;
+  unit: string;
+  dailyConsumption: number;
+  nextResupplyDays: number;
+  exhaustionDays: number;
+  exhaustionDate: string;
+  status: 'NORMAL' | 'WARNING' | 'CRITICAL';
+  description: string;
+}
+
+interface StationLogisticsData {
+  station: StationId;
+  stationName: string;
+  stationCode: string;
+  location: string;
+  region: string;
+  readiness: number;
+  logisticsRisk: number;
+  assets: LogisticsAsset[];
+  resources: Record<ResourceKey, ResourceState>;
 }
 
 interface LogisticsMetric {
@@ -24,6 +72,7 @@ interface LogisticsMetric {
   value: number;
   unit: string;
   status: 'NORMAL' | 'WARNING' | 'CRITICAL';
+  icon: string;
 }
 
 @Component({
@@ -35,246 +84,484 @@ interface LogisticsMetric {
 })
 export class Logistics implements OnInit, OnDestroy {
 
-  currentTime = new Date();
+  readonly stationIds: StationId[] = [
+    'BHARATI',
+    'MAITRI'
+  ];
+
+  selectedStation: StationId = 'BHARATI';
+
+  activeFilter = 'ALL';
+
+  currentTime = '--:--:--';
+  currentDate = '--';
+  lastUpdate = '--:--:--';
 
   private clockTimer?: ReturnType<typeof setInterval>;
-  private simulationTimer?: ReturnType<typeof setInterval>;
+  private telemetryTimer?: ReturnType<typeof setInterval>;
 
-  /*
-   * DEMONSTRATION LOGISTICS DATA
-   *
-   * These values are simulated for the SIH prototype.
-   * Connect this module to actual logistics / inventory /
-   * vessel / aircraft telemetry when the backend is available.
-   */
+  private readonly stationData: Record<
+    StationId,
+    StationLogisticsData
+  > = {
 
-  logisticsAssets: LogisticsAsset[] = [
+    BHARATI: {
+      station: 'BHARATI',
+      stationName: 'BHARATI',
+      stationCode: 'BHA-01',
+      location: 'Larsemann Hills',
+      region: 'PRYDZ BAY / EAST ANTARCTICA',
+      readiness: 91,
+      logisticsRisk: 14,
 
-    {
-      name: 'Supply Vessel',
-      code: 'VES-01',
-      category: 'MARITIME',
-      location: 'ANTARCTIC SECTOR',
-      status: 'IN TRANSIT',
-      priority: 'HIGH',
-      quantity: 1,
-      capacity: 100,
-      description:
-        'Primary maritime logistics platform supporting station resupply operations.'
+      resources: {
+
+        FUEL: {
+          key: 'FUEL',
+          name: 'Fuel Reserve',
+          shortName: 'FUEL',
+          icon: '◈',
+          percentage: 74,
+          quantity: 18420,
+          capacity: 24900,
+          unit: 'L',
+          dailyConsumption: 615,
+          nextResupplyDays: 25,
+          exhaustionDays: 30,
+          exhaustionDate: '',
+          status: 'NORMAL',
+          description: 'Power generation and station mobility reserve'
+        },
+
+        WATER: {
+          key: 'WATER',
+          name: 'Water Reserve',
+          shortName: 'WATER',
+          icon: '◉',
+          percentage: 68,
+          quantity: 8420,
+          capacity: 12400,
+          unit: 'L',
+          dailyConsumption: 280,
+          nextResupplyDays: 22,
+          exhaustionDays: 30,
+          exhaustionDate: '',
+          status: 'NORMAL',
+          description: 'Processed and stored station water reserve'
+        },
+
+        FOOD: {
+          key: 'FOOD',
+          name: 'Food Reserve',
+          shortName: 'FOOD',
+          icon: '◆',
+          percentage: 81,
+          quantity: 2140,
+          capacity: 2640,
+          unit: 'KG',
+          dailyConsumption: 34,
+          nextResupplyDays: 38,
+          exhaustionDays: 63,
+          exhaustionDate: '',
+          status: 'NORMAL',
+          description: 'Long-duration food and nutritional reserve'
+        },
+
+        MEDICAL: {
+          key: 'MEDICAL',
+          name: 'Medical Reserve',
+          shortName: 'MEDICAL',
+          icon: '✚',
+          percentage: 88,
+          quantity: 420,
+          capacity: 480,
+          unit: 'KG',
+          dailyConsumption: 1.4,
+          nextResupplyDays: 74,
+          exhaustionDays: 300,
+          exhaustionDate: '',
+          status: 'NORMAL',
+          description: 'Medical and emergency healthcare supplies'
+        },
+
+        TECHNICAL: {
+          key: 'TECHNICAL',
+          name: 'Technical Stores',
+          shortName: 'TECHNICAL',
+          icon: '◇',
+          percentage: 63,
+          quantity: 315,
+          capacity: 500,
+          unit: 'UNITS',
+          dailyConsumption: 2.2,
+          nextResupplyDays: 29,
+          exhaustionDays: 143,
+          exhaustionDate: '',
+          status: 'NORMAL',
+          description: 'Engineering spares and technical components'
+        },
+
+        EMERGENCY: {
+          key: 'EMERGENCY',
+          name: 'Emergency Reserve',
+          shortName: 'EMERGENCY',
+          icon: '△',
+          percentage: 92,
+          quantity: 460,
+          capacity: 500,
+          unit: 'UNITS',
+          dailyConsumption: 0.5,
+          nextResupplyDays: 90,
+          exhaustionDays: 900,
+          exhaustionDate: '',
+          status: 'NORMAL',
+          description: 'Contingency reserve for critical operations'
+        }
+      },
+
+      assets: [
+
+        {
+          name: 'Generator Array 01',
+          code: 'GEN-BH-01',
+          category: 'POWER',
+          location: 'POWER MODULE',
+          status: 'ACTIVE',
+          priority: 'HIGH',
+          quantity: 4,
+          capacity: 4,
+          description: 'Primary electrical generation system'
+        },
+
+        {
+          name: 'Fuel Distribution Unit',
+          code: 'FDU-BH-01',
+          category: 'FUEL',
+          location: 'FUEL FARM',
+          status: 'ACTIVE',
+          priority: 'HIGH',
+          quantity: 3,
+          capacity: 3,
+          description: 'Fuel storage and controlled distribution'
+        },
+
+        {
+          name: 'Snow Vehicle Fleet',
+          code: 'SNV-BH-02',
+          category: 'TRANSPORT',
+          location: 'VEHICLE BAY',
+          status: 'ACTIVE',
+          priority: 'HIGH',
+          quantity: 6,
+          capacity: 7,
+          description: 'Tracked transport vehicles for station operations'
+        },
+
+        {
+          name: 'Water Processing Unit',
+          code: 'WPU-BH-01',
+          category: 'WATER',
+          location: 'UTILITY MODULE',
+          status: 'ACTIVE',
+          priority: 'HIGH',
+          quantity: 2,
+          capacity: 2,
+          description: 'Water processing and purification system'
+        },
+
+        {
+          name: 'Cargo Handling System',
+          code: 'CHS-BH-01',
+          category: 'CARGO',
+          location: 'LOGISTICS BAY',
+          status: 'IN TRANSIT',
+          priority: 'MEDIUM',
+          quantity: 5,
+          capacity: 6,
+          description: 'Cargo movement and handling equipment'
+        },
+
+        {
+          name: 'Emergency Response Unit',
+          code: 'ERU-BH-01',
+          category: 'SAFETY',
+          location: 'EMERGENCY BAY',
+          status: 'STANDBY',
+          priority: 'HIGH',
+          quantity: 3,
+          capacity: 3,
+          description: 'Emergency response and recovery equipment'
+        },
+
+        {
+          name: 'Communications Array',
+          code: 'COM-BH-03',
+          category: 'COMMUNICATION',
+          location: 'COMMS MODULE',
+          status: 'ACTIVE',
+          priority: 'HIGH',
+          quantity: 4,
+          capacity: 4,
+          description: 'Long-range station communications infrastructure'
+        },
+
+        {
+          name: 'Maintenance Platform',
+          code: 'MNT-BH-02',
+          category: 'ENGINEERING',
+          location: 'WORKSHOP',
+          status: 'MAINTENANCE',
+          priority: 'MEDIUM',
+          quantity: 2,
+          capacity: 3,
+          description: 'Engineering maintenance and repair platform'
+        }
+      ]
     },
 
-    {
-      name: 'Cargo Aircraft',
-      code: 'AIR-01',
-      category: 'AVIATION',
-      location: 'POLAR AIR CORRIDOR',
-      status: 'STANDBY',
-      priority: 'HIGH',
-      quantity: 1,
-      capacity: 100,
-      description:
-        'Heavy cargo aircraft designated for personnel and critical material transport.'
-    },
+    MAITRI: {
+      station: 'MAITRI',
+      stationName: 'MAITRI',
+      stationCode: 'MAI-01',
+      location: 'Schirmacher Oasis',
+      region: 'QUEEN MAUD LAND / EAST ANTARCTICA',
+      readiness: 86,
+      logisticsRisk: 21,
 
-    {
-      name: 'Fuel Reserve',
-      code: 'FUEL-01',
-      category: 'FUEL',
-      location: 'MAITRI STORAGE',
-      status: 'ACTIVE',
-      priority: 'HIGH',
-      quantity: 72,
-      capacity: 100,
-      description:
-        'Strategic fuel reserve supporting station power generation and operations.'
-    },
+      resources: {
 
-    {
-      name: 'Food Stores',
-      code: 'FOOD-01',
-      category: 'SUPPLIES',
-      location: 'MAITRI WAREHOUSE',
-      status: 'ACTIVE',
-      priority: 'MEDIUM',
-      quantity: 81,
-      capacity: 100,
-      description:
-        'Long-duration food inventory maintained for station personnel.'
-    },
+        FUEL: {
+          key: 'FUEL',
+          name: 'Fuel Reserve',
+          shortName: 'FUEL',
+          icon: '◈',
+          percentage: 63,
+          quantity: 15840,
+          capacity: 25100,
+          unit: 'L',
+          dailyConsumption: 540,
+          nextResupplyDays: 29,
+          exhaustionDays: 29,
+          exhaustionDate: '',
+          status: 'NORMAL',
+          description: 'Power generation and station mobility reserve'
+        },
 
-    {
-      name: 'Scientific Cargo',
-      code: 'SCI-01',
-      category: 'RESEARCH',
-      location: 'RESEARCH STORAGE',
-      status: 'ACTIVE',
-      priority: 'MEDIUM',
-      quantity: 64,
-      capacity: 100,
-      description:
-        'Research equipment, samples and scientific mission supplies.'
-    },
+        WATER: {
+          key: 'WATER',
+          name: 'Water Reserve',
+          shortName: 'WATER',
+          icon: '◉',
+          percentage: 55,
+          quantity: 6840,
+          capacity: 12400,
+          unit: 'L',
+          dailyConsumption: 250,
+          nextResupplyDays: 24,
+          exhaustionDays: 27,
+          exhaustionDate: '',
+          status: 'WARNING',
+          description: 'Processed and stored station water reserve'
+        },
 
-    {
-      name: 'Emergency Supplies',
-      code: 'EMS-01',
-      category: 'EMERGENCY',
-      location: 'SAFETY STORAGE',
-      status: 'STANDBY',
-      priority: 'HIGH',
-      quantity: 92,
-      capacity: 100,
-      description:
-        'Emergency response supplies reserved for critical operational scenarios.'
-    },
+        FOOD: {
+          key: 'FOOD',
+          name: 'Food Reserve',
+          shortName: 'FOOD',
+          icon: '◆',
+          percentage: 72,
+          quantity: 1870,
+          capacity: 2600,
+          unit: 'KG',
+          dailyConsumption: 31,
+          nextResupplyDays: 35,
+          exhaustionDays: 60,
+          exhaustionDate: '',
+          status: 'NORMAL',
+          description: 'Long-duration food and nutritional reserve'
+        },
 
-    {
-      name: 'Snow Vehicle Fleet',
-      code: 'SVF-01',
-      category: 'GROUND',
-      location: 'MAITRI FIELD',
-      status: 'ACTIVE',
-      priority: 'MEDIUM',
-      quantity: 76,
-      capacity: 100,
-      description:
-        'Tracked vehicles used for field transportation and cargo movement.'
-    },
+        MEDICAL: {
+          key: 'MEDICAL',
+          name: 'Medical Reserve',
+          shortName: 'MEDICAL',
+          icon: '✚',
+          percentage: 79,
+          quantity: 380,
+          capacity: 480,
+          unit: 'KG',
+          dailyConsumption: 1.3,
+          nextResupplyDays: 68,
+          exhaustionDays: 292,
+          exhaustionDate: '',
+          status: 'NORMAL',
+          description: 'Medical and emergency healthcare supplies'
+        },
 
-    {
-      name: 'Communications Cargo',
-      code: 'COM-01',
-      category: 'EQUIPMENT',
-      location: 'TECHNICAL STORAGE',
-      status: 'MAINTENANCE',
-      priority: 'LOW',
-      quantity: 43,
-      capacity: 100,
-      description:
-        'Communication equipment awaiting inspection and deployment.'
+        TECHNICAL: {
+          key: 'TECHNICAL',
+          name: 'Technical Stores',
+          shortName: 'TECHNICAL',
+          icon: '◇',
+          percentage: 58,
+          quantity: 290,
+          capacity: 500,
+          unit: 'UNITS',
+          dailyConsumption: 2.0,
+          nextResupplyDays: 27,
+          exhaustionDays: 145,
+          exhaustionDate: '',
+          status: 'WARNING',
+          description: 'Engineering spares and technical components'
+        },
+
+        EMERGENCY: {
+          key: 'EMERGENCY',
+          name: 'Emergency Reserve',
+          shortName: 'EMERGENCY',
+          icon: '△',
+          percentage: 89,
+          quantity: 445,
+          capacity: 500,
+          unit: 'UNITS',
+          dailyConsumption: 0.5,
+          nextResupplyDays: 86,
+          exhaustionDays: 890,
+          exhaustionDate: '',
+          status: 'NORMAL',
+          description: 'Contingency reserve for critical operations'
+        }
+      },
+
+      assets: [
+
+        {
+          name: 'Generator Array 02',
+          code: 'GEN-MA-02',
+          category: 'POWER',
+          location: 'POWER MODULE',
+          status: 'ACTIVE',
+          priority: 'HIGH',
+          quantity: 3,
+          capacity: 4,
+          description: 'Primary electrical generation system'
+        },
+
+        {
+          name: 'Fuel Distribution Unit',
+          code: 'FDU-MA-02',
+          category: 'FUEL',
+          location: 'FUEL FARM',
+          status: 'ACTIVE',
+          priority: 'HIGH',
+          quantity: 2,
+          capacity: 3,
+          description: 'Fuel storage and controlled distribution'
+        },
+
+        {
+          name: 'Snow Vehicle Fleet',
+          code: 'SNV-MA-01',
+          category: 'TRANSPORT',
+          location: 'VEHICLE BAY',
+          status: 'ACTIVE',
+          priority: 'HIGH',
+          quantity: 5,
+          capacity: 6,
+          description: 'Tracked transport vehicles for station operations'
+        },
+
+        {
+          name: 'Water Processing Unit',
+          code: 'WPU-MA-02',
+          category: 'WATER',
+          location: 'UTILITY MODULE',
+          status: 'ACTIVE',
+          priority: 'HIGH',
+          quantity: 2,
+          capacity: 2,
+          description: 'Water processing and purification system'
+        },
+
+        {
+          name: 'Cargo Handling System',
+          code: 'CHS-MA-02',
+          category: 'CARGO',
+          location: 'LOGISTICS BAY',
+          status: 'IN TRANSIT',
+          priority: 'MEDIUM',
+          quantity: 4,
+          capacity: 5,
+          description: 'Cargo movement and handling equipment'
+        },
+
+        {
+          name: 'Emergency Response Unit',
+          code: 'ERU-MA-02',
+          category: 'SAFETY',
+          location: 'EMERGENCY BAY',
+          status: 'STANDBY',
+          priority: 'HIGH',
+          quantity: 3,
+          capacity: 3,
+          description: 'Emergency response and recovery equipment'
+        },
+
+        {
+          name: 'Communications Array',
+          code: 'COM-MA-02',
+          category: 'COMMUNICATION',
+          location: 'COMMS MODULE',
+          status: 'ACTIVE',
+          priority: 'HIGH',
+          quantity: 3,
+          capacity: 4,
+          description: 'Long-range station communications infrastructure'
+        },
+
+        {
+          name: 'Maintenance Platform',
+          code: 'MNT-MA-01',
+          category: 'ENGINEERING',
+          location: 'WORKSHOP',
+          status: 'MAINTENANCE',
+          priority: 'MEDIUM',
+          quantity: 2,
+          capacity: 3,
+          description: 'Engineering maintenance and repair platform'
+        }
+      ]
     }
-  ];
+  };
 
-
-  logisticsMetrics: LogisticsMetric[] = [
-
-    {
-      label: 'SUPPLY READINESS',
-      value: 84,
-      unit: '%',
-      status: 'NORMAL'
-    },
-
-    {
-      label: 'FUEL RESERVE',
-      value: 72,
-      unit: '%',
-      status: 'NORMAL'
-    },
-
-    {
-      label: 'FOOD RESERVE',
-      value: 81,
-      unit: '%',
-      status: 'NORMAL'
-    },
-
-    {
-      label: 'CARGO CAPACITY',
-      value: 64,
-      unit: '%',
-      status: 'NORMAL'
-    },
-
-    {
-      label: 'MISSION READINESS',
-      value: 91,
-      unit: '%',
-      status: 'NORMAL'
-    },
-
-    {
-      label: 'LOGISTICS RISK',
-      value: 18,
-      unit: '%',
-      status: 'NORMAL'
-    }
-  ];
-
-
-  supplyCategories = [
-    {
-      name: 'FUEL',
-      value: 72,
-      unit: '%'
-    },
-    {
-      name: 'FOOD',
-      value: 81,
-      unit: '%'
-    },
-    {
-      name: 'MEDICAL',
-      value: 88,
-      unit: '%'
-    },
-    {
-      name: 'TECHNICAL',
-      value: 63,
-      unit: '%'
-    },
-    {
-      name: 'EMERGENCY',
-      value: 92,
-      unit: '%'
-    }
-  ];
-
-
-  selectedCategory = 'ALL';
-
-
-  categories = [
-    'ALL',
-    'MARITIME',
-    'AVIATION',
+  readonly resourceOrder: ResourceKey[] = [
     'FUEL',
-    'SUPPLIES',
-    'RESEARCH',
-    'EMERGENCY',
-    'GROUND',
-    'EQUIPMENT'
+    'WATER',
+    'FOOD',
+    'MEDICAL',
+    'TECHNICAL',
+    'EMERGENCY'
   ];
 
+  constructor(
+    private readonly cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
+
+    this.calculateAllResourceDates();
 
     this.updateClock();
 
     this.clockTimer = setInterval(() => {
-
       this.updateClock();
-
       this.cdr.detectChanges();
-
     }, 1000);
 
-
-    /*
-     * Simulated logistics telemetry refresh.
-     * Replace with actual backend telemetry later.
-     */
-
-    this.simulationTimer = setInterval(() => {
-
-      this.updateLogisticsSimulation();
-
-      this.cdr.detectChanges();
-
-    }, 8000);
-
+    this.telemetryTimer = setInterval(() => {
+      this.updateOperationalData();
+    }, 5000);
   }
-
 
   ngOnDestroy(): void {
 
@@ -282,395 +569,541 @@ export class Logistics implements OnInit, OnDestroy {
       clearInterval(this.clockTimer);
     }
 
-    if (this.simulationTimer) {
-      clearInterval(this.simulationTimer);
+    if (this.telemetryTimer) {
+      clearInterval(this.telemetryTimer);
     }
-
   }
 
-
-  constructor(
-    private cdr: ChangeDetectorRef
-  ) {}
-
-
-  private updateClock(): void {
-
-    this.currentTime = new Date();
-
+  get station(): StationLogisticsData {
+    return this.stationData[this.selectedStation];
   }
 
-
-  private updateLogisticsSimulation(): void {
-
-    this.logisticsAssets =
-      this.logisticsAssets.map(asset => {
-
-        if (
-          asset.status === 'OFFLINE' ||
-          asset.status === 'MAINTENANCE'
-        ) {
-          return asset;
-        }
-
-        const variation =
-          Math.round(
-            (Math.random() - 0.5) * 4
-          );
-
-        let quantity =
-          asset.quantity + variation;
-
-        quantity =
-          Math.min(
-            asset.capacity,
-            Math.max(
-              0,
-              quantity
-            )
-          );
-
-        return {
-          ...asset,
-          quantity
-        };
-
-      });
-
-
-    this.logisticsMetrics =
-      this.logisticsMetrics.map(metric => {
-
-        let value = metric.value;
-
-        const variation =
-          Math.round(
-            (Math.random() - 0.5) * 2
-          );
-
-        if (
-          metric.label !== 'LOGISTICS RISK'
-        ) {
-
-          value += variation;
-
-        } else {
-
-          value += variation;
-
-        }
-
-        value =
-          Math.min(
-            100,
-            Math.max(
-              0,
-              value
-            )
-          );
-
-        return {
-          ...metric,
-          value
-        };
-
-      });
-
+  get resources(): ResourceState[] {
+    return this.resourceOrder.map(
+      key => this.station.resources[key]
+    );
   }
-
-
-  selectCategory(category: string): void {
-
-    this.selectedCategory =
-      category;
-
-  }
-
 
   get filteredAssets(): LogisticsAsset[] {
 
-    if (
-      this.selectedCategory === 'ALL'
-    ) {
-
-      return this.logisticsAssets;
-
+    if (this.activeFilter === 'ALL') {
+      return this.station.assets;
     }
 
-    return this.logisticsAssets.filter(
-      asset =>
-        asset.category ===
-        this.selectedCategory
+    return this.station.assets.filter(
+      asset => asset.category === this.activeFilter
+    );
+  }
+
+  get categories(): string[] {
+
+    const categories = this.station.assets.map(
+      asset => asset.category
     );
 
+    return [
+      'ALL',
+      ...Array.from(new Set(categories))
+    ];
   }
 
+  get metrics(): LogisticsMetric[] {
 
-  get activeCount(): number {
+    const assets = this.station.assets;
 
-    return this.logisticsAssets.filter(
-      asset =>
-        asset.status === 'ACTIVE'
+    const active = assets.filter(
+      asset => asset.status === 'ACTIVE'
     ).length;
 
-  }
-
-
-  get transitCount(): number {
-
-    return this.logisticsAssets.filter(
-      asset =>
-        asset.status === 'IN TRANSIT'
+    const transit = assets.filter(
+      asset => asset.status === 'IN TRANSIT'
     ).length;
 
-  }
-
-
-  get standbyCount(): number {
-
-    return this.logisticsAssets.filter(
-      asset =>
-        asset.status === 'STANDBY'
+    const maintenance = assets.filter(
+      asset => asset.status === 'MAINTENANCE'
     ).length;
 
+    const availability =
+      assets.length > 0
+        ? Math.round(
+            (active / assets.length) * 100
+          )
+        : 0;
+
+    const resourceAverage =
+      this.resources.reduce(
+        (sum, resource) =>
+          sum + resource.percentage,
+        0
+      ) / this.resources.length;
+
+    const networkIntegrity = Math.round(
+      Math.max(
+        94,
+        Math.min(
+          100,
+          availability +
+            resourceAverage / 20
+        )
+      )
+    );
+
+    return [
+
+      {
+        label: 'Asset Availability',
+        value: availability,
+        unit: '%',
+        status:
+          availability >= 80
+            ? 'NORMAL'
+            : availability >= 60
+              ? 'WARNING'
+              : 'CRITICAL',
+        icon: '◈'
+      },
+
+      {
+        label: 'Resource Readiness',
+        value: Math.round(resourceAverage),
+        unit: '%',
+        status:
+          resourceAverage >= 70
+            ? 'NORMAL'
+            : resourceAverage >= 50
+              ? 'WARNING'
+              : 'CRITICAL',
+        icon: '◎'
+      },
+
+      {
+        label: 'Network Integrity',
+        value: networkIntegrity,
+        unit: '%',
+        status: 'NORMAL',
+        icon: '⌁'
+      },
+
+      {
+        label: 'Maintenance Load',
+        value: Math.round(
+          (maintenance / assets.length) * 100
+        ),
+        unit: '%',
+        status:
+          maintenance <= 1
+            ? 'NORMAL'
+            : maintenance <= 2
+              ? 'WARNING'
+              : 'CRITICAL',
+        icon: '⚙'
+      },
+
+      {
+        label: 'Transit Assets',
+        value: transit,
+        unit: 'UNITS',
+        status:
+          transit <= 2
+            ? 'NORMAL'
+            : 'WARNING',
+        icon: '→'
+      }
+    ];
   }
 
+  selectStation(
+    station: StationId
+  ): void {
 
-  get maintenanceCount(): number {
+    this.selectedStation = station;
 
-    return this.logisticsAssets.filter(
-      asset =>
-        asset.status === 'MAINTENANCE'
-    ).length;
+    this.activeFilter = 'ALL';
 
+    this.calculateAllResourceDates();
+
+    this.cdr.detectChanges();
   }
 
+  setFilter(
+    filter: string
+  ): void {
 
-  get offlineCount(): number {
+    this.activeFilter = filter;
 
-    return this.logisticsAssets.filter(
-      asset =>
-        asset.status === 'OFFLINE'
-    ).length;
-
+    this.cdr.detectChanges();
   }
 
+  private updateClock(): void {
 
-  get logisticsReadiness(): number {
+    const now = new Date();
 
-    if (
-      this.logisticsAssets.length === 0
-    ) {
-      return 0;
-    }
+    this.currentDate =
+      new Intl.DateTimeFormat(
+        'en-IN',
+        {
+          timeZone: 'Asia/Kolkata',
+          weekday: 'short',
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }
+      ).format(now);
 
-    const total =
-      this.logisticsAssets.reduce(
-        (sum, asset) =>
+    this.currentTime =
+      new Intl.DateTimeFormat(
+        'en-IN',
+        {
+          timeZone: 'Asia/Kolkata',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        }
+      ).format(now);
+
+    this.lastUpdate = this.currentTime;
+  }
+
+  private updateOperationalData(): void {
+
+    const data = this.stationData[this.selectedStation];
+
+    this.resourceOrder.forEach(
+      key => {
+
+        const resource = data.resources[key];
+
+        const movement =
+          key === 'FUEL'
+            ? this.randomNumber(-1.4, 0.8)
+            : key === 'WATER'
+              ? this.randomNumber(-1.1, 0.7)
+              : key === 'FOOD'
+                ? this.randomNumber(-0.7, 0.5)
+                : key === 'MEDICAL'
+                  ? this.randomNumber(-0.3, 0.25)
+                  : key === 'TECHNICAL'
+                    ? this.randomNumber(-0.8, 0.4)
+                    : this.randomNumber(-0.2, 0.15);
+
+        resource.percentage = this.clamp(
+          resource.percentage + movement,
+          5,
+          98
+        );
+
+        resource.quantity =
+          resource.capacity *
+          resource.percentage /
+          100;
+
+        resource.exhaustionDays =
+          Math.max(
+            1,
+            Math.round(
+              resource.quantity /
+              Math.max(
+                resource.dailyConsumption,
+                0.01
+              )
+            )
+          );
+
+        resource.exhaustionDate =
+          this.calculateFutureDate(
+            resource.exhaustionDays
+          );
+
+        resource.status =
+          this.getResourceStatus(
+            resource.percentage
+          );
+      }
+    );
+
+    data.readiness = this.calculateReadiness(
+      data
+    );
+
+    data.logisticsRisk =
+      Math.max(
+        4,
+        Math.min(
+          42,
+          100 - data.readiness +
+            this.randomNumber(-3, 3)
+        )
+      );
+
+    data.assets.forEach(
+      asset => {
+
+        const fluctuation =
+          Math.random();
+
+        if (
+          asset.status === 'ACTIVE' &&
+          fluctuation < 0.06
+        ) {
+          asset.quantity =
+            Math.max(
+              1,
+              Math.min(
+                asset.capacity,
+                asset.quantity +
+                  (Math.random() > 0.5
+                    ? 1
+                    : -1)
+              )
+            );
+        }
+
+        if (
+          asset.status === 'IN TRANSIT' &&
+          fluctuation < 0.04
+        ) {
+          asset.status = 'ACTIVE';
+        }
+      }
+    );
+
+    this.updateClock();
+
+    this.cdr.detectChanges();
+  }
+
+  private calculateAllResourceDates(): void {
+
+    this.resourceOrder.forEach(
+      key => {
+
+        const resource =
+          this.station.resources[key];
+
+        resource.quantity =
+          resource.capacity *
+          resource.percentage /
+          100;
+
+        resource.exhaustionDays =
+          Math.max(
+            1,
+            Math.round(
+              resource.quantity /
+              Math.max(
+                resource.dailyConsumption,
+                0.01
+              )
+            )
+          );
+
+        resource.exhaustionDate =
+          this.calculateFutureDate(
+            resource.exhaustionDays
+          );
+
+        resource.status =
+          this.getResourceStatus(
+            resource.percentage
+          );
+      }
+    );
+  }
+
+  private calculateReadiness(
+    data: StationLogisticsData
+  ): number {
+
+    const average =
+      this.resourceOrder.reduce(
+        (sum, key) =>
           sum +
-          (
-            asset.quantity /
-            asset.capacity
-          ) * 100,
+          data.resources[key].percentage,
         0
-      );
+      ) / this.resourceOrder.length;
+
+    const activeAssets =
+      data.assets.filter(
+        asset =>
+          asset.status === 'ACTIVE'
+      ).length;
+
+    const assetAvailability =
+      data.assets.length > 0
+        ? activeAssets /
+          data.assets.length *
+          100
+        : 0;
 
     return Math.round(
-      total /
-      this.logisticsAssets.length
+      average * 0.7 +
+      assetAvailability * 0.3
     );
-
   }
 
+  private getResourceStatus(
+    percentage: number
+  ): 'NORMAL' | 'WARNING' | 'CRITICAL' {
 
-  get averageInventory(): number {
-
-    if (
-      this.logisticsAssets.length === 0
-    ) {
-      return 0;
+    if (percentage < 35) {
+      return 'CRITICAL';
     }
 
-    const total =
-      this.logisticsAssets.reduce(
-        (sum, asset) =>
-          sum + asset.quantity,
-        0
-      );
+    if (percentage < 60) {
+      return 'WARNING';
+    }
 
-    return Math.round(
-      total /
-      this.logisticsAssets.length
-    );
-
+    return 'NORMAL';
   }
 
+  private calculateFutureDate(
+    days: number
+  ): string {
+
+    const date = new Date();
+
+    date.setDate(
+      date.getDate() + days
+    );
+
+    return new Intl.DateTimeFormat(
+      'en-IN',
+      {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      }
+    ).format(date);
+  }
+
+  getResource(
+    key: ResourceKey
+  ): ResourceState {
+
+    return this.station.resources[key];
+  }
+
+  getResourceClass(
+    resource: ResourceState
+  ): string {
+
+    return `resource-${resource.status.toLowerCase()}`;
+  }
 
   getStatusClass(
-    status: LogisticsAsset['status']
+    status: AssetStatus
   ): string {
 
-    switch (status) {
-
-      case 'ACTIVE':
-        return 'status-active';
-
-      case 'IN TRANSIT':
-        return 'status-transit';
-
-      case 'STANDBY':
-        return 'status-standby';
-
-      case 'MAINTENANCE':
-        return 'status-maintenance';
-
-      case 'OFFLINE':
-        return 'status-offline';
-
-      default:
-        return '';
-
-    }
-
+    return status
+      .toLowerCase()
+      .replace(/\s+/g, '-');
   }
-
 
   getPriorityClass(
-    priority: LogisticsAsset['priority']
+    priority: Priority
   ): string {
 
-    switch (priority) {
-
-      case 'HIGH':
-        return 'priority-high';
-
-      case 'MEDIUM':
-        return 'priority-medium';
-
-      case 'LOW':
-        return 'priority-low';
-
-      default:
-        return '';
-
-    }
-
+    return priority.toLowerCase();
   }
-
 
   getMetricClass(
     status: LogisticsMetric['status']
   ): string {
 
-    switch (status) {
-
-      case 'NORMAL':
-        return 'metric-normal';
-
-      case 'WARNING':
-        return 'metric-warning';
-
-      case 'CRITICAL':
-        return 'metric-critical';
-
-      default:
-        return '';
-
-    }
-
+    return status.toLowerCase();
   }
 
-
-  getInventoryWidth(
-    quantity: number,
-    capacity: number
+  getAvailability(
+    asset: LogisticsAsset
   ): number {
 
-    if (capacity <= 0) {
+    if (!asset.capacity) {
       return 0;
     }
 
-    return Math.min(
-      100,
-      Math.max(
-        0,
-        (quantity / capacity) * 100
-      )
+    return Math.round(
+      (asset.quantity /
+        asset.capacity) *
+      100
     );
-
   }
 
+  getNextResupply(): ResourceState {
 
-  getSupplyClass(
-    value: number
+    return this.resources.reduce(
+      (closest, resource) =>
+        resource.nextResupplyDays <
+        closest.nextResupplyDays
+          ? resource
+          : closest
+    );
+  }
+
+  getCriticalResource(): ResourceState {
+
+    return this.resources.reduce(
+      (lowest, resource) =>
+        resource.percentage <
+        lowest.percentage
+          ? resource
+          : lowest
+    );
+  }
+
+  trackByResource(
+    index: number,
+    resource: ResourceState
   ): string {
 
-    if (value >= 70) {
-      return 'supply-good';
-    }
-
-    if (value >= 40) {
-      return 'supply-warning';
-    }
-
-    return 'supply-critical';
-
+    return resource.key;
   }
 
+  trackByAsset(
+    index: number,
+    asset: LogisticsAsset
+  ): string {
 
-  get formattedTime(): string {
+    return asset.code;
+  }
 
-    return new Intl.DateTimeFormat(
-      'en-IN',
-      {
-        timeZone: 'Asia/Kolkata',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      }
-    ).format(
-      this.currentTime
+  trackByMetric(
+    index: number,
+    metric: LogisticsMetric
+  ): string {
+
+    return metric.label;
+  }
+
+  trackByCategory(
+    index: number,
+    category: string
+  ): string {
+
+    return category;
+  }
+
+  private randomNumber(
+    min: number,
+    max: number
+  ): number {
+
+    return (
+      Math.random() *
+      (max - min) +
+      min
     );
-
   }
 
+  private clamp(
+    value: number,
+    min: number,
+    max: number
+  ): number {
 
-  get formattedDate(): string {
-
-    const parts =
-      new Intl.DateTimeFormat(
-        'en-IN',
-        {
-          timeZone: 'Asia/Kolkata',
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit'
-        }
-      ).formatToParts(
-        this.currentTime
-      );
-
-    const year =
-      parts.find(
-        part =>
-          part.type === 'year'
-      )?.value;
-
-    const month =
-      parts.find(
-        part =>
-          part.type === 'month'
-      )?.value;
-
-    const day =
-      parts.find(
-        part =>
-          part.type === 'day'
-      )?.value;
-
-    return `${year}-${month}-${day}`;
-
+    return Math.min(
+      Math.max(value, min),
+      max
+    );
   }
-
 }

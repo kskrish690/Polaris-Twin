@@ -1,28 +1,21 @@
 <div class="bharati-page">
 
-  <!-- ========================================================= -->
-  <!-- HEADER                                                    -->
-  <!-- ========================================================= -->
+  <!-- ==========================================================
+       PAGE HEADER
+       ========================================================== -->
 
-  <section class="page-header">
+  <header class="page-header">
 
     <div class="header-left">
 
       <div class="station-chip">
-
         <span class="chip-dot"></span>
-
-        ANTARCTIC RESEARCH STATION
-
+        BHARATI STATION
       </div>
 
-      <h1>
-        BHARATI
-      </h1>
-
-      <p>
-        Digital Twin Station Intelligence
-      </p>
+      <div class="header-title">
+        OPERATIONAL OVERVIEW
+      </div>
 
     </div>
 
@@ -33,47 +26,35 @@
         class="live-status"
         [ngClass]="weatherStatusClass"
       >
-
         <span class="status-dot"></span>
-
         {{ weatherStatusText }}
-
       </div>
 
-
       <div class="last-update">
-
-        <span>
-          LAST WEATHER UPDATE
-        </span>
-
-        <strong>
-          {{ lastUpdateDisplay }}
-        </strong>
-
+        LAST WEATHER UPDATE
+        <strong>{{ lastUpdateDisplay }}</strong>
       </div>
 
     </div>
 
-  </section>
+  </header>
 
 
-  <!-- ========================================================= -->
-  <!-- ERROR                                                     -->
-  <!-- ========================================================= -->
+  <!-- ==========================================================
+       ERROR
+       ========================================================== -->
 
   <div
     class="error-banner"
     *ngIf="error"
   >
 
-    <span class="error-icon">
-      !
-    </span>
+    <div class="error-icon">!</div>
 
-    <span>
-      {{ error }}
-    </span>
+    <div class="error-content">
+      <strong>WEATHER DATA UNAVAILABLE</strong>
+      <span>{{ error }}</span>
+    </div>
 
     <button
       type="button"
@@ -85,9 +66,9 @@
   </div>
 
 
-  <!-- ========================================================= -->
-  <!-- STATION IDENTITY                                          -->
-  <!-- ========================================================= -->
+  <!-- ==========================================================
+       STATION IDENTITY
+       ========================================================== -->
 
   <section class="station-identity">
 
@@ -96,10 +77,7 @@
       <div class="station-symbol">
 
         <div class="symbol-ring"></div>
-
-        <div class="symbol-core">
-          B
-        </div>
+        <div class="symbol-core">B</div>
 
       </div>
 
@@ -108,9 +86,7 @@
 
         <div class="identity-title-row">
 
-          <h2>
-            BHARATI RESEARCH STATION
-          </h2>
+          <h1>{{ stationName }}</h1>
 
           <span class="station-code">
             {{ stationCode }}
@@ -118,15 +94,13 @@
 
         </div>
 
-
-        <p class="identity-location">
+        <div class="identity-location">
           {{ location }}
-        </p>
+        </div>
 
-
-        <p class="identity-region">
+        <div class="identity-region">
           {{ region }}
-        </p>
+        </div>
 
       </div>
 
@@ -136,54 +110,23 @@
     <div class="station-meta">
 
       <div class="meta-item">
-
-        <span class="meta-label">
-          LATITUDE
-        </span>
-
-        <strong>
-          {{ latitudeText }}
-        </strong>
-
+        <span class="meta-label">LATITUDE</span>
+        <strong>{{ latitudeText }}</strong>
       </div>
 
-
       <div class="meta-item">
-
-        <span class="meta-label">
-          LONGITUDE
-        </span>
-
-        <strong>
-          {{ longitudeText }}
-        </strong>
-
+        <span class="meta-label">LONGITUDE</span>
+        <strong>{{ longitudeText }}</strong>
       </div>
 
-
       <div class="meta-item">
-
-        <span class="meta-label">
-          ELEVATION
-        </span>
-
-        <strong>
-          {{ elevation }}
-        </strong>
-
+        <span class="meta-label">ELEVATION</span>
+        <strong>{{ elevation }}</strong>
       </div>
 
-
       <div class="meta-item">
-
-        <span class="meta-label">
-          OPERATION
-        </span>
-
-        <strong>
-          YEAR-ROUND
-        </strong>
-
+        <span class="meta-label">LOCAL TIME</span>
+        <strong>{{ currentTimeDisplay }}</strong>
       </div>
 
     </div>
@@ -191,75 +134,51 @@
   </section>
 
 
-  <!-- ========================================================= -->
-  <!-- WEATHER                                                   -->
-  <!-- ========================================================= -->
+  <!-- ==========================================================
+       WEATHER
+       ========================================================== -->
 
   <section class="weather-layout">
 
-
-    <!-- ======================================================= -->
-    <!-- CURRENT CONDITIONS                                     -->
-    <!-- ======================================================= -->
+    <!-- CURRENT WEATHER -->
 
     <article class="weather-card primary-weather">
 
       <div class="card-header">
 
         <div>
-
           <span class="eyebrow">
-            LIVE ENVIRONMENT
+            CURRENT CONDITIONS
           </span>
 
-          <h3>
-            CURRENT CONDITIONS
-          </h3>
-
+          <h2>ATMOSPHERIC STATE</h2>
         </div>
 
-
-        <div class="card-indicator">
-
-          <span
-            class="indicator-dot"
-            [ngClass]="weatherStatusClass"
-          ></span>
-
-          {{ weatherStatusText }}
-
-        </div>
-
-      </div>
-
-
-      <!-- LOADING -->
-
-      <div
-        class="loading-state"
-        *ngIf="
-          loading &&
-          !hasWeatherData
-        "
-      >
-
-        <div class="loading-spinner"></div>
-
-        <span>
-          CONNECTING TO OPEN-METEO
+        <span class="card-indicator">
+          <span class="indicator-dot"></span>
+          LIVE
         </span>
 
       </div>
 
 
-      <!-- WEATHER -->
+      <div
+        class="loading-state"
+        *ngIf="loading"
+      >
+
+        <span class="loading-spinner"></span>
+
+        <span>
+          RETRIEVING LIVE WEATHER DATA
+        </span>
+
+      </div>
+
 
       <div
         class="current-weather"
-        *ngIf="
-          hasWeatherData ||
-          !loading
-        "
+        *ngIf="!loading"
       >
 
         <div class="temperature-section">
@@ -268,34 +187,23 @@
             {{ weatherIcon }}
           </div>
 
-
           <div class="temperature-value">
             {{ temperatureDisplay }}
           </div>
-
 
           <div class="weather-description">
             {{ weatherDescription }}
           </div>
 
-
           <div class="feels-like">
-
             FEELS LIKE
-
-            <strong>
-              {{ feelsLikeDisplay }}
-            </strong>
-
+            <strong>{{ feelsLikeDisplay }}</strong>
           </div>
 
         </div>
 
 
         <div class="weather-side-data">
-
-
-          <!-- HUMIDITY -->
 
           <div class="side-metric">
 
@@ -310,8 +218,6 @@
           </div>
 
 
-          <!-- PRESSURE -->
-
           <div class="side-metric">
 
             <span class="side-label">
@@ -319,19 +225,12 @@
             </span>
 
             <strong>
-
               {{ pressureDisplay }}
-
-              <small>
-                hPa
-              </small>
-
+              <small>hPa</small>
             </strong>
 
           </div>
 
-
-          <!-- CLOUD -->
 
           <div class="side-metric">
 
@@ -345,38 +244,46 @@
 
           </div>
 
+
+          <div class="side-metric">
+
+            <span class="side-label">
+              VISIBILITY
+            </span>
+
+            <strong>
+              {{
+                visibility !== null
+                  ? (visibility / 1000).toFixed(1)
+                  : '--'
+              }}
+              <small>km</small>
+            </strong>
+
+          </div>
+
         </div>
 
       </div>
-
 
       <div class="scan-line"></div>
 
     </article>
 
 
-    <!-- ======================================================= -->
-    <!-- WIND                                                    -->
-    <!-- ======================================================= -->
+    <!-- WIND -->
 
     <article class="weather-card wind-card">
 
       <div class="card-header">
 
         <div>
-
-          <span class="eyebrow">
-            ATMOSPHERIC
-          </span>
-
-          <h3>
-            WIND VECTOR
-          </h3>
-
+          <span class="eyebrow">WIND</span>
+          <h2>SURFACE WIND</h2>
         </div>
 
         <span class="metric-code">
-          WND-01
+          WND-10
         </span>
 
       </div>
@@ -388,22 +295,10 @@
 
           <div class="compass-ring">
 
-            <span class="compass-n">
-              N
-            </span>
-
-            <span class="compass-e">
-              E
-            </span>
-
-            <span class="compass-s">
-              S
-            </span>
-
-            <span class="compass-w">
-              W
-            </span>
-
+            <span class="compass-n">N</span>
+            <span class="compass-e">E</span>
+            <span class="compass-s">S</span>
+            <span class="compass-w">W</span>
 
             <div
               class="wind-arrow"
@@ -420,26 +315,13 @@
         <div class="wind-data">
 
           <div class="wind-speed">
-
-            <strong>
-              {{ windDisplay }}
-            </strong>
-
-            <span>
-              km/h
-            </span>
-
+            {{ windDisplay }}
+            <small>km/h</small>
           </div>
 
-
           <div class="wind-direction">
-
             {{ windDirectionText }}
-
-            <span>
-              {{ windDegreesDisplay }}
-            </span>
-
+            <span>{{ windDegreesDisplay }}</span>
           </div>
 
         </div>
@@ -449,24 +331,15 @@
     </article>
 
 
-    <!-- ======================================================= -->
-    <!-- PRECIPITATION                                           -->
-    <!-- ======================================================= -->
+    <!-- PRECIPITATION -->
 
     <article class="weather-card precipitation-card">
 
       <div class="card-header">
 
         <div>
-
-          <span class="eyebrow">
-            HYDROMETEOROLOGY
-          </span>
-
-          <h3>
-            PRECIPITATION
-          </h3>
-
+          <span class="eyebrow">PRECIPITATION</span>
+          <h2>PRECIPITATION STATE</h2>
         </div>
 
         <span class="metric-code">
@@ -479,32 +352,28 @@
       <div class="precipitation-content">
 
         <div class="precipitation-value">
-
-          <strong>
-            {{ precipitationDisplay }}
-          </strong>
-
-          <span>
-            mm
-          </span>
-
+          {{ precipitationDisplay }}
+          <small>mm</small>
         </div>
-
 
         <div class="precipitation-label">
-          CURRENT ACCUMULATION
+          CURRENT PRECIPITATION
         </div>
-
 
         <div class="precipitation-visual">
 
           <div
             class="precipitation-fill"
-            [style.width.%]="
-              getPrecipitationWidth()
-            "
+            [style.width.%]="getPrecipitationWidth()"
           ></div>
 
+        </div>
+
+        <div class="precipitation-label">
+          SNOWFALL
+          <strong>
+            {{ snowfall !== null ? snowfall.toFixed(2) : '--' }} cm
+          </strong>
         </div>
 
       </div>
@@ -514,9 +383,9 @@
   </section>
 
 
-  <!-- ========================================================= -->
-  <!-- PARAMETERS                                                -->
-  <!-- ========================================================= -->
+  <!-- ==========================================================
+       ATMOSPHERIC PARAMETERS
+       ========================================================== -->
 
   <section class="metrics-section">
 
@@ -525,7 +394,7 @@
       <div>
 
         <span class="eyebrow">
-          ENVIRONMENT TELEMETRY
+          ENVIRONMENTAL TELEMETRY
         </span>
 
         <h2>
@@ -534,13 +403,9 @@
 
       </div>
 
-
       <div class="telemetry-status">
-
         <span class="pulse-dot"></span>
-
-        OPEN-METEO WEATHER STREAM
-
+        LIVE TELEMETRY
       </div>
 
     </div>
@@ -548,47 +413,33 @@
 
     <div class="metrics-grid">
 
-
       <!-- TEMPERATURE -->
 
       <article class="metric-card">
 
         <div class="metric-top">
-
           <span class="metric-label">
-            AIR TEMPERATURE
+            TEMPERATURE
           </span>
 
           <span class="metric-id">
-            TMP-01
+            TMP-02
           </span>
-
         </div>
-
 
         <div class="metric-main">
-
-          <strong>
-            {{ temperatureDisplay }}
-          </strong>
-
+          {{ temperatureDisplay }}
         </div>
-
 
         <div class="metric-unit">
-          SURFACE AIR
+          AMBIENT AIR
         </div>
 
-
         <div class="metric-bar">
-
           <div
             class="metric-bar-fill"
-            [style.width.%]="
-              getTemperatureWidth()
-            "
+            [style.width.%]="getTemperatureWidth()"
           ></div>
-
         </div>
 
       </article>
@@ -599,41 +450,28 @@
       <article class="metric-card">
 
         <div class="metric-top">
-
           <span class="metric-label">
-            RELATIVE HUMIDITY
+            HUMIDITY
           </span>
 
           <span class="metric-id">
-            HUM-01
+            HUM-02
           </span>
-
         </div>
-
 
         <div class="metric-main">
-
-          <strong>
-            {{ humidityDisplay }}
-          </strong>
-
+          {{ humidityDisplay }}
         </div>
-
 
         <div class="metric-unit">
-          ATMOSPHERIC MOISTURE
+          RELATIVE HUMIDITY
         </div>
 
-
         <div class="metric-bar">
-
           <div
             class="metric-bar-fill"
-            [style.width.%]="
-              getHumidityWidth()
-            "
+            [style.width.%]="getHumidityWidth()"
           ></div>
-
         </div>
 
       </article>
@@ -644,90 +482,29 @@
       <article class="metric-card">
 
         <div class="metric-top">
-
           <span class="metric-label">
             WIND SPEED
           </span>
 
           <span class="metric-id">
-            WND-01
+            WND-02
           </span>
-
         </div>
-
 
         <div class="metric-main">
-
-          <strong>
-            {{ windDisplay }}
-          </strong>
-
-          <span>
-            km/h
-          </span>
-
+          {{ windDisplay }}
+          <span class="metric-unit-inline">km/h</span>
         </div>
-
 
         <div class="metric-unit">
-          10m WIND
+          SURFACE WIND
         </div>
-
 
         <div class="metric-bar">
-
           <div
             class="metric-bar-fill"
-            [style.width.%]="
-              getWindWidth()
-            "
+            [style.width.%]="getWindWidth()"
           ></div>
-
-        </div>
-
-      </article>
-
-
-      <!-- CLOUD -->
-
-      <article class="metric-card">
-
-        <div class="metric-top">
-
-          <span class="metric-label">
-            CLOUD COVER
-          </span>
-
-          <span class="metric-id">
-            CLD-01
-          </span>
-
-        </div>
-
-
-        <div class="metric-main">
-
-          <strong>
-            {{ cloudCoverDisplay }}
-          </strong>
-
-        </div>
-
-
-        <div class="metric-unit">
-          SKY COVERAGE
-        </div>
-
-
-        <div class="metric-bar">
-
-          <div
-            class="metric-bar-fill"
-            [style.width.%]="
-              getCloudWidth()
-            "
-          ></div>
-
         </div>
 
       </article>
@@ -738,43 +515,60 @@
       <article class="metric-card">
 
         <div class="metric-top">
-
           <span class="metric-label">
-            SURFACE PRESSURE
+            PRESSURE
           </span>
 
           <span class="metric-id">
-            PRS-01
+            PRS-02
           </span>
-
         </div>
-
 
         <div class="metric-main">
-
-          <strong>
-            {{ pressureDisplay }}
-          </strong>
-
-          <span>
-            hPa
-          </span>
-
+          {{ pressureDisplay }}
         </div>
-
 
         <div class="metric-unit">
-          ATMOSPHERIC PRESSURE
+          hPa
         </div>
 
-
         <div class="metric-bar pressure-bar">
-
           <div
             class="metric-bar-fill"
-            [style.width.%]="70"
+            [style.width.%]="50"
           ></div>
+        </div>
 
+      </article>
+
+
+      <!-- CLOUD -->
+
+      <article class="metric-card">
+
+        <div class="metric-top">
+          <span class="metric-label">
+            CLOUD COVER
+          </span>
+
+          <span class="metric-id">
+            CLD-02
+          </span>
+        </div>
+
+        <div class="metric-main">
+          {{ cloudCoverDisplay }}
+        </div>
+
+        <div class="metric-unit">
+          SKY COVERAGE
+        </div>
+
+        <div class="metric-bar">
+          <div
+            class="metric-bar-fill"
+            [style.width.%]="getCloudWidth()"
+          ></div>
         </div>
 
       </article>
@@ -785,44 +579,118 @@
       <article class="metric-card">
 
         <div class="metric-top">
-
           <span class="metric-label">
             PRECIPITATION
           </span>
 
           <span class="metric-id">
-            PRC-01
+            PRC-02
           </span>
-
         </div>
-
 
         <div class="metric-main">
-
-          <strong>
-            {{ precipitationDisplay }}
-          </strong>
-
-          <span>
-            mm
-          </span>
-
+          {{ precipitationDisplay }}
+          <span class="metric-unit-inline">mm</span>
         </div>
-
 
         <div class="metric-unit">
           CURRENT RATE
         </div>
 
-
         <div class="metric-bar">
-
           <div
             class="metric-bar-fill"
-            [style.width.%]="
-              getPrecipitationWidth()
-            "
+            [style.width.%]="getPrecipitationWidth()"
           ></div>
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================================
+       PERSONNEL OVERVIEW
+       ========================================================== -->
+
+  <section class="personnel-section">
+
+    <div class="personnel-header">
+
+      <div class="personnel-title-area">
+
+        <span class="eyebrow">
+          STATION OPERATIONS
+        </span>
+
+        <h2>
+          PERSONNEL OVERVIEW
+        </h2>
+
+        <div class="personnel-subtitle">
+
+          <span class="subtitle-line"></span>
+
+          <span>
+            CURRENT BHARATI PERSONNEL DISTRIBUTION
+            · OPERATIONS · SCIENCE · ENGINEERING · SUPPORT
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="total-active-box">
+
+        <span>
+          TOTAL ACTIVE
+        </span>
+
+        <strong>
+          {{ totalActivePersonnel }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="personnel-grid">
+
+      <article
+        class="personnel-card"
+        *ngFor="
+          let category of personnelCategories;
+          trackBy: trackByPersonnel
+        "
+        [class.personnel-card-active]="category.accent"
+      >
+
+        <div class="personnel-icon-box">
+
+          <span>
+            {{ category.icon }}
+          </span>
+
+        </div>
+
+
+        <div class="personnel-card-content">
+
+          <div class="personnel-label">
+            {{ category.label }}
+          </div>
+
+          <div class="personnel-number">
+            {{ category.count }}
+          </div>
+
+          <div class="personnel-description">
+            {{ category.description }}
+          </div>
 
         </div>
 
@@ -833,9 +701,9 @@
   </section>
 
 
-  <!-- ========================================================= -->
-  <!-- SYSTEM STATUS                                             -->
-  <!-- ========================================================= -->
+  <!-- ==========================================================
+       STATION STATUS
+       ========================================================== -->
 
   <section class="system-section">
 
@@ -844,7 +712,7 @@
       <div>
 
         <span class="eyebrow">
-          DIGITAL TWIN
+          SYSTEM MONITORING
         </span>
 
         <h2>
@@ -858,108 +726,81 @@
 
     <div class="system-grid">
 
+      <article class="system-card">
 
-      <!-- WEATHER LINK -->
-
-      <div class="system-card">
-
-        <div class="system-icon">
-          ◉
-        </div>
+        <div class="system-icon">◉</div>
 
         <div class="system-info">
 
-          <span>
-            WEATHER DATA LINK
-          </span>
+          <span>STATION OPERATIONS</span>
 
-          <strong
-            [ngClass]="weatherStatusClass"
-          >
-            {{ weatherStatusText }}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <!-- STATION -->
-
-      <div class="system-card">
-
-        <div class="system-icon">
-          B
-        </div>
-
-        <div class="system-info">
-
-          <span>
-            STATION
-          </span>
-
-          <strong>
+          <strong class="system-online">
             OPERATIONAL
           </strong>
 
         </div>
 
-      </div>
+      </article>
 
 
-      <!-- LOCATION -->
+      <article class="system-card">
 
-      <div class="system-card">
-
-        <div class="system-icon">
-          ⌖
-        </div>
+        <div class="system-icon">⌁</div>
 
         <div class="system-info">
 
-          <span>
-            LOCATION
-          </span>
+          <span>COMMUNICATIONS</span>
 
-          <strong>
-            ANTARCTICA
+          <strong class="system-online">
+            NOMINAL
           </strong>
 
         </div>
 
-      </div>
+      </article>
 
 
-      <!-- SOURCE -->
+      <article class="system-card">
 
-      <div class="system-card">
-
-        <div class="system-icon">
-          ◌
-        </div>
+        <div class="system-icon">◇</div>
 
         <div class="system-info">
 
-          <span>
-            DATA SOURCE
-          </span>
+          <span>ENVIRONMENTAL MONITORING</span>
 
-          <strong>
-            OPEN-METEO API
+          <strong class="system-online">
+            ACTIVE
           </strong>
 
         </div>
 
-      </div>
+      </article>
+
+
+      <article class="system-card">
+
+        <div class="system-icon">+</div>
+
+        <div class="system-info">
+
+          <span>PERSONNEL SYSTEM</span>
+
+          <strong class="system-online">
+            ACTIVE
+          </strong>
+
+        </div>
+
+      </article>
 
     </div>
 
   </section>
 
 
-  <!-- ========================================================= -->
-  <!-- PROFILE                                                   -->
-  <!-- ========================================================= -->
+  <!-- ==========================================================
+       PROFILE
+       ========================================================== -->
 
   <section class="profile-section">
 
@@ -977,89 +818,77 @@
 
       </div>
 
-
-      <div class="profile-code">
-        POLARIS / BHA
-      </div>
+      <span class="profile-code">
+        {{ stationCode }}
+      </span>
 
     </div>
 
 
     <div class="profile-grid">
 
-
-      <!-- LOCATION -->
-
       <div class="profile-block">
 
-        <span>
-          LOCATION
-        </span>
+        <span>LOCATION</span>
 
         <strong>
-          Larsemann Hills
+          {{ location }}
         </strong>
-
-        <small>
-          East Antarctica
-        </small>
 
       </div>
 
 
-      <!-- TYPE -->
-
       <div class="profile-block">
 
-        <span>
-          STATION TYPE
-        </span>
+        <span>REGION</span>
 
         <strong>
-          Year-Round
+          {{ region }}
         </strong>
-
-        <small>
-          Permanent scientific research facility
-        </small>
 
       </div>
 
 
-      <!-- COORDINATES -->
-
       <div class="profile-block">
 
-        <span>
-          COORDINATES
-        </span>
+        <span>LATITUDE</span>
 
         <strong>
           {{ latitudeText }}
         </strong>
 
-        <small>
+      </div>
+
+
+      <div class="profile-block">
+
+        <span>LONGITUDE</span>
+
+        <strong>
           {{ longitudeText }}
-        </small>
+        </strong>
 
       </div>
 
 
-      <!-- DIGITAL TWIN -->
+      <div class="profile-block">
+
+        <span>ELEVATION</span>
+
+        <strong>
+          {{ elevation }}
+        </strong>
+
+      </div>
+
 
       <div class="profile-block">
 
-        <span>
-          DIGITAL TWIN
-        </span>
+        <span>WEATHER SOURCE</span>
 
         <strong>
-          SYNCHRONIZED
+          OPEN-METEO
         </strong>
-
-        <small>
-          Environmental weather layer active
-        </small>
 
       </div>
 
@@ -1068,9 +897,9 @@
   </section>
 
 
-  <!-- ========================================================= -->
-  <!-- WEATHER SOURCE                                           -->
-  <!-- ========================================================= -->
+  <!-- ==========================================================
+       SOURCE
+       ========================================================== -->
 
   <section class="source-section">
 
@@ -1078,26 +907,20 @@
 
       <span class="source-dot"></span>
 
-      <div>
+      <span>
+        LIVE WEATHER SOURCE
+      </span>
 
-        <strong>
-          WEATHER SOURCE · OPEN-METEO API
-        </strong>
-
-        <small>
-          Current meteorological conditions for Bharati coordinates
-        </small>
-
-      </div>
+      <strong>
+        OPEN-METEO
+      </strong>
 
     </div>
 
 
     <div class="source-time">
 
-      <span>
-        API TIMESTAMP
-      </span>
+      SOURCE TIME
 
       <strong>
         {{ weatherSourceTime }}
@@ -1108,9 +931,113 @@
   </section>
 
 
-  <!-- ========================================================= -->
-  <!-- FOOTER                                                    -->
-  <!-- ========================================================= -->
+  <!-- ==========================================================
+       HISTORICAL EVENTS
+       ========================================================== -->
+
+  <section class="historical-events">
+
+    <div class="historical-header">
+
+      <div>
+
+        <span class="section-label">
+          HISTORICAL RECORD
+        </span>
+
+        <h2>
+          BHARATI TIMELINE
+        </h2>
+
+      </div>
+
+
+      <div class="historical-meta">
+
+        <span class="archive-dot"></span>
+
+        ARCHIVED EVENTS
+
+      </div>
+
+    </div>
+
+
+    <div class="history-intro">
+
+      <span class="history-intro-line"></span>
+
+      <p>
+        KEY OPERATIONAL AND RESEARCH MILESTONES
+        ASSOCIATED WITH BHARATI STATION.
+      </p>
+
+    </div>
+
+
+    <div class="timeline">
+
+      <article
+        class="timeline-event"
+        *ngFor="
+          let event of historicalEvents;
+          trackBy: trackByHistory
+        "
+      >
+
+        <div class="timeline-year">
+          {{ event.year }}
+        </div>
+
+
+        <div class="timeline-line">
+
+          <div class="timeline-node"></div>
+
+        </div>
+
+
+        <div class="timeline-card">
+
+          <div class="timeline-card-top">
+
+            <span class="timeline-category">
+              {{ event.category }}
+            </span>
+
+            <span class="timeline-index">
+              {{ event.index }}
+            </span>
+
+          </div>
+
+
+          <h3>
+            {{ event.title }}
+          </h3>
+
+
+          <p>
+            {{ event.description }}
+          </p>
+
+
+          <div class="timeline-source">
+            SOURCE · {{ event.source }}
+          </div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================================
+       FOOTER
+       ========================================================== -->
 
   <footer class="bharati-footer">
 
@@ -1120,12 +1047,10 @@
         POLARIS-TWIN
       </span>
 
-      <span class="footer-divider">
-        |
-      </span>
+      <span class="footer-divider"></span>
 
       <span>
-        BHARATI STATION
+        BHARATI
       </span>
 
     </div>
@@ -1135,24 +1060,17 @@
 
       <span class="footer-live-dot"></span>
 
-      WEATHER STREAM
-
-      <strong>
-        {{ weatherStatusText }}
-      </strong>
+      SYSTEM OPERATIONAL
 
     </div>
 
 
     <div class="footer-right">
 
-      <span>
-        {{ currentDateDisplay }}
-      </span>
-
-      <strong>
-        {{ currentTimeDisplay }} IST
-      </strong>
+      {{ currentDateDisplay }}
+      ·
+      {{ currentTimeDisplay }}
+      IST
 
     </div>
 

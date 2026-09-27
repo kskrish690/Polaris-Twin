@@ -12,6 +12,25 @@ import {
   WeatherData
 } from '../../services/weather';
 
+interface HistoricalEvent {
+  year: string;
+  category: string;
+  title: string;
+  description: string;
+  source: string;
+  index: string;
+}
+
+interface PersonnelCategory {
+  id: string;
+  label: string;
+  count: number;
+  description: string;
+  icon: string;
+  code: string;
+  accent?: boolean;
+}
+
 @Component({
   selector: 'app-bharati',
   standalone: true,
@@ -28,24 +47,198 @@ export class Bharati implements OnInit, OnDestroy {
   // ============================================================
 
   readonly stationName = 'BHARATI';
-
   readonly stationCode = 'BHA-01';
 
   readonly latitude = -69.406833;
-
   readonly longitude = 76.195333;
 
-  readonly latitudeText = "69°24.41'S";
-
-  readonly longitudeText = "76°11.72'E";
+  readonly latitudeText = `69°24'25"S`;
+  readonly longitudeText = `76°11'43"E`;
 
   readonly elevation = '~35 M ASL';
+  readonly location = 'Larsemann Hills, East Antarctica';
+  readonly region = 'PRYDZ BAY / LARSEMANN HILLS';
 
-  readonly location =
-    'Larsemann Hills, East Antarctica';
 
-  readonly region =
-    'PRYDZ BAY / LARSEMANN HILLS';
+  // ============================================================
+  // PERSONNEL OVERVIEW
+  // ============================================================
+
+  /*
+   * Hardcoded operational personnel distribution.
+   * This section is intentionally static for the current UI.
+   */
+
+  readonly personnelCategories: PersonnelCategory[] = [
+    {
+      id: '01',
+      label: 'ACTIVE PERSONNEL',
+      count: 42,
+      description: 'CURRENT STATION STRENGTH',
+      icon: '○',
+      code: 'ACTIVE',
+      accent: true
+    },
+    {
+      id: '02',
+      label: 'SECURITY',
+      count: 4,
+      description: 'STATION SECURITY',
+      icon: '◇',
+      code: 'SEC'
+    },
+    {
+      id: '03',
+      label: 'SCIENTISTS',
+      count: 10,
+      description: 'SCIENTIFIC STAFF',
+      icon: '◇',
+      code: 'SCI'
+    },
+    {
+      id: '04',
+      label: 'RESEARCHERS',
+      count: 8,
+      description: 'RESEARCH OPERATIONS',
+      icon: '△',
+      code: 'RES'
+    },
+    {
+      id: '05',
+      label: 'ADMINISTRATION',
+      count: 3,
+      description: 'ADMINISTRATIVE SERVICES',
+      icon: '□',
+      code: 'ADM'
+    },
+    {
+      id: '06',
+      label: 'ENGINEERING',
+      count: 6,
+      description: 'ENGINEERING SERVICES',
+      icon: '⚙',
+      code: 'ENG'
+    },
+    {
+      id: '07',
+      label: 'MEDICAL',
+      count: 2,
+      description: 'MEDICAL SUPPORT',
+      icon: '+',
+      code: 'MED'
+    },
+    {
+      id: '08',
+      label: 'LOGISTICS',
+      count: 4,
+      description: 'LOGISTICS OPERATIONS',
+      icon: 'Ⅱ',
+      code: 'LOG'
+    },
+    {
+      id: '09',
+      label: 'COMMUNICATIONS',
+      count: 2,
+      description: 'COMMUNICATION SERVICES',
+      icon: '⌁',
+      code: 'COM'
+    },
+    {
+      id: '10',
+      label: 'SUPPORT',
+      count: 3,
+      description: 'STATION SUPPORT',
+      icon: '+',
+      code: 'SUP'
+    }
+  ];
+
+  get totalActivePersonnel(): number {
+    return this.personnelCategories
+      .filter(category => category.code !== 'ACTIVE')
+      .reduce(
+        (total, category) => total + category.count,
+        0
+      );
+  }
+
+  trackByPersonnel(
+    index: number,
+    category: PersonnelCategory
+  ): string {
+    return category.id;
+  }
+
+
+  // ============================================================
+  // HISTORICAL EVENTS
+  // ============================================================
+
+  readonly historicalEvents: HistoricalEvent[] = [
+    {
+      year: '1989',
+      category: 'EXPEDITION PLANNING',
+      title: 'Larsemann Hills identified for India’s second station',
+      description:
+        'The Larsemann Hills region was selected as the location for India’s second permanent Antarctic research station, leading to the development of Bharati.',
+      source: 'NCPOR',
+      index: '01'
+    },
+    {
+      year: '2012',
+      category: 'STATION COMMISSIONING',
+      title: 'Bharati Research Station becomes operational',
+      description:
+        'Bharati was established at Larsemann Hills in East Antarctica as India’s third permanent Antarctic research station and a year-round platform for multidisciplinary scientific research.',
+      source: 'NCPOR',
+      index: '02'
+    },
+    {
+      year: '2012',
+      category: 'RESEARCH OPERATIONS',
+      title: 'Year-round scientific operations begin',
+      description:
+        'The station became an important operational base for atmospheric science, earth science, biological research, meteorology, glaciology and other Antarctic research activities.',
+      source: 'NCPOR',
+      index: '03'
+    },
+    {
+      year: '2013',
+      category: 'SCIENTIFIC INFRASTRUCTURE',
+      title: 'Bharati expands India’s Antarctic research capability',
+      description:
+        'The station strengthened India’s ability to conduct long-duration scientific observations from the Larsemann Hills region of East Antarctica.',
+      source: 'NCPOR',
+      index: '04'
+    },
+    {
+      year: '2016',
+      category: 'POLAR RESEARCH',
+      title: 'Multidisciplinary observations continue at Bharati',
+      description:
+        'Bharati continued supporting observations and field programmes across atmospheric, geological, biological and environmental research domains.',
+      source: 'NCPOR',
+      index: '05'
+    },
+    {
+      year: '2022',
+      category: 'STATION OPERATIONS',
+      title: 'Bharati continues year-round research support',
+      description:
+        'The station remained an active component of India’s Antarctic programme, supporting scientific teams, observations and logistics in East Antarctica.',
+      source: 'NCPOR',
+      index: '06'
+    },
+    {
+      year: '2026',
+      category: 'CURRENT ERA',
+      title: 'Bharati remains a key Antarctic research platform',
+      description:
+        'Bharati continues to serve as an operational base for India’s Antarctic scientific programme in the Larsemann Hills region.',
+      source: 'NCPOR',
+      index: '07'
+    }
+  ];
 
 
   // ============================================================
@@ -59,24 +252,16 @@ export class Bharati implements OnInit, OnDestroy {
     current: {
       time: '',
       interval: 0,
-
       temperature_2m: null,
       apparent_temperature: null,
-
       relative_humidity_2m: null,
-
       wind_speed_10m: null,
       wind_direction_10m: null,
-
       surface_pressure: null,
-
       precipitation: null,
       snowfall: null,
-
       cloud_cover: null,
-
       visibility: null,
-
       weather_code: null
     }
   };
@@ -87,7 +272,6 @@ export class Bharati implements OnInit, OnDestroy {
   // ============================================================
 
   loading = true;
-
   error = '';
 
   lastUpdate: Date | null = null;
@@ -98,16 +282,14 @@ export class Bharati implements OnInit, OnDestroy {
   // ============================================================
 
   private weatherTimer?: ReturnType<typeof setInterval>;
-
   private clockTimer?: ReturnType<typeof setInterval>;
 
 
   // ============================================================
-  // CURRENT DATE/TIME
+  // CURRENT DATE / TIME
   // ============================================================
 
   currentDateDisplay = '--';
-
   currentTimeDisplay = '--:--:--';
 
 
@@ -122,7 +304,7 @@ export class Bharati implements OnInit, OnDestroy {
 
 
   // ============================================================
-  // INIT
+  // LIFECYCLE
   // ============================================================
 
   ngOnInit(): void {
@@ -130,46 +312,26 @@ export class Bharati implements OnInit, OnDestroy {
     this.updateClock();
 
     this.clockTimer = setInterval(() => {
-
       this.updateClock();
-
       this.cdr.detectChanges();
-
     }, 1000);
-
 
     this.loadWeather();
 
-
-    // Refresh Open-Meteo data every 5 minutes
-
     this.weatherTimer = setInterval(() => {
-
       this.loadWeather();
-
     }, 5 * 60 * 1000);
   }
 
 
-  // ============================================================
-  // DESTROY
-  // ============================================================
-
   ngOnDestroy(): void {
 
     if (this.weatherTimer) {
-
-      clearInterval(
-        this.weatherTimer
-      );
+      clearInterval(this.weatherTimer);
     }
 
-
     if (this.clockTimer) {
-
-      clearInterval(
-        this.clockTimer
-      );
+      clearInterval(this.clockTimer);
     }
   }
 
@@ -182,7 +344,6 @@ export class Bharati implements OnInit, OnDestroy {
 
     const now = new Date();
 
-
     this.currentDateDisplay =
       new Intl.DateTimeFormat(
         'en-IN',
@@ -193,7 +354,6 @@ export class Bharati implements OnInit, OnDestroy {
           day: '2-digit'
         }
       ).format(now);
-
 
     this.currentTimeDisplay =
       new Intl.DateTimeFormat(
@@ -210,17 +370,15 @@ export class Bharati implements OnInit, OnDestroy {
 
 
   // ============================================================
-  // LOAD WEATHER
+  // WEATHER
   // ============================================================
 
   loadWeather(): void {
 
     this.loading = true;
-
     this.error = '';
 
     this.cdr.detectChanges();
-
 
     this.weatherService
       .getWeather(
@@ -229,17 +387,12 @@ export class Bharati implements OnInit, OnDestroy {
       )
       .subscribe({
 
-        // ------------------------------------------------------
-        // SUCCESS
-        // ------------------------------------------------------
-
         next: (data: WeatherData) => {
 
           console.log(
             'BHARATI OPEN-METEO DATA:',
             data
           );
-
 
           if (
             !data ||
@@ -256,21 +409,14 @@ export class Bharati implements OnInit, OnDestroy {
             return;
           }
 
-
           this.weather = data;
 
           this.loading = false;
 
           this.lastUpdate = new Date();
 
-
           this.cdr.detectChanges();
         },
-
-
-        // ------------------------------------------------------
-        // ERROR
-        // ------------------------------------------------------
 
         error: (err) => {
 
@@ -279,26 +425,18 @@ export class Bharati implements OnInit, OnDestroy {
             err
           );
 
-
           this.loading = false;
 
           this.error =
             'Unable to retrieve live Bharati weather data from Open-Meteo.';
 
-
           this.cdr.detectChanges();
         }
-
       });
   }
 
 
-  // ============================================================
-  // RETRY
-  // ============================================================
-
   retryWeather(): void {
-
     this.loadWeather();
   }
 
@@ -310,19 +448,15 @@ export class Bharati implements OnInit, OnDestroy {
   get weatherStatusClass(): string {
 
     if (this.loading) {
-
       return 'status-updating';
     }
-
 
     if (
       this.error ||
       !this.hasWeatherData
     ) {
-
       return 'status-offline';
     }
-
 
     return 'status-live';
   }
@@ -331,27 +465,19 @@ export class Bharati implements OnInit, OnDestroy {
   get weatherStatusText(): string {
 
     if (this.loading) {
-
       return 'UPDATING';
     }
-
 
     if (
       this.error ||
       !this.hasWeatherData
     ) {
-
       return 'OFFLINE';
     }
-
 
     return 'LIVE';
   }
 
-
-  // ============================================================
-  // WEATHER AVAILABLE
-  // ============================================================
 
   get hasWeatherData(): boolean {
 
@@ -363,7 +489,7 @@ export class Bharati implements OnInit, OnDestroy {
 
 
   // ============================================================
-  // CURRENT TEMPERATURE
+  // TEMPERATURE
   // ============================================================
 
   get temperature(): number | null {
@@ -379,18 +505,12 @@ export class Bharati implements OnInit, OnDestroy {
     const value = this.temperature;
 
     if (value === null) {
-
       return '-- °C';
     }
-
 
     return `${value.toFixed(1)} °C`;
   }
 
-
-  // ============================================================
-  // FEELS LIKE
-  // ============================================================
 
   get feelsLike(): number | null {
 
@@ -405,10 +525,8 @@ export class Bharati implements OnInit, OnDestroy {
     const value = this.feelsLike;
 
     if (value === null) {
-
       return '-- °C';
     }
-
 
     return `${value.toFixed(1)} °C`;
   }
@@ -431,17 +549,15 @@ export class Bharati implements OnInit, OnDestroy {
     const value = this.humidity;
 
     if (value === null) {
-
       return '--%';
     }
-
 
     return `${value.toFixed(0)}%`;
   }
 
 
   // ============================================================
-  // WIND SPEED
+  // WIND
   // ============================================================
 
   get windSpeed(): number | null {
@@ -457,18 +573,12 @@ export class Bharati implements OnInit, OnDestroy {
     const value = this.windSpeed;
 
     if (value === null) {
-
       return '--';
     }
-
 
     return value.toFixed(1);
   }
 
-
-  // ============================================================
-  // WIND DIRECTION
-  // ============================================================
 
   get windDirection(): number | null {
 
@@ -483,10 +593,8 @@ export class Bharati implements OnInit, OnDestroy {
     const degrees = this.windDirection;
 
     if (degrees === null) {
-
       return '--';
     }
-
 
     const directions = [
       'N',
@@ -499,10 +607,8 @@ export class Bharati implements OnInit, OnDestroy {
       'NW'
     ];
 
-
     const index =
       Math.round(degrees / 45) % 8;
-
 
     return directions[index];
   }
@@ -513,10 +619,8 @@ export class Bharati implements OnInit, OnDestroy {
     const degrees = this.windDirection;
 
     if (degrees === null) {
-
       return '--°';
     }
-
 
     return `${Math.round(degrees)}°`;
   }
@@ -527,10 +631,8 @@ export class Bharati implements OnInit, OnDestroy {
     const degrees = this.windDirection;
 
     if (degrees === null) {
-
       return 'rotate(0deg)';
     }
-
 
     return `rotate(${degrees}deg)`;
   }
@@ -553,10 +655,8 @@ export class Bharati implements OnInit, OnDestroy {
     const value = this.pressure;
 
     if (value === null) {
-
       return '--';
     }
-
 
     return value.toFixed(0);
   }
@@ -579,10 +679,8 @@ export class Bharati implements OnInit, OnDestroy {
     const value = this.cloudCover;
 
     if (value === null) {
-
       return '--%';
     }
-
 
     return `${value.toFixed(0)}%`;
   }
@@ -605,10 +703,8 @@ export class Bharati implements OnInit, OnDestroy {
     const value = this.precipitation;
 
     if (value === null) {
-
       return '--';
     }
-
 
     return value.toFixed(2);
   }
@@ -658,75 +754,51 @@ export class Bharati implements OnInit, OnDestroy {
 
     const code = this.weatherCode;
 
-
     if (code === null) {
-
       return 'NO DATA';
     }
 
-
     if (code === 0) {
-
       return 'CLEAR SKY';
     }
 
-
     if ([1, 2, 3].includes(code)) {
-
       return 'CLOUDY';
     }
 
-
     if ([45, 48].includes(code)) {
-
       return 'FOG';
     }
 
-
     if (
-      [51, 53, 55, 56, 57]
-        .includes(code)
+      [51, 53, 55, 56, 57].includes(code)
     ) {
-
       return 'DRIZZLE';
     }
 
-
     if (
-      [61, 63, 65, 66, 67]
-        .includes(code)
+      [61, 63, 65, 66, 67].includes(code)
     ) {
-
       return 'RAIN';
     }
 
-
     if (
-      [71, 73, 75, 77, 85, 86]
-        .includes(code)
+      [71, 73, 75, 77, 85, 86].includes(code)
     ) {
-
       return 'SNOW';
     }
 
-
     if (
-      [80, 81, 82]
-        .includes(code)
+      [80, 81, 82].includes(code)
     ) {
-
       return 'RAIN SHOWERS';
     }
 
-
     if (
-      [95, 96, 99]
-        .includes(code)
+      [95, 96, 99].includes(code)
     ) {
-
       return 'THUNDERSTORM';
     }
-
 
     return 'UNKNOWN';
   }
@@ -740,78 +812,59 @@ export class Bharati implements OnInit, OnDestroy {
 
     const code = this.weatherCode;
 
-
     if (code === null) {
-
       return '◌';
     }
 
-
     if (code === 0) {
-
       return '☀';
     }
 
-
     if ([1, 2, 3].includes(code)) {
-
       return '☁';
     }
 
-
     if ([45, 48].includes(code)) {
-
       return '≋';
     }
-
 
     if (
       [51, 53, 55, 56, 57].includes(code)
     ) {
-
       return '☂';
     }
-
 
     if (
       [61, 63, 65, 66, 67, 80, 81, 82].includes(code)
     ) {
-
       return '☂';
     }
-
 
     if (
       [71, 73, 75, 77, 85, 86].includes(code)
     ) {
-
       return '❄';
     }
-
 
     if (
       [95, 96, 99].includes(code)
     ) {
-
       return 'ϟ';
     }
-
 
     return '◌';
   }
 
 
   // ============================================================
-  // LAST UPDATE DISPLAY
+  // UPDATE TIME
   // ============================================================
 
   get lastUpdateDisplay(): string {
 
     if (!this.lastUpdate) {
-
       return 'WAITING FOR DATA';
     }
-
 
     const time =
       new Intl.DateTimeFormat(
@@ -825,33 +878,25 @@ export class Bharati implements OnInit, OnDestroy {
         }
       ).format(this.lastUpdate);
 
-
     return `${time} IST`;
   }
 
-
-  // ============================================================
-  // OPEN-METEO TIMESTAMP
-  // ============================================================
 
   get weatherSourceTime(): string {
 
     const value =
       this.weather?.current?.time;
 
-
     if (!value) {
-
       return '--';
     }
-
 
     return value;
   }
 
 
   // ============================================================
-  // PROGRESS BARS
+  // TELEMETRY WIDTHS
   // ============================================================
 
   getTemperatureWidth(): number {
@@ -859,20 +904,11 @@ export class Bharati implements OnInit, OnDestroy {
     const value = this.temperature;
 
     if (value === null) {
-
       return 0;
     }
 
-
-    /*
-     * Antarctic visual scale:
-     * -50°C = 0%
-     * +10°C = 100%
-     */
-
     const width =
       ((value + 50) / 60) * 100;
-
 
     return this.clamp(
       width,
@@ -887,10 +923,8 @@ export class Bharati implements OnInit, OnDestroy {
     const value = this.humidity;
 
     if (value === null) {
-
       return 0;
     }
-
 
     return this.clamp(
       value,
@@ -905,15 +939,8 @@ export class Bharati implements OnInit, OnDestroy {
     const value = this.windSpeed;
 
     if (value === null) {
-
       return 0;
     }
-
-
-    /*
-     * Visual scale:
-     * 0–100 km/h
-     */
 
     return this.clamp(
       (value / 100) * 100,
@@ -928,10 +955,8 @@ export class Bharati implements OnInit, OnDestroy {
     const value = this.cloudCover;
 
     if (value === null) {
-
       return 0;
     }
-
 
     return this.clamp(
       value,
@@ -946,14 +971,8 @@ export class Bharati implements OnInit, OnDestroy {
     const value = this.precipitation;
 
     if (value === null) {
-
       return 0;
     }
-
-
-    /*
-     * 0–10 mm visual scale.
-     */
 
     return this.clamp(
       (value / 10) * 100,
@@ -964,7 +983,20 @@ export class Bharati implements OnInit, OnDestroy {
 
 
   // ============================================================
-  // SAFE NUMBER
+  // HISTORY TRACKING
+  // ============================================================
+
+  trackByHistory(
+    index: number,
+    event: HistoricalEvent
+  ): string {
+
+    return `${event.year}-${event.title}`;
+  }
+
+
+  // ============================================================
+  // HELPERS
   // ============================================================
 
   private safeNumber(
@@ -976,18 +1008,12 @@ export class Bharati implements OnInit, OnDestroy {
       value === undefined ||
       Number.isNaN(Number(value))
     ) {
-
       return null;
     }
-
 
     return Number(value);
   }
 
-
-  // ============================================================
-  // CLAMP
-  // ============================================================
 
   private clamp(
     value: number,
@@ -996,10 +1022,7 @@ export class Bharati implements OnInit, OnDestroy {
   ): number {
 
     return Math.min(
-      Math.max(
-        value,
-        min
-      ),
+      Math.max(value, min),
       max
     );
   }
